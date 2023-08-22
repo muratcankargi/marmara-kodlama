@@ -1,20 +1,37 @@
 import React from "react";
 import SwitchPageButton from "./SwitchPageButton";
 import ProgressBar from "./ProgressBar/ProgressBar";
+import Logo from "./Logo";
+import FadedText from "./FadedText";
+import Waves from "./Waves";
+import QuestionMark from "./QuestionMark";
 
 function LandingPage(props) {
   const { switchPage, switchStyles } = props;
 
-  // w-screen ve h-screen silinmemeli
   return (
-    <div className="w-screen h-screen">
+    <div className="w-screen h-screen bg-neutral relative">
       <ProgressBar />
-      <h1>Landing Page</h1>
-      <SwitchPageButton
-        switchTo={switchStyles.switchToSignInPage}
-        switchPage={switchPage}
-        buttonText={"Switch to Sign In Page"}
-      />
+      <Logo />
+      <div className="w-full flex items-center justify-center mt-12 font-medium">
+        <FadedText text="Eşya" />
+      </div>
+
+      <div className="w-full flex flex-col gap-4 mt-4 items-center  ">
+        <SwitchPageButton
+          switchTo={switchStyles.switchToSignInPage}
+          handleFunction={switchPage}
+          buttonText={"KAYBETTİM"}
+        />
+
+        <SwitchPageButton
+          switchTo={switchStyles.switchToSignInPage}
+          handleFunction={switchPage}
+          buttonText={"BULDUM"}
+        />
+      </div>
+      <QuestionMark />
+      <Waves />
     </div>
   );
 }

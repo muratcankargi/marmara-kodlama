@@ -22,7 +22,7 @@ function HorizontalScrollContainer() {
   // Width'imiz 300vw, 3 tane 100vw lik sayfamız var.
   return (
     <div
-      className="w-[300vw] h-screen flex transition-all ease-in-out duration-150"
+      className="w-[300vw] h-screen flex transition-all fixed top-0  "
       style={switchTo}
     >
       <LandingPage switchPage={switchPage} switchStyles={styles} />
