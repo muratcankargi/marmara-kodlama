@@ -30,7 +30,7 @@ function LandingPage(props) {
           buttonText={"BULDUM"}
         />
       </div>
-      <QuestionMark />
+      {/* <QuestionMark /> */}
       <Waves />
     </div>
   );
