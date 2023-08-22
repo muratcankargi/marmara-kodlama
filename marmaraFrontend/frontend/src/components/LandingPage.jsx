@@ -17,7 +17,7 @@ function LandingPage(props) {
         <FadedText text="Eşya" />
       </div>
 
-      <div className="w-full flex flex-col gap-4 mt-4 items-center ">
+      <div className="w-full flex flex-col gap-4 mt-4 items-center  ">
         <SwitchPageButton
           switchTo={switchStyles.switchToSignInPage}
           handleFunction={switchPage}

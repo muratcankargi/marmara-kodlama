@@ -6,7 +6,7 @@ function SwitchPageButton(props) {
   return (
     <button
       type="button"
-      className="w-32 py-2  bg-accent rounded-full text-white font-bold tracking-wide"
+      className="w-32 py-2 bg-accent rounded-full text-white font-bold tracking-wide"
       onClick={() => {
         handleFunction(switchTo);
       }}
