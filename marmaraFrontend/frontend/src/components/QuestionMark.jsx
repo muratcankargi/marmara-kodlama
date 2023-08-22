@@ -19,12 +19,10 @@ function QuestionMark() {
     e.preventDefault();
   };
 
-  // Şuan da z-indexlerden dolayı buttonlara tıklanmıyor düzeltilecek
-
   return (
-    <div className="absolute h-5/6 z-50 bottom-24 right-5 flex ">
+    <div>
       <div
-        className="w-64 mt-auto bg-black rounded-lg transition-all duration-500"
+        className="absolute z-[1] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 bg-black rounded-lg transition-all duration-500"
         style={styles}
       >
         <div className="overflow-hidden">
@@ -40,12 +38,15 @@ function QuestionMark() {
             accusamus optio quisquam vel velit ipsa dolorem illo blanditiis
             ducimus. Lorem ipsum dolor sit, amet consectetur adipisicing elit.
             Repellat necessitatibus, magni molestiae maiores nam vel expedita
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium
+            inventore esse quaerat sequi enim excepturi consectetur ea tempora
+            porro. Magni.
           </p>
         </div>
       </div>
       <button
         onClick={triggerMessageBox}
-        className="mt-auto w-10 h-10 text-white font-extrabold text-3xl flex items-center justify-center"
+        className="absolute right-4 bottom-24 z-50 mt-auto w-10 h-10 text-white font-extrabold text-3xl flex items-center justify-center"
       >
         ?
       </button>
