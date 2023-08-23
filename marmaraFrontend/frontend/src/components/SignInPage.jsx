@@ -36,7 +36,7 @@ function SignInPage(props) {
           type="Password"
           placeholder="Şifre"
         />
-        <div className="flex w-full justify-between  items-center mt-6">
+        <div className="flex w-full justify-between items-center mt-6">
           <CustomLink text="Kayıt Ol" />
           <CustomLink text="Şifremi Unuttum" />
         </div>

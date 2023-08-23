@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 
 function Input(props) {
   const styles = {
@@ -15,12 +15,6 @@ function Input(props) {
         type={props.type}
         placeholder={props.placeholder}
         required
-        // onFocus={() => {
-        //   this.type = "date";
-        // }}
-        // onBlur={() => {
-        //   this.type = "text";
-        // }}
       />
     </div>
   );

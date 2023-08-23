@@ -36,7 +36,7 @@ function SignUpPage(props) {
         <Input
           src="/images/calendar.png"
           alt="Calendar Icon"
-          type="Text"
+          type="Date"
           placeholder="Doğum Tarihiniz"
         />
         <div className="flex w-full justify-between items-center  mt-6">
