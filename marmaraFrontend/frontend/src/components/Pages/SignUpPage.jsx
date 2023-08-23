@@ -1,25 +1,14 @@
 import React from "react";
-import SwitchPageButton from "./SwitchPageButton";
-import ProgressBar from "./ProgressBar/ProgressBar";
-import Input from "./Input";
-import IntroText from "./IntroText";
-import Button from "./Button";
-import CustomLink from "./CustomLink";
+import Input from "../Input";
+import IntroText from "../Utilities/IntroText";
+import RouterButton from "../RouterButton";
+import CustomLink from "../CustomLink";
+import { Link } from "react-router-dom";
 
-function SignUpPage(props) {
-  const { switchPage, switchStyles } = props;
-
-  const progressBar = {
-    width: "w-52",
-    firstCircle: "✓",
-    secondCircle: "2",
-    thirdCircle: "3",
-  };
-
+function SignUpPage() {
   return (
-    <div className="w-screen h-screen flex justify-center">
+    <div className="w-full h-full flex justify-center">
       <div>
-        <ProgressBar properties={progressBar} />
         <IntroText mainText="Hoş geldiniz" fadedText="Marmara kayıp eşya ağı" />
         <Input
           src="/images/id-card.png"
@@ -40,11 +29,13 @@ function SignUpPage(props) {
           placeholder="Doğum Tarihiniz"
         />
         <div className="flex w-full justify-between items-center  mt-6">
-          <CustomLink text="Giriş Yap" />
+          <Link to="/signin">
+            <CustomLink text="Giriş Yap" />
+          </Link>
           <CustomLink text="Bu bilgileri neden istiyoruz?" />
         </div>
-        <div className="w-full flex justify-center items-center mt-20">
-          <Button text="Kayıt Ol" />
+        <div className="absolute bottom-12 left-0 right-0 w-full flex justify-center items-center mt-20">
+          <RouterButton to="/createprofile" text="Kayıt Ol" />
         </div>
       </div>
     </div>
