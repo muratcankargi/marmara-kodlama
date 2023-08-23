@@ -1,5 +1,6 @@
 import React from "react";
 
+// Bu component büyük ihtimal silinecek ve RoutesButton'a bağlanacak
 function CustomLink(props) {
   const styles = {
     width: "8rem",
