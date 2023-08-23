@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import LandingPage from "./LandingPage";
 import SignInPage from "./SignInPage";
 import CreateProfilePage from "./CreateProfilePage";
+import SignUpPage from "./SignUpPage";
 
 // Bu component sadece scroll üzerine çalışıyor style lar ayrı yarattığım page ler üzerinde verilecek
 function HorizontalScrollContainer() {
@@ -22,11 +23,12 @@ function HorizontalScrollContainer() {
   // Width'imiz 300vw, 3 tane 100vw lik sayfamız var.
   return (
     <div
-      className="w-[300vw] h-screen flex transition-all fixed top-0  "
+      className="w-[300vw] h-screen flex transition-all  bg-neutral  "
       style={switchTo}
     >
       <LandingPage switchPage={switchPage} switchStyles={styles} />
-      <SignInPage switchPage={switchPage} switchStyles={styles} />
+      {/* <SignInPage switchPage={switchPage} switchStyles={styles} /> */}
+      <SignUpPage switchPage={switchPage} switchStyles={styles} />
       <CreateProfilePage switchPage={switchPage} switchStyles={styles} />
     </div>
   );
