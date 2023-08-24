@@ -32,7 +32,7 @@ function App() {
       progressBarStyles.circles[2] = "3";
       break;
     case "/createprofile":
-      progressBarStyles.width = "w-72";
+      progressBarStyles.width = "w-64";
       progressBarStyles.circles[0] = "✓";
       progressBarStyles.circles[1] = "✓";
       progressBarStyles.circles[2] = "3";

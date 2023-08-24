@@ -20,7 +20,7 @@ function ProgressBar(props) {
         <ProgressBarCircle content={circles?.[1] ?? "2"} />
         <ProgressBarLineSpaceHolder />
         <ProgressBarCircle content={circles?.[2] ?? "3"} />
-        <ProgressBarLine width="w-full" bgColor="bg-black" />
+        <ProgressBarLine width="w-[90%]" bgColor="bg-black" />
         <ProgressBarLine width={width ?? "w-20"} bgColor="bg-primary-200" />
       </div>
     </div>
