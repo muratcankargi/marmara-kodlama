@@ -14,7 +14,7 @@ function SignUpPage() {
   });
 
   const handleSignUp = async () => {
-    const response = await axios.post("http://localhost:8000/", {
+    const response = await axios.post("http://localhost:8000/api/isStudent", {
       TCKimlikNo: userInfo.personalId,
       BabaAdi: userInfo.fatherName,
       DogumTarihi: userInfo.birthDate,
