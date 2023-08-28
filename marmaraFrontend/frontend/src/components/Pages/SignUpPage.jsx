@@ -3,7 +3,7 @@ import Input from "../Input";
 import IntroText from "../Utilities/IntroText";
 import RouterButton from "../RouterButton";
 import CustomLink from "../CustomLink";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import CenteredContainer from "../Utilities/CenteredContainer";
 import axios from "axios";
 function SignUpPage() {
@@ -13,14 +13,27 @@ function SignUpPage() {
     birthDate: "",
   });
 
-  const handleSignUp = async () => {
-    const response = await axios.post("http://localhost:8000/api/isStudent", {
-      TCKimlikNo: userInfo.personalId,
-      BabaAdi: userInfo.fatherName,
-      DogumTarihi: userInfo.birthDate,
-    });
+  const navigate = useNavigate();
 
-    console.log(response.data);
+  // İnputların dolulğu falan kontrol edilecek
+  const handleSignUp = async () => {
+    try {
+      const response = await axios.post("http://localhost:8000/api/isStudent", {
+        TCKimlikNo: userInfo.personalId,
+        BabaAdi: userInfo.fatherName,
+        DogumTarihi: userInfo.birthDate,
+      });
+
+      console.log(response.data);
+
+      if (response.data !== "") {
+        navigate("/createprofile");
+      } else {
+        console.log("error redirecting");
+      }
+    } catch (error) {
+      // console.log("Error: ", error);
+    }
   };
 
   return (
@@ -57,11 +70,7 @@ function SignUpPage() {
         <CustomLink text="Bu bilgileri neden istiyoruz?" />
       </div>
       <div className="absolute bottom-12 left-0 right-0 w-full flex justify-center items-center ">
-        <RouterButton
-          onClickFunction={handleSignUp}
-          to="/createprofile"
-          text="Kayıt Ol"
-        />
+        <RouterButton onClickFunction={handleSignUp} to={""} text="Kayıt Ol" />
       </div>
     </CenteredContainer>
   );
