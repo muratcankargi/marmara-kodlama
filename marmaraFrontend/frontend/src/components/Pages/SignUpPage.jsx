@@ -16,69 +16,90 @@ function SignUpPage() {
 
   const navigate = useNavigate();
 
-  // İnputların dolulğu falan kontrol edilecek
-  const handleSignUp = async () => {
-    try {
-      const response = await axios.post("http://localhost:8000/api/isStudent", {
-        TCKimlikNo: userInfo.personalId,
-        BabaAdi: userInfo.fatherName,
-        DogumTarihi: userInfo.birthDate,
-      });
+  // Burası notification gönderecek
+  const checkInputs = () => {
+    const { personalId, fatherName, birthDate } = userInfo;
 
-      console.log(response.data);
-
-      if (response.data !== "") {
-        navigate("/createprofile");
-      } else {
-        console.log("error redirecting");
-      }
-    } catch (error) {
-      // console.log("Error: ", error);
+    if (!personalId.length) {
+      console.log("Lütfen TC Kimlik numaranızı giriniz.");
+      return false;
     }
 
-    return (
-      <CenteredContainer>
-        <IntroText mainText="Hoş geldiniz" fadedText="Marmara kayıp eşya ağı" />
-        <Input
-          setState={setUserInfo}
-          about="personalId"
-          src="/images/id-card.png"
-          alt="Id Card icon"
-          type="Number"
-          placeholder="T.C. Kimlik No"
-        />
-        <Input
-          setState={setUserInfo}
-          about="fatherName"
-          src="/images/user.png"
-          alt="User Icon"
-          type="Text"
-          placeholder="Baba Adı"
-        />
-        <Input
-          setState={setUserInfo}
-          about="birthDate"
-          src="/images/calendar.png"
-          alt="Calendar Icon"
-          type="Date"
-          placeholder="Doğum Tarihiniz"
-        />
-        <div className="flex w-full justify-between items-center mt-6">
-          <Link to="/signin">
-            <CustomLink text="Giriş Yap" />
-          </Link>
-          <CustomLink text="Bu bilgileri neden istiyoruz?" />
-        </div>
-        <div className="absolute bottom-12 left-0 right-0 w-full flex justify-center items-center ">
-          <RouterButton
-            onClickFunction={handleSignUp}
-            to={""}
-            text="Kayıt Ol"
-          />
-        </div>
-      </CenteredContainer>
-    );
+    if (!fatherName.length) {
+      console.log("Lütfen Baba adınızı giriniz.");
+      return false;
+    }
+
+    if (!birthDate.length) {
+      console.log("Lütfen doğum tarihinizi giriniz.");
+      return false;
+    }
+
+    return true;
   };
+
+  const handleSignUp = async () => {
+    if (checkInputs()) {
+      try {
+        const response = await axios.post(
+          "http://localhost:8000/api/isStudent",
+          {
+            TCKimlikNo: userInfo.personalId,
+            BabaAdi: userInfo.fatherName,
+            DogumTarihi: userInfo.birthDate,
+          }
+        );
+
+        // Gelen blgiler doğruysa devam değilse olduğu yerde kalıyor
+        if (response.data) {
+          navigate("/createprofile");
+        } else {
+          navigate("/signup");
+        }
+      } catch (error) {
+        console.log("Error: ", error);
+      }
+    }
+  };
+
+  return (
+    <CenteredContainer>
+      <IntroText mainText="Hoş geldiniz" fadedText="Marmara kayıp eşya ağı" />
+      <Input
+        setState={setUserInfo}
+        about="personalId"
+        src="/images/id-card.png"
+        alt="Id Card icon"
+        type="Number"
+        placeholder="T.C. Kimlik No"
+      />
+      <Input
+        setState={setUserInfo}
+        about="fatherName"
+        src="/images/user.png"
+        alt="User Icon"
+        type="Text"
+        placeholder="Baba Adı"
+      />
+      <Input
+        setState={setUserInfo}
+        about="birthDate"
+        src="/images/calendar.png"
+        alt="Calendar Icon"
+        type="Date"
+        placeholder="Doğum Tarihiniz"
+      />
+      <div className="flex w-full justify-between items-center mt-6">
+        <Link to="/signin">
+          <CustomLink text="Giriş Yap" />
+        </Link>
+        <CustomLink text="Bu bilgileri neden istiyoruz?" />
+      </div>
+      <div className="absolute bottom-12 left-0 right-0 w-full flex justify-center items-center ">
+        <RouterButton onClickFunction={handleSignUp} text="Kayıt Ol" />
+      </div>
+    </CenteredContainer>
+  );
 }
 
 export default SignUpPage;
