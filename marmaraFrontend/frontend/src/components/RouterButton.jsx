@@ -2,7 +2,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 function RouterButton(props) {
-  const { to, text, onClickFunction } = props;
+  // to ya bir değer atamazsak default olarak "" alıyor
+  const { to = "", text, onClickFunction } = props;
 
   const handleClick = () => {
     if (onClickFunction) {

@@ -3,9 +3,10 @@ import Input from "../Input";
 import IntroText from "../Utilities/IntroText";
 import RouterButton from "../RouterButton";
 import CustomLink from "../CustomLink";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import CenteredContainer from "../Utilities/CenteredContainer";
 import axios from "axios";
+
 function SignUpPage() {
   const [userInfo, setUserInfo] = useState({
     personalId: "",
@@ -13,14 +14,52 @@ function SignUpPage() {
     birthDate: "",
   });
 
-  const handleSignUp = async () => {
-    const response = await axios.post("http://localhost:8000/api/isStudent", {
-      TCKimlikNo: userInfo.personalId,
-      BabaAdi: userInfo.fatherName,
-      DogumTarihi: userInfo.birthDate,
-    });
+  const navigate = useNavigate();
 
-    console.log(response.data);
+  // Burası notification gönderecek
+  const checkInputs = () => {
+    const { personalId, fatherName, birthDate } = userInfo;
+
+    if (!personalId.length) {
+      console.log("Lütfen TC Kimlik numaranızı giriniz.");
+      return false;
+    }
+
+    if (!fatherName.length) {
+      console.log("Lütfen Baba adınızı giriniz.");
+      return false;
+    }
+
+    if (!birthDate.length) {
+      console.log("Lütfen doğum tarihinizi giriniz.");
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleSignUp = async () => {
+    if (checkInputs()) {
+      try {
+        const response = await axios.post(
+          "http://localhost:8000/api/isStudent",
+          {
+            TCKimlikNo: userInfo.personalId,
+            BabaAdi: userInfo.fatherName,
+            DogumTarihi: userInfo.birthDate,
+          }
+        );
+
+        // Gelen blgiler doğruysa devam değilse olduğu yerde kalıyor
+        if (response.data) {
+          navigate("/createprofile");
+        } else {
+          navigate("/signup");
+        }
+      } catch (error) {
+        console.log("Error: ", error);
+      }
+    }
   };
 
   return (
@@ -57,11 +96,7 @@ function SignUpPage() {
         <CustomLink text="Bu bilgileri neden istiyoruz?" />
       </div>
       <div className="absolute bottom-12 left-0 right-0 w-full flex justify-center items-center ">
-        <RouterButton
-          onClickFunction={handleSignUp}
-          to="/createprofile"
-          text="Kayıt Ol"
-        />
+        <RouterButton onClickFunction={handleSignUp} text="Kayıt Ol" />
       </div>
     </CenteredContainer>
   );
