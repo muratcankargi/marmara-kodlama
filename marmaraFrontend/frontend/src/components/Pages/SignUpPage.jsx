@@ -48,8 +48,9 @@ function SignUpPage() {
             BabaAdi: userInfo.fatherName,
             DogumTarihi: userInfo.birthDate,
           }
+        
         );
-
+          console.log(response.data);
         // Gelen blgiler doğruysa devam değilse olduğu yerde kalıyor
         if (response.data) {
           navigate("/createprofile");
@@ -57,7 +58,7 @@ function SignUpPage() {
           navigate("/signup");
         }
       } catch (error) {
-        console.log("Error: ", error);
+        console.log("Error: ", error.message);
       }
     }
   };
