@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Input from "../Input";
 import IntroText from "../Utilities/IntroText";
 import CustomLink from "../CustomLink";
@@ -7,6 +7,11 @@ import { Link } from "react-router-dom";
 import CenteredContainer from "../Utilities/CenteredContainer";
 
 function SignInPage() {
+  const [userInfo, setUserInfo] = useState({
+    email: "",
+    password: "",
+  });
+
   return (
     <CenteredContainer>
       <IntroText
@@ -14,12 +19,16 @@ function SignInPage() {
         fadedText="Marmara kayıp eşya ağı"
       />
       <Input
+        setState={setUserInfo}
+        about="email"
         src="/images/mailIcon.png"
         alt="Mail Icon"
         type="Email"
         placeholder="Email"
       />
       <Input
+        setState={setUserInfo}
+        about="password"
         src="/images/lock.png"
         alt="Password Icon"
         type="Password"

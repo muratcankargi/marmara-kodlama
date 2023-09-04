@@ -6,6 +6,7 @@ import CustomLink from "../CustomLink";
 import { Link, useNavigate } from "react-router-dom";
 import CenteredContainer from "../Utilities/CenteredContainer";
 import axios from "axios";
+import swal from "@sweetalert/with-react";
 
 function SignUpPage() {
   const [userInfo, setUserInfo] = useState({
@@ -21,17 +22,33 @@ function SignUpPage() {
     const { personalId, fatherName, birthDate } = userInfo;
 
     if (!personalId.length) {
-      console.log("Lütfen TC Kimlik numaranızı giriniz.");
+      swal({
+        title: "Başarısız İşlem",
+        text: "Lütfen T.C. kimlik numaranızı doğru giriniz!",
+        icon: "error",
+        button: "Tamam",
+      });
       return false;
     }
 
     if (!fatherName.length) {
-      console.log("Lütfen Baba adınızı giriniz.");
+      swal({
+        title: "Başarısız İşlem",
+        text: "Lütfen baba adınızı doğru giriniz!",
+        icon: "error",
+        button: "Tamam",
+      });
       return false;
     }
 
     if (!birthDate.length) {
-      console.log("Lütfen doğum tarihinizi giriniz.");
+      swal({
+        title: "Başarısız İşlem",
+        text: "Lütfen doğum tarihinizi doğru giriniz!",
+        icon: "error",
+        button: "Tamam",
+      });
+
       return false;
     }
 
@@ -52,9 +69,18 @@ function SignUpPage() {
 
         // Gelen blgiler doğruysa devam değilse olduğu yerde kalıyor
         if (response.data) {
+          swal({
+            title: "Bilgileriniz Doğrulandı!",
+            icon: "success",
+            button: "Tamam",
+          });
           navigate("/createprofile");
         } else {
-          navigate("/signup");
+          swal({
+            title: "Bilgileriniz Doğrulanamadı",
+            icon: "error",
+            button: "Tamam",
+          });
         }
       } catch (error) {
         console.log("Error: ", error);
