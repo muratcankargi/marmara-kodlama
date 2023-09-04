@@ -3,7 +3,7 @@ import React from "react";
 function ProgressBarLine(props) {
   return (
     <div
-      className={`transition-all duration-700 absolute left-5 ${props.width} h-2 ${props.bgColor}`}
+      className={`transition-all rounded-md duration-700 absolute left-5 ${props.width} h-2 ${props.bgColor}`}
     ></div>
   );
 }
