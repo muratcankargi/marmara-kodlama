@@ -66,7 +66,7 @@ function SignUpPage() {
             DogumTarihi: userInfo.birthDate,
           }
         );
-
+        console.log(response.data);
         // Gelen blgiler doğruysa devam değilse olduğu yerde kalıyor
         if (response.data) {
           swal({
@@ -83,7 +83,7 @@ function SignUpPage() {
           });
         }
       } catch (error) {
-        console.log("Error: ", error);
+        console.log("Error: ", error.message);
       }
     }
   };
