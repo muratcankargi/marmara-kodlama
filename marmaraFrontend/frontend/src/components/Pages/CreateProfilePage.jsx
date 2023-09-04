@@ -40,10 +40,8 @@ function CreateProfilePage(props) {
     return true;
   };
 
-
-  const handleSave  = async () => {
+  const handleSave = async () => {
     if (checkInputs()) {
-     
       try {
         const response = await axios.post(
           //"http://localhost:8000/api/isStudent", DOĞRU METOD DEĞİL
@@ -51,11 +49,10 @@ function CreateProfilePage(props) {
           {
             email: userInfo.email,
             password: userInfo.password,
-           // passwordRepeat: userInfo.passwordRepeat,
+            // passwordRepeat: userInfo.passwordRepeat,
           }
-        
         );
-          console.log(response.data);
+        console.log(response.data);
         // Gelen blgiler doğruysa devam değilse olduğu yerde kalıyor
         if (response.data) {
           //navigate("/createprofile");
@@ -65,7 +62,6 @@ function CreateProfilePage(props) {
           //navigate("/signup")
           // sayfayı yenile
           window.location.reload();
-
         }
       } catch (error) {
         console.log("Error: ", error.message);
@@ -73,51 +69,44 @@ function CreateProfilePage(props) {
     }
   };
 
-
   return (
     <CenteredContainer>
-       
-     
       <div className="mt-7 flex-col flex items-center justify-center ">
-      <div className="w-24 h-24 rounded-full border bg-primary-100 flex  items-center justify-center ">
-      <img src="/images/camera.png" className="w-12 h-12 mx-auto"></img> 
-      </div>
-      <p className="">Fotoğraf yükle</p>
+        <div className="w-24 h-24 rounded-full border bg-primary-100 flex  items-center justify-center ">
+          <img src="/images/camera.png" className="w-12 h-12 mx-auto"></img>
+        </div>
+        <p className="">Fotoğraf yükle</p>
       </div>
       <div>
-      
-       <Input
-        setState={setUserInfo}
-        about="email"
-        src="/images/email.png"
-        alt="User Icon"
-        type="Email"
-        placeholder="Email"
-      />
-      <Input
-        setState={setUserInfo}
-        about="password"
-        src="/images/Key.png"
-        alt="Calendar Icon"
-        type="Password"
-        placeholder="Sifre"
-      />
-       <Input
-        setState={setUserInfo}
-        about="passwordRepeat"
-        src="/images/Key.png"
-        alt="Calendar Icon"
-        type="Password"
-        placeholder="Sifre Yeniden"
-      />
-      <div  className="absolute bottom-16 left-0 right-0 w-full flex justify-center items-center ">
-      <RouterButton onClickFunction={handleSave} text="Kaydet" />
+        <Input
+          setState={setUserInfo}
+          about="email"
+          src="/images/email.png"
+          alt="User Icon"
+          type="Email"
+          placeholder="Email"
+        />
+        <Input
+          setState={setUserInfo}
+          about="password"
+          src="/images/Key.png"
+          alt="Calendar Icon"
+          type="Password"
+          placeholder="Sifre"
+        />
+        <Input
+          setState={setUserInfo}
+          about="passwordRepeat"
+          src="/images/Key.png"
+          alt="Calendar Icon"
+          type="Password"
+          placeholder="Sifre Yeniden"
+        />
+        <div className="absolute bottom-16 left-0 right-0 w-full flex justify-center items-center ">
+          <RouterButton onClickFunction={handleSave} text="Kaydet" />
+        </div>
       </div>
-     
-      </div>   
-
-      </CenteredContainer>
-   
+    </CenteredContainer>
   );
 }
 

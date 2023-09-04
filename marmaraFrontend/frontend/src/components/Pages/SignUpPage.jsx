@@ -48,9 +48,8 @@ function SignUpPage() {
             BabaAdi: userInfo.fatherName,
             DogumTarihi: userInfo.birthDate,
           }
-        
         );
-          console.log(response.data);
+        console.log(response.data);
         // Gelen blgiler doğruysa devam değilse olduğu yerde kalıyor
         if (response.data) {
           navigate("/createprofile");
