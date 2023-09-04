@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Mockery\Exception;
 
 class User extends Controller
 {
@@ -15,30 +16,31 @@ class User extends Controller
         $fatherName = $data['BabaAdi'];
         $birthDate = $data['DogumTarihi'];
 
-        $formatControl=preg_match('/^\d{4}-\d{2}-\d{2}$/', $birthDate);
+        $formatControl = preg_match('/^\d{4}-\d{2}-\d{2}$/', $birthDate);
 
         if ($personalId != "" && $fatherName != "" && $formatControl) {
+            try {
+                $response = $this->doCurl(json_encode($data), 'POST');
 
-            $response = $this->doCurl(json_encode($data),'POST');
+                if ($response->OgrenciNo) {
 
-            if ($response->OgrenciNo) {
+                    return ['name' => $response->Ad, 'surname' => $response->Soyad, 'studentNumber' => $response->OgrenciNo];
 
-                return ['name' => $response->Ad, 'surname' => $response->Soyad, 'studentNumber' => $response->OgrenciNo];
+                } else {
 
-            } else {
+                    return "false";
 
+                }
+            } catch (\Exception $e) {
                 return "false";
-
             }
-        }
-        else{
+        } else {
             return "false";
         }
 
-
     }
 
-    public function doCurl($data,$request)
+    public function doCurl($data, $request)
     {
         $curl = curl_init();
         curl_setopt_array($curl, array(
