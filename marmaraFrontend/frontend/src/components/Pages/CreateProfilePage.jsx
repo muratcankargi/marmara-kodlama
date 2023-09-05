@@ -4,36 +4,63 @@ import { useState } from "react";
 import RouterButton from "../RouterButton";
 import CenteredContainer from "../Utilities/CenteredContainer";
 import axios from "axios";
+import swal from "@sweetalert/with-react";
+import { useLocation } from "react-router-dom";
+import ShowPassword from "../Utilities/ShowPassword";
+import FadedText from "../Utilities/FadedText";
+
 //fotoğraf yükleme kısmı yapılacak
-function CreateProfilePage(props) {
+function CreateProfilePage() {
+  const { studentInfo } = useLocation();
+
+  // Direkt olarak createProfile sayfasını açtığımızda bu bilgiler gelmediği için default
+  // olarak undefined atadım
   const [userInfo, setUserInfo] = useState({
-    //firstName: "",
-    //lastName: "", datayı çekince de alabiliriz şimdi de tutabiliriz
+    studentName: studentInfo?.studentName || "undefined",
+    studentSurname: studentInfo?.studentSurname || "undefined",
+    studentNumber: studentInfo?.studentNumber || "undefined",
     email: "",
     password: "",
     passwordRepeat: "",
   });
-  console.log(userInfo);
+
+  const [inputType, setInputType] = useState("password");
 
   const checkInputs = () => {
     const { email, password, passwordRepeat } = userInfo;
 
     if (!email.length || !email.includes("@")) {
-      console.log("Lütfen geçerli bir email giriniz.");
+      swal({
+        title: "Lütfen geçerli bir e-posta giriniz.",
+        icon: "error",
+        button: "Tamam",
+      });
       return false;
     }
 
     if (!password.length) {
-      console.log("Lütfen şifrenizi giriniz.");
+      swal({
+        title: "Lütfen geçerli bir şifre giriniz.",
+        icon: "error",
+        button: "Tamam",
+      });
       return false;
     }
 
     if (!passwordRepeat.length) {
-      console.log("Lütfen şifrenizi tekrar giriniz.");
+      swal({
+        title: "Lütfen şifre tekrar bölümünü boş bırakmayınız.",
+        icon: "error",
+        button: "Tamam",
+      });
       return false;
     }
     if (passwordRepeat !== password) {
-      console.log("şifreler uyuşmuyor.");
+      swal({
+        title: "Şifreler uyuşmuyor.",
+        icon: "error",
+        button: "Tamam",
+      });
       return false;
     }
 
@@ -69,42 +96,73 @@ function CreateProfilePage(props) {
     }
   };
 
+  const handleFileChange = (e) => {
+    console.log(e.target.files[0]);
+    // bu şekilde fotoğrafı alıyoruz ama kaydetmemiz lazım
+    if (e.target.files[0]) {
+      swal({
+        title: "Fotoğrafınız başarıyla yüklendi.",
+        icon: "success",
+        button: "Tamam",
+      });
+    }
+  };
+
   return (
     <CenteredContainer>
-      <div className="mt-7 flex-col flex items-center justify-center ">
+      <div className="mt-14 flex-col flex items-center justify-center ">
         <div className="w-24 h-24 rounded-full border bg-primary-100 flex  items-center justify-center ">
-          <img src="/images/camera.png" className="w-12 h-12 mx-auto"></img>
+          <img
+            src="/images/camera.png"
+            className="w-12 h-12 mx-auto"
+            alt="Camera Icon"
+          ></img>
         </div>
-        <p className="">Fotoğraf yükle</p>
-      </div>
-      <div>
-        <Input
-          setState={setUserInfo}
-          about="email"
-          src="/images/email.png"
-          alt="User Icon"
-          type="Email"
-          placeholder="Email"
+        <label className="pt-3" htmlFor="fileInput">
+          Fotoğraf Yükle
+        </label>
+        <input
+          type="file"
+          placeholder="Fotoğraf Yükle"
+          accept=".png, .jpg, .jpeg"
+          className="absolute top-[-99999px]"
+          // input un default ayarları güzel gözükmediği için ekranda göstermiyoruz
+          id="fileInput"
+          onChange={handleFileChange}
         />
+      </div>
+      <Input
+        setState={setUserInfo}
+        about="email"
+        src="/images/mailIcon.png"
+        alt="User Icon"
+        type="Email"
+        placeholder="Email"
+      />
+      <div className="relative">
         <Input
           setState={setUserInfo}
           about="password"
-          src="/images/Key.png"
-          alt="Calendar Icon"
-          type="Password"
-          placeholder="Sifre"
+          src="/images/lock.png"
+          alt="Lock Icon"
+          type={inputType}
+          placeholder="Şifre"
         />
-        <Input
-          setState={setUserInfo}
-          about="passwordRepeat"
-          src="/images/Key.png"
-          alt="Calendar Icon"
-          type="Password"
-          placeholder="Sifre Yeniden"
-        />
-        <div className="absolute bottom-16 left-0 right-0 w-full flex justify-center items-center ">
-          <RouterButton onClickFunction={handleSave} text="Kaydet" />
-        </div>
+        <ShowPassword setInputType={setInputType} />
+      </div>
+      <Input
+        setState={setUserInfo}
+        about="passwordRepeat"
+        src="/images/lock.png"
+        alt="Lock Icon"
+        type={inputType}
+        placeholder="Şifre Yeniden"
+      />
+      {/* <div className="pt-12 text-sm"> questionmark componenti kullanalım
+        <FadedText text="*Bu bilgiler siteye giriş yapılırken kullanılacaktır." />
+      </div> */}
+      <div className="absolute bottom-16 left-0 right-0 w-full flex justify-center items-center ">
+        <RouterButton onClickFunction={handleSave} text="Kaydet" />
       </div>
     </CenteredContainer>
   );

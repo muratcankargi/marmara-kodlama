@@ -17,7 +17,6 @@ function SignUpPage() {
 
   const navigate = useNavigate();
 
-  // Burası notification gönderecek
   const checkInputs = () => {
     const { personalId, fatherName, birthDate } = userInfo;
 
@@ -66,7 +65,7 @@ function SignUpPage() {
             DogumTarihi: userInfo.birthDate,
           }
         );
-        console.log(response.data);
+
         // Gelen blgiler doğruysa devam değilse olduğu yerde kalıyor
         if (response.data) {
           swal({
@@ -74,7 +73,13 @@ function SignUpPage() {
             icon: "success",
             button: "Tamam",
           });
-          navigate("/createprofile");
+          navigate("/createprofile", {
+            studentInfo: {
+              studentName: response.data.name,
+              studentSurname: response.data.surname,
+              studentNumber: response.data.studentNumber,
+            },
+          });
         } else {
           swal({
             title: "Bilgileriniz Doğrulanamadı",

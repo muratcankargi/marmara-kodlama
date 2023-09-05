@@ -5,12 +5,15 @@ import CustomLink from "../CustomLink";
 import RouterButton from "../RouterButton";
 import { Link } from "react-router-dom";
 import CenteredContainer from "../Utilities/CenteredContainer";
+import ShowPassword from "../Utilities/ShowPassword";
 
 function SignInPage() {
   const [userInfo, setUserInfo] = useState({
     email: "",
     password: "",
   });
+
+  const [inputType, setInputType] = useState("password");
 
   return (
     <CenteredContainer>
@@ -26,14 +29,17 @@ function SignInPage() {
         type="Email"
         placeholder="Email"
       />
-      <Input
-        setState={setUserInfo}
-        about="password"
-        src="/images/lock.png"
-        alt="Password Icon"
-        type="Password"
-        placeholder="Şifre"
-      />
+      <div className="relative">
+        <Input
+          setState={setUserInfo}
+          about="password"
+          src="/images/lock.png"
+          alt="Password Icon"
+          type={inputType}
+          placeholder="Şifre"
+        />
+        <ShowPassword setInputType={setInputType} />
+      </div>
       <div className="flex w-full justify-between items-center mt-6">
         <Link to="/signup">
           <CustomLink text="Kayıt Ol" />

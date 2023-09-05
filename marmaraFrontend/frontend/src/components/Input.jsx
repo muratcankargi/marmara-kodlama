@@ -18,7 +18,7 @@ function Input(props) {
       <img className="w-6 h-6" src={props.src} alt={props.alt} />
       <input
         onChange={handleOnChange}
-        className="pl-2 outline-0 border-0"
+        className="pl-2 w-3/4 outline-0 border-0"
         style={props.type === "Date" ? styles : {}}
         type={props.type}
         placeholder={props.placeholder}
