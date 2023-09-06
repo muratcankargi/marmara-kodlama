@@ -1,15 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import LandingPage from "./Pages/LandingPage";
 import SignInPage from "./Pages/SignInPage";
 import CreateProfilePage from "./Pages/CreateProfilePage";
 import SignUpPage from "./Pages/SignUpPage";
 import ProgressBar from "./ProgressBar/ProgressBar";
+import ProtectedRoute from "./ProtectedRoute";
 import { Route, Routes, useLocation } from "react-router-dom";
 
 // Routes'ları açıklayan video https://www.youtube.com/watch?v=SLfhMt5OUPI
 function App() {
   // Progressbar'ın style'ını hangi sayfada olduğumuza göre değiştiriyoruz
   const { pathname } = useLocation();
+
+  //normalde burda bi token doğrulaması olacak
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    localStorage?.getItem("auth") || false
+  );
 
   // Default styles
   let progressBarStyles = {
@@ -41,6 +47,9 @@ function App() {
       break;
   }
 
+  // Ayrıca giriş yapmışsa signin ve signup sayfalarını görmemeli
+  // Veya zaten kayıtolmuşsa o sayfayı atlamalıyız (signup butonuna basıldığında)
+  // veritabanından bakabiliriz
   return (
     <div className="w-screen bg-neutral">
       <ProgressBar properties={progressBarStyles} />
@@ -48,7 +57,17 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/signin" element={<SignInPage />} />
         <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/createprofile" element={<CreateProfilePage />} />
+        <Route
+          path="/createprofile"
+          element={
+            <ProtectedRoute
+              isAuthenticated={isAuthenticated}
+              navigateTo="/signup"
+            >
+              <CreateProfilePage />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </div>
   );
