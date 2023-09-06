@@ -1,17 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Input from "../Input";
-import { useState } from "react";
 import RouterButton from "../RouterButton";
 import CenteredContainer from "../Utilities/CenteredContainer";
-import axios from "axios";
-import swal from "@sweetalert/with-react";
-import { useLocation } from "react-router-dom";
+import swal from "sweetalert";
 import ShowPassword from "../Utilities/ShowPassword";
-import FadedText from "../Utilities/FadedText";
+import QuestionMark from "../Utilities/QuestionMark";
 
 //fotoğraf yükleme kısmı yapılacak
-function CreateProfilePage() {
-  const { studentInfo } = useLocation();
+function CreateProfilePage(props) {
+  const { studentInfo } = props;
+
+  const navigate = useNavigate();
 
   // Direkt olarak createProfile sayfasını açtığımızda bu bilgiler gelmediği için default
   // olarak undefined atadım
@@ -67,28 +67,26 @@ function CreateProfilePage() {
     return true;
   };
 
-  const handleSave = async () => {
+  const handleSave = () => {
     if (checkInputs()) {
       try {
-        const response = await axios.post(
-          //"http://localhost:8000/api/isStudent", DOĞRU METOD DEĞİL
-
-          {
-            email: userInfo.email,
-            password: userInfo.password,
-            // passwordRepeat: userInfo.passwordRepeat,
-          }
-        );
-        console.log(response.data);
-        // Gelen blgiler doğruysa devam değilse olduğu yerde kalıyor
+        const response = { data: true };
         if (response.data) {
-          //navigate("/createprofile");
-          //neereye gidecek
-          console.log("kayıt başarılı");
+          swal({
+            title: "Bilgileriniz Kaydedildi!",
+            icon: "success",
+            button: "Tamam",
+          });
+          navigate("/feed"); // burası ve else deki navigate neden çalışmıyor hiç
+          // bir fikrim yok
         } else {
-          //navigate("/signup")
-          // sayfayı yenile
-          window.location.reload();
+          swal({
+            title: "Başarısız işlem, lütfen daha sonra tekrar deneyin.",
+            icon: "error",
+            button: "Tamam",
+          });
+          localStorage.removeItem("auth");
+          navigate("/signup");
         }
       } catch (error) {
         console.log("Error: ", error.message);
@@ -158,9 +156,7 @@ function CreateProfilePage() {
         type={inputType}
         placeholder="Şifre Yeniden"
       />
-      {/* <div className="pt-12 text-sm"> questionmark componenti kullanalım
-        <FadedText text="*Bu bilgiler siteye giriş yapılırken kullanılacaktır." />
-      </div> */}
+      <QuestionMark />
       <div className="absolute bottom-16 left-0 right-0 w-full flex justify-center items-center ">
         <RouterButton onClickFunction={handleSave} text="Kaydet" />
       </div>

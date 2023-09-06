@@ -6,7 +6,7 @@ import CustomLink from "../CustomLink";
 import { Link, useNavigate } from "react-router-dom";
 import CenteredContainer from "../Utilities/CenteredContainer";
 import axios from "axios";
-import swal from "@sweetalert/with-react";
+import swal from "sweetalert";
 
 function SignUpPage(props) {
   const [userInfo, setUserInfo] = useState({
@@ -76,17 +76,14 @@ function SignUpPage(props) {
           //Kullanıcı giriş yaptığında server'dan bir adet
           // token isticez sonra bu tokenı localStorage'a kaydedicez
           props.setIsAuthenticated(true);
-          // anladığım kadarıyla sadece localstorage
-          // güncellemek isAuthenticated'i direkt olarak değiştirmiyor o yüzden
-          // bu şekilde de güncelliyoruz ama çok emin değilim
           localStorage.setItem("auth", "true");
-          navigate("/createprofile", {
-            studentInfo: {
-              studentName: response.data.name,
-              studentSurname: response.data.surname,
-              studentNumber: response.data.studentNumber,
-            },
+
+          props.setStudentInfo({
+            studentName: response.data.name,
+            studentSurname: response.data.surname,
+            studentNumber: response.data.studentNumber,
           });
+          navigate("/createprofile");
         } else {
           swal({
             title: "Bilgileriniz Doğrulanamadı",

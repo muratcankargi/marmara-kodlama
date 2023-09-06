@@ -5,6 +5,7 @@ import CreateProfilePage from "./Pages/CreateProfilePage";
 import SignUpPage from "./Pages/SignUpPage";
 import ProgressBar from "./ProgressBar/ProgressBar";
 import ProtectedRoute from "./ProtectedRoute";
+import Feed from "./Pages/Feed";
 import { Route, Routes, useLocation } from "react-router-dom";
 
 // Routes'ları açıklayan video https://www.youtube.com/watch?v=SLfhMt5OUPI
@@ -16,6 +17,8 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
     localStorage?.getItem("auth") || false
   );
+
+  const [studentInfo, setStudentInfo] = useState({});
 
   // Default styles
   let progressBarStyles = {
@@ -47,24 +50,60 @@ function App() {
       break;
   }
 
-  // Ayrıca giriş yapmışsa signin ve signup sayfalarını görmemeli
-  // Veya zaten kayıtolmuşsa o sayfayı atlamalıyız (signup butonuna basıldığında)
-  // veritabanından bakabiliriz
+  const mainPaths = ["/", "/signin", "/signup", "/createprofile"];
+
+  /*
+  <Route
+    path="/signin" | Bu adreste
+    element={
+      | Auth yapılmışsa signin'e dönmek mantıksız o yüzden feed'e yönlendiriyor
+      <ProtectedRoute isAuthenticated={!isAuthenticated} ifNot="/feed"> | Doğrulama durumuna göre "ifNot" adresine yönlendir
+        <SignInPage setIsAuthenticated={setIsAuthenticated} /> | Bu componenti göster
+      </ProtectedRoute>
+    }
+  />
+  */
+
   return (
+    // burada bi h-screen olmalı sanki
     <div className="w-screen bg-neutral">
-      <ProgressBar properties={progressBarStyles} />
+      {mainPaths.includes(pathname) && (
+        <ProgressBar properties={progressBarStyles} />
+      )}
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/signin" element={<SignInPage />} />
-        <Route path="/signup" element={<SignUpPage />} />
+        <Route
+          path="/signin"
+          element={
+            <ProtectedRoute isAuthenticated={!isAuthenticated} ifNot="/feed">
+              <SignInPage setIsAuthenticated={setIsAuthenticated} />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            <ProtectedRoute isAuthenticated={!isAuthenticated} ifNot="/feed">
+              <SignUpPage
+                setIsAuthenticated={setIsAuthenticated}
+                setStudentInfo={setStudentInfo}
+              />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/createprofile"
           element={
-            <ProtectedRoute
-              isAuthenticated={isAuthenticated}
-              navigateTo="/signup"
-            >
-              <CreateProfilePage />
+            <ProtectedRoute isAuthenticated={isAuthenticated} ifNot="/signin">
+              <CreateProfilePage studentInfo={studentInfo} />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/feed"
+          element={
+            <ProtectedRoute isAuthenticated={isAuthenticated} ifNot="/signin">
+              <Feed setIsAuthenticated={setIsAuthenticated} />
             </ProtectedRoute>
           }
         />
