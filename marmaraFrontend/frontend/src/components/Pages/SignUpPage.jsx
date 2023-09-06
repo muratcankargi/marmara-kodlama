@@ -8,7 +8,7 @@ import CenteredContainer from "../Utilities/CenteredContainer";
 import axios from "axios";
 import swal from "@sweetalert/with-react";
 
-function SignUpPage() {
+function SignUpPage(props) {
   const [userInfo, setUserInfo] = useState({
     personalId: "",
     fatherName: "",
@@ -73,6 +73,13 @@ function SignUpPage() {
             icon: "success",
             button: "Tamam",
           });
+          //Kullanıcı giriş yaptığında server'dan bir adet
+          // token isticez sonra bu tokenı localStorage'a kaydedicez
+          props.setIsAuthenticated(true);
+          // anladığım kadarıyla sadece localstorage
+          // güncellemek isAuthenticated'i direkt olarak değiştirmiyor o yüzden
+          // bu şekilde de güncelliyoruz ama çok emin değilim
+          localStorage.setItem("auth", "true");
           navigate("/createprofile", {
             studentInfo: {
               studentName: response.data.name,
