@@ -8,9 +8,7 @@ import ProtectedRoute from "./RouteRelated/ProtectedRoute";
 import Feed from "./Pages/Feed";
 import { Route, Routes, useLocation } from "react-router-dom";
 
-// Routes'ları açıklayan video https://www.youtube.com/watch?v=SLfhMt5OUPI
 function App() {
-  // Progressbar'ın style'ını hangi sayfada olduğumuza göre değiştiriyoruz
   const { pathname } = useLocation();
 
   //normalde burda bi token doğrulaması olacak
@@ -50,24 +48,11 @@ function App() {
       break;
   }
 
-  const mainPaths = ["/", "/signin", "/signup", "/createprofile"];
-
-  /*
-  <Route
-    path="/signin" | Bu adreste
-    element={
-      | Auth yapılmışsa signin'e dönmek mantıksız o yüzden feed'e yönlendiriyor
-      <ProtectedRoute isAuthenticated={!isAuthenticated} ifNot="/feed"> | Doğrulama durumuna göre "ifNot" adresine yönlendir
-        <SignInPage setIsAuthenticated={setIsAuthenticated} /> | Bu componenti göster
-      </ProtectedRoute>
-    }
-  />
-  */
+  const showProgressBar = ["/", "/signin", "/signup", "/createprofile"];
 
   return (
-    // burada bi h-screen olmalı sanki
     <div className="w-screen bg-neutral">
-      {mainPaths.includes(pathname) && (
+      {showProgressBar.includes(pathname) && (
         <ProgressBar properties={progressBarStyles} />
       )}
       <Routes>

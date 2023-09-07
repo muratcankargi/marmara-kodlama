@@ -1,32 +1,35 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Input from "../Utilities/Input";
 import IntroText from "../Utilities/IntroText";
 import CustomLink from "../RouteRelated/CustomLink";
 import Button from "../Utilities/Button";
-import { useNavigate } from "react-router-dom";
 import CenteredContainer from "../Utilities/CenteredContainer";
-import ShowPassword from "../Utilities/ShowPassword";
+import InputWithShowPassword from "../Utilities/InputWithShowPassword";
 
-function SignInPage() {
+function useUserInfo() {
   const [userInfo, setUserInfo] = useState({
     email: "",
     password: "",
   });
 
+  return [userInfo, setUserInfo];
+}
+
+function CustomLinkContainer() {
+  return (
+    <div className="flex w-full justify-between items-center mt-6">
+      <CustomLink to="/signup" text="Kayıt Ol" />
+      <CustomLink text="Şifremi Unuttum" />
+    </div>
+  );
+}
+
+function Inputs({ setUserInfo }) {
   const [inputType, setInputType] = useState("password");
 
-  const navigate = useNavigate();
-
-  const handleClick = () => {
-    navigate("/createprofile");
-  };
-
   return (
-    <CenteredContainer>
-      <IntroText
-        mainText="Tekrar hoş geldiniz"
-        fadedText="Marmara kayıp eşya ağı"
-      />
+    <>
       <Input
         setState={setUserInfo}
         about="email"
@@ -35,24 +38,41 @@ function SignInPage() {
         type="Email"
         placeholder="Email"
       />
-      <div className="relative">
-        <Input
-          setState={setUserInfo}
-          about="password"
-          src="/images/lock.png"
-          alt="Password Icon"
-          type={inputType}
-          placeholder="Şifre"
-        />
-        <ShowPassword setInputType={setInputType} />
-      </div>
-      <div className="flex w-full justify-between items-center mt-6">
-        <CustomLink to="/signup" text="Kayıt Ol" />
-        <CustomLink text="Şifremi Unuttum" />
-      </div>
-      <div className="absolute bottom-12 left-0 right-0  w-full flex justify-center items-center ">
-        <Button onClickFunction={handleClick} text="Giriş Yap" />
-      </div>
+      <InputWithShowPassword
+        setState={setUserInfo}
+        type={inputType}
+        setInputType={setInputType}
+      />
+    </>
+  );
+}
+
+function ButtonContainer() {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate("/");
+  };
+
+  return (
+    <div className="absolute bottom-12 left-0 right-0  w-full flex justify-center items-center ">
+      <Button onClickFunction={handleClick} text="Giriş Yap" />
+    </div>
+  );
+}
+
+function SignInPage() {
+  const [userInfo, setUserInfo] = useUserInfo();
+
+  return (
+    <CenteredContainer>
+      <IntroText
+        mainText="Tekrar hoş geldiniz"
+        fadedText="Marmara kayıp eşya ağı"
+      />
+      <Inputs setUserInfo={setUserInfo} />
+      <CustomLinkContainer />
+      <ButtonContainer />
     </CenteredContainer>
   );
 }

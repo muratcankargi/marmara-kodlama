@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-function ShowPassword(props) {
+function ShowPassword({ setInputType }) {
   // Eye kapalı mı açık mı diye kontrol ediyoruz default olarak false yani eye-closed geliyor.
   const [eye, setEye] = useState(false);
 
@@ -8,7 +8,7 @@ function ShowPassword(props) {
     setEye((prevValue) => {
       return !prevValue;
     });
-    props.setInputType((prevValue) => {
+    setInputType((prevValue) => {
       return prevValue === "password" ? "text" : "password";
     });
   };
