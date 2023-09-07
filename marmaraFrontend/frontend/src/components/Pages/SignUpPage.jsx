@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import Input from "../Input";
+import Input from "../Utilities/Input";
 import IntroText from "../Utilities/IntroText";
-import RouterButton from "../RouterButton";
-import CustomLink from "../CustomLink";
-import { Link, useNavigate } from "react-router-dom";
+import Button from "../Utilities/Button";
+import CustomLink from "../RouteRelated/CustomLink";
+import { useNavigate } from "react-router-dom";
 import CenteredContainer from "../Utilities/CenteredContainer";
 import axios from "axios";
-import swal from "@sweetalert/with-react";
+import swal from "sweetalert";
 
 function SignUpPage(props) {
   const [userInfo, setUserInfo] = useState({
@@ -76,17 +76,14 @@ function SignUpPage(props) {
           //Kullanıcı giriş yaptığında server'dan bir adet
           // token isticez sonra bu tokenı localStorage'a kaydedicez
           props.setIsAuthenticated(true);
-          // anladığım kadarıyla sadece localstorage
-          // güncellemek isAuthenticated'i direkt olarak değiştirmiyor o yüzden
-          // bu şekilde de güncelliyoruz ama çok emin değilim
           localStorage.setItem("auth", "true");
-          navigate("/createprofile", {
-            studentInfo: {
-              studentName: response.data.name,
-              studentSurname: response.data.surname,
-              studentNumber: response.data.studentNumber,
-            },
+
+          props.setStudentInfo({
+            studentName: response.data.name,
+            studentSurname: response.data.surname,
+            studentNumber: response.data.studentNumber,
           });
+          navigate("/createprofile");
         } else {
           swal({
             title: "Bilgileriniz Doğrulanamadı",
@@ -128,13 +125,11 @@ function SignUpPage(props) {
         placeholder="Doğum Tarihiniz"
       />
       <div className="flex w-full justify-between items-center mt-6">
-        <Link to="/signin">
-          <CustomLink text="Giriş Yap" />
-        </Link>
+        <CustomLink to="/signin" text="Giriş Yap" />
         <CustomLink text="Bu bilgileri neden istiyoruz?" />
       </div>
       <div className="absolute bottom-12 left-0 right-0 w-full flex justify-center items-center ">
-        <RouterButton onClickFunction={handleSignUp} text="Kayıt Ol" />
+        <Button onClickFunction={handleSignUp} text="Kayıt Ol" />
       </div>
     </CenteredContainer>
   );
