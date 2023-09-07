@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import Input from "../Input";
+import Input from "../Utilities/Input";
 import IntroText from "../Utilities/IntroText";
-import RouterButton from "../RouterButton";
-import CustomLink from "../CustomLink";
-import { Link, useNavigate } from "react-router-dom";
+import Button from "../Utilities/Button";
+import CustomLink from "../RouteRelated/CustomLink";
+import { useNavigate } from "react-router-dom";
 import CenteredContainer from "../Utilities/CenteredContainer";
 import axios from "axios";
 import swal from "sweetalert";
@@ -125,13 +125,11 @@ function SignUpPage(props) {
         placeholder="Doğum Tarihiniz"
       />
       <div className="flex w-full justify-between items-center mt-6">
-        <Link to="/signin">
-          <CustomLink text="Giriş Yap" />
-        </Link>
+        <CustomLink to="/signin" text="Giriş Yap" />
         <CustomLink text="Bu bilgileri neden istiyoruz?" />
       </div>
       <div className="absolute bottom-12 left-0 right-0 w-full flex justify-center items-center ">
-        <RouterButton onClickFunction={handleSignUp} text="Kayıt Ol" />
+        <Button onClickFunction={handleSignUp} text="Kayıt Ol" />
       </div>
     </CenteredContainer>
   );

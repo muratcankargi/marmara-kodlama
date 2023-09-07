@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Input from "../Input";
-import RouterButton from "../RouterButton";
+import Input from "../Utilities/Input";
+import Button from "../Utilities/Button";
 import CenteredContainer from "../Utilities/CenteredContainer";
 import swal from "sweetalert";
 import ShowPassword from "../Utilities/ShowPassword";
-import QuestionMark from "../Utilities/QuestionMark";
 
 //fotoğraf yükleme kısmı yapılacak
 function CreateProfilePage(props) {
@@ -77,8 +76,7 @@ function CreateProfilePage(props) {
             icon: "success",
             button: "Tamam",
           });
-          navigate("/feed"); // burası ve else deki navigate neden çalışmıyor hiç
-          // bir fikrim yok
+          navigate("/feed");
         } else {
           swal({
             title: "Başarısız işlem, lütfen daha sonra tekrar deneyin.",
@@ -156,9 +154,8 @@ function CreateProfilePage(props) {
         type={inputType}
         placeholder="Şifre Yeniden"
       />
-      <QuestionMark />
       <div className="absolute bottom-16 left-0 right-0 w-full flex justify-center items-center ">
-        <RouterButton onClickFunction={handleSave} text="Kaydet" />
+        <Button onClickFunction={handleSave} text="Kaydet" />
       </div>
     </CenteredContainer>
   );

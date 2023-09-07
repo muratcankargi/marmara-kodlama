@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import Input from "../Input";
+import Input from "../Utilities/Input";
 import IntroText from "../Utilities/IntroText";
-import CustomLink from "../CustomLink";
-import RouterButton from "../RouterButton";
-import { Link } from "react-router-dom";
+import CustomLink from "../RouteRelated/CustomLink";
+import Button from "../Utilities/Button";
+import { useNavigate } from "react-router-dom";
 import CenteredContainer from "../Utilities/CenteredContainer";
 import ShowPassword from "../Utilities/ShowPassword";
 
@@ -14,6 +14,12 @@ function SignInPage() {
   });
 
   const [inputType, setInputType] = useState("password");
+
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate("/createprofile");
+  };
 
   return (
     <CenteredContainer>
@@ -41,13 +47,11 @@ function SignInPage() {
         <ShowPassword setInputType={setInputType} />
       </div>
       <div className="flex w-full justify-between items-center mt-6">
-        <Link to="/signup">
-          <CustomLink text="Kayıt Ol" />
-        </Link>
+        <CustomLink to="/signup" text="Kayıt Ol" />
         <CustomLink text="Şifremi Unuttum" />
       </div>
       <div className="absolute bottom-12 left-0 right-0  w-full flex justify-center items-center ">
-        <RouterButton to="/createprofile" text="Giriş Yap" />
+        <Button onClickFunction={handleClick} text="Giriş Yap" />
       </div>
     </CenteredContainer>
   );

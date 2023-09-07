@@ -4,7 +4,7 @@ import SignInPage from "./Pages/SignInPage";
 import CreateProfilePage from "./Pages/CreateProfilePage";
 import SignUpPage from "./Pages/SignUpPage";
 import ProgressBar from "./ProgressBar/ProgressBar";
-import ProtectedRoute from "./ProtectedRoute";
+import ProtectedRoute from "./RouteRelated/ProtectedRoute";
 import Feed from "./Pages/Feed";
 import { Route, Routes, useLocation } from "react-router-dom";
 
