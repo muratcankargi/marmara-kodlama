@@ -6,7 +6,15 @@ import Waves from "../Utilities/Waves";
 import QuestionMark from "../Utilities/QuestionMark";
 import Button from "../Utilities/Button";
 
-function LandingPage() {
+function FadedTextContainer() {
+  return (
+    <div className="w-full flex items-center justify-center mt-12 font-medium">
+      <FadedText text="Eşya" />
+    </div>
+  );
+}
+
+function Buttons() {
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -14,15 +22,19 @@ function LandingPage() {
   };
 
   return (
+    <div className="w-full flex flex-col gap-4 mt-4 items-center  ">
+      <Button onClickFunction={handleClick} text={"kaybettim".toUpperCase()} />
+      <Button onClickFunction={handleClick} text={"buldum".toUpperCase()} />
+    </div>
+  );
+}
+
+function LandingPage() {
+  return (
     <div className="w-full h-full ">
       <Logo />
-      <div className="w-full flex items-center justify-center mt-12 font-medium">
-        <FadedText text="Eşya" />
-      </div>
-      <div className="w-full flex flex-col gap-4 mt-4 items-center  ">
-        <Button onClickFunction={handleClick} text="KAYBETTİM" />
-        <Button onClickFunction={handleClick} text="BULDUM" />
-      </div>
+      <FadedTextContainer />
+      <Buttons />
       <QuestionMark />
       <Waves />
     </div>
