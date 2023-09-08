@@ -1,20 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import swal from "sweetalert";
 import Input from "../Utilities/Input";
 import IntroText from "../Utilities/IntroText";
 import CustomLink from "../RouteRelated/CustomLink";
 import Button from "../Utilities/Button";
 import CenteredContainer from "../Utilities/CenteredContainer";
 import InputWithShowPassword from "../Utilities/InputWithShowPassword";
-
-function useUserInfo() {
-  const [userInfo, setUserInfo] = useState({
-    email: "",
-    password: "",
-  });
-
-  return [userInfo, setUserInfo];
-}
+import { useValidate } from "../CustomHooks/useValidate";
+import { useUserInfo } from "../CustomHooks/useUserInfo";
 
 function CustomLinkContainer() {
   return (
@@ -25,20 +19,22 @@ function CustomLinkContainer() {
   );
 }
 
-function Inputs({ setUserInfo }) {
+function Inputs({ setUserInfo, invalid }) {
   const [inputType, setInputType] = useState("password");
 
   return (
     <>
       <Input
+        invalid={invalid}
         setState={setUserInfo}
-        about="email"
+        inputName="email"
         src="/images/mailIcon.png"
         alt="Mail Icon"
         type="Email"
         placeholder="Email"
       />
       <InputWithShowPassword
+        invalid={invalid}
         setState={setUserInfo}
         type={inputType}
         setInputType={setInputType}
@@ -47,11 +43,23 @@ function Inputs({ setUserInfo }) {
   );
 }
 
-function ButtonContainer() {
+function ButtonContainer({ userInfo, validation, setIsAuthenticated }) {
   const navigate = useNavigate();
+  const { email, password } = userInfo;
+
+  const checkInputs = () => {
+    const { checkEmail } = validation;
+    return checkEmail(email);
+  };
 
   const handleClick = () => {
-    navigate("/");
+    if (checkInputs()) {
+      if (email === "user@gmail.com" && password === "123") {
+        setIsAuthenticated(true);
+        localStorage.setItem("auth", "true");
+        navigate("/feed");
+      }
+    }
   };
 
   return (
@@ -61,8 +69,13 @@ function ButtonContainer() {
   );
 }
 
-function SignInPage() {
-  const [userInfo, setUserInfo] = useUserInfo();
+function SignInPage({ setIsAuthenticated }) {
+  const [userInfo, setUserInfo] = useUserInfo({
+    email: "",
+    password: "",
+  });
+
+  const { invalid, validation } = useValidate();
 
   return (
     <CenteredContainer>
@@ -70,9 +83,13 @@ function SignInPage() {
         mainText="Tekrar hoş geldiniz"
         fadedText="Marmara kayıp eşya ağı"
       />
-      <Inputs setUserInfo={setUserInfo} />
+      <Inputs setUserInfo={setUserInfo} invalid={invalid} />
       <CustomLinkContainer />
-      <ButtonContainer />
+      <ButtonContainer
+        setIsAuthenticated={setIsAuthenticated}
+        userInfo={userInfo}
+        validation={validation}
+      />
     </CenteredContainer>
   );
 }

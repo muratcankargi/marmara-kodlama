@@ -17,6 +17,10 @@ function App() {
   );
 
   const [studentInfo, setStudentInfo] = useState({});
+  // Bu yaptığımız kayıt olurken yaptığımız
+  // request den gelen bilgiyi
+  // createprofile'a aktarıyor ama isim biraz sıkıntılı
+  // olmuş daha açıklayıcı yapalım.
 
   // Default styles
   let progressBarStyles = {

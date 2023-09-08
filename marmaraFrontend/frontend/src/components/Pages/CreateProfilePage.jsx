@@ -6,27 +6,16 @@ import Button from "../Utilities/Button";
 import CenteredContainer from "../Utilities/CenteredContainer";
 import InputWithShowPassword from "../Utilities/InputWithShowPassword";
 import AddPicture from "../Utilities/AddPicture";
+import { useValidate } from "../CustomHooks/useValidate";
+import { useUserInfo } from "../CustomHooks/useUserInfo";
 
-// Custom hook
-function useUserInfo(studentInfo) {
-  const [userInfo, setUserInfo] = useState({
-    studentName: studentInfo?.studentName || null,
-    studentSurname: studentInfo?.studentSurname || null,
-    studentNumber: studentInfo?.studentNumber || null,
-    email: "",
-    password: "",
-    passwordRepeat: "",
-  });
-
-  return [userInfo, setUserInfo];
-}
-
-function Inputs({ setUserInfo }) {
+function Inputs({ setUserInfo, invalid }) {
   const [inputType, setInputType] = useState("password");
 
   return (
     <>
       <Input
+        invalid={invalid}
         setState={setUserInfo}
         inputName="email"
         src="/images/mailIcon.png"
@@ -35,11 +24,13 @@ function Inputs({ setUserInfo }) {
         placeholder="Email"
       />
       <InputWithShowPassword
+        invalid={invalid}
         setState={setUserInfo}
         type={inputType}
         setInputType={setInputType}
       />
       <Input
+        invalid={invalid}
         setState={setUserInfo}
         inputName="passwordRepeat"
         src="/images/lock.png"
@@ -51,49 +42,18 @@ function Inputs({ setUserInfo }) {
   );
 }
 
-function ButtonContainer({ userInfo }) {
+function ButtonContainer({ userInfo, validation }) {
   const navigate = useNavigate();
+  const { email, password, passwordRepeat } = userInfo;
 
   const checkInputs = () => {
-    const { email, password, passwordRepeat } = userInfo;
+    const { checkEmail, checkPassword, checkPasswordRepeat } = validation;
 
-    if (!email.length || !email.includes("@")) {
-      swal({
-        title: "Lütfen geçerli bir e-posta giriniz.",
-        icon: "error",
-        button: "Tamam",
-      });
-      return false;
-    }
-
-    if (!password.length) {
-      swal({
-        title: "Lütfen geçerli bir şifre giriniz.",
-        icon: "error",
-        button: "Tamam",
-      });
-      return false;
-    }
-
-    if (!passwordRepeat.length) {
-      swal({
-        title: "Lütfen şifre tekrar bölümünü boş bırakmayınız.",
-        icon: "error",
-        button: "Tamam",
-      });
-      return false;
-    }
-
-    if (passwordRepeat !== password) {
-      swal({
-        title: "Şifreler uyuşmuyor.",
-        icon: "error",
-        button: "Tamam",
-      });
-      return false;
-    }
-
-    return true;
+    return (
+      checkEmail(email) &&
+      checkPassword(password) &&
+      checkPasswordRepeat(passwordRepeat, password)
+    );
   };
 
   const handleSave = () => {
@@ -106,7 +66,6 @@ function ButtonContainer({ userInfo }) {
             icon: "success",
             button: "Tamam",
           });
-          console.log(userInfo);
 
           navigate("/feed");
         } else {
@@ -133,13 +92,22 @@ function ButtonContainer({ userInfo }) {
 
 //fotoğraf yükleme kısmı yapılacak
 function CreateProfilePage({ studentInfo }) {
-  const [userInfo, setUserInfo] = useUserInfo(studentInfo);
+  const [userInfo, setUserInfo] = useUserInfo({
+    studentName: studentInfo?.studentName || null,
+    studentSurname: studentInfo?.studentSurname || null,
+    studentNumber: studentInfo?.studentNumber || null,
+    email: "",
+    password: "",
+    passwordRepeat: "",
+  });
+
+  const { invalid, validation } = useValidate();
 
   return (
     <CenteredContainer>
       <AddPicture />
-      <Inputs setUserInfo={setUserInfo} />
-      <ButtonContainer userInfo={userInfo} />
+      <Inputs setUserInfo={setUserInfo} invalid={invalid} />
+      <ButtonContainer userInfo={userInfo} validation={validation} />
     </CenteredContainer>
   );
 }
