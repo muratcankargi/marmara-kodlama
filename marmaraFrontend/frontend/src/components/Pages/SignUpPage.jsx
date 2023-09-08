@@ -7,21 +7,14 @@ import IntroText from "../Utilities/IntroText";
 import Button from "../Utilities/Button";
 import CustomLink from "../RouteRelated/CustomLink";
 import CenteredContainer from "../Utilities/CenteredContainer";
+import { useValidate } from "../CustomHooks/useValidate";
+import { useUserInfo } from "../CustomHooks/useUserInfo";
 
-function useUserInfo() {
-  const [userInfo, setUserInfo] = useState({
-    personalId: "",
-    fatherName: "",
-    birthDate: "",
-  });
-
-  return [userInfo, setUserInfo];
-}
-
-function Inputs({ setUserInfo }) {
+function Inputs({ setUserInfo, invalid }) {
   return (
     <>
       <Input
+        invalid={invalid}
         setState={setUserInfo}
         inputName="personalId"
         src="/images/id-card.png"
@@ -30,6 +23,7 @@ function Inputs({ setUserInfo }) {
         placeholder="T.C. Kimlik No"
       />
       <Input
+        invalid={invalid}
         setState={setUserInfo}
         inputName="fatherName"
         src="/images/user.png"
@@ -38,6 +32,7 @@ function Inputs({ setUserInfo }) {
         placeholder="Baba Adı"
       />
       <Input
+        invalid={invalid}
         setState={setUserInfo}
         inputName="birthDate"
         src="/images/calendar.png"
@@ -58,44 +53,23 @@ function CustomLinkContainer() {
   );
 }
 
-function ButtonContainer({ userInfo, setStudentInfo, setIsAuthenticated }) {
+function ButtonContainer({
+  userInfo,
+  setStudentInfo,
+  setIsAuthenticated,
+  validation,
+}) {
   const navigate = useNavigate();
+  const { personalId, fatherName, birthDate } = userInfo;
 
   const checkInputs = () => {
-    const { personalId, fatherName, birthDate } = userInfo;
+    const { checkPersonalId, checkFatherName, checkBirthDate } = validation;
 
-    if (!personalId.length) {
-      swal({
-        title: "Başarısız İşlem",
-        text: "Lütfen T.C. kimlik numaranızı doğru giriniz!",
-        icon: "error",
-        button: "Tamam",
-      });
-      return false;
-    }
-
-    if (!fatherName.length) {
-      swal({
-        title: "Başarısız İşlem",
-        text: "Lütfen baba adınızı doğru giriniz!",
-        icon: "error",
-        button: "Tamam",
-      });
-      return false;
-    }
-
-    if (!birthDate.length) {
-      swal({
-        title: "Başarısız İşlem",
-        text: "Lütfen doğum tarihinizi doğru giriniz!",
-        icon: "error",
-        button: "Tamam",
-      });
-
-      return false;
-    }
-
-    return true;
+    return (
+      checkPersonalId(personalId) &&
+      checkFatherName(fatherName) &&
+      checkBirthDate(birthDate)
+    );
   };
 
   const handleSignUp = async () => {
@@ -104,9 +78,9 @@ function ButtonContainer({ userInfo, setStudentInfo, setIsAuthenticated }) {
         const response = await axios.post(
           "http://localhost:8000/api/isStudent",
           {
-            TCKimlikNo: userInfo.personalId,
-            BabaAdi: userInfo.fatherName,
-            DogumTarihi: userInfo.birthDate,
+            TCKimlikNo: personalId,
+            BabaAdi: fatherName,
+            DogumTarihi: birthDate,
           }
         );
 
@@ -150,17 +124,24 @@ function ButtonContainer({ userInfo, setStudentInfo, setIsAuthenticated }) {
 }
 
 function SignUpPage({ setIsAuthenticated, setStudentInfo }) {
-  const [userInfo, setUserInfo] = useUserInfo();
+  const [userInfo, setUserInfo] = useUserInfo({
+    personalId: "",
+    fatherName: "",
+    birthDate: "",
+  });
+
+  const { invalid, validation } = useValidate();
 
   return (
     <CenteredContainer>
       <IntroText mainText="Hoş geldiniz" fadedText="Marmara kayıp eşya ağı" />
-      <Inputs setUserInfo={setUserInfo} />
+      <Inputs setUserInfo={setUserInfo} invalid={invalid} />
       <CustomLinkContainer />
       <ButtonContainer
         userInfo={userInfo}
         setIsAuthenticated={setIsAuthenticated}
         setStudentInfo={setStudentInfo}
+        validation={validation}
       />
     </CenteredContainer>
   );
