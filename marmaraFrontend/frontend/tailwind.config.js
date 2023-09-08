@@ -18,9 +18,19 @@ module.exports = {
           "75%": { marginLeft: "-0.5rem" },
           "100%": { marginLeft: "0rem" },
         },
+        slideIn: {
+          "0%": { transform: "translateX(100%)" },
+          "100%": { transform: "translateX(0%)" },
+        },
+        slideOut: {
+          "0%": { transform: "translateX(100%)" },
+          "100%": { transform: "translateX(0%)" },
+        },
       },
       animation: {
         shake: "shake 0.2s ease-in-out 0s 2",
+        slideIn: "slideIn 200ms ease-in",
+        slideOut: "slideOut 1200ms ease-out",
       },
     },
   },
