@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LoginRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Mockery\Exception;
 
 class User extends Controller
@@ -62,5 +65,22 @@ class User extends Controller
         curl_close($curl);
 
         return $response;
+    }
+
+    public function login(LoginRequest $request)
+    { //email kontrolü yanlış, boş bıraktığında veya yanlış bilgi girildiğinde olmuyor.
+        $credentials=$request->validated();
+        if(!Auth::attempt($credentials)){
+
+            return response([
+                'token' => false
+            ]);
+        }
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        $token = md5(time() . rand(0,999999));
+
+        return response([
+            'token' => $token ]);
     }
 }
