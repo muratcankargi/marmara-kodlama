@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+import Button from "../Utilities/Button";
+import { logout } from "../logout";
 
 function Heading() {
   return (
@@ -217,7 +219,11 @@ function HamburgerMenu({ showMenu, setShowMenu }) {
   );
 }
 
-function HamburgerMenuContent({ showMenu }) {
+function HamburgerMenuContent({ showMenu, setIsAuthenticated }) {
+  const handleClick = () => {
+    logout(setIsAuthenticated);
+  };
+
   return (
     <div
       className={`${showMenu ? "translate-x-0" : "translate-x-full"} 
@@ -225,12 +231,12 @@ function HamburgerMenuContent({ showMenu }) {
            transition-all duration-300
        h-screen bg-neutral `}
     >
-      <p>Hello world</p>
+      <Button text="Çıkış Yap" onClickFunction={handleClick} />
     </div>
   );
 }
 
-function Feed() {
+function Feed({ setIsAuthenticated }) {
   // Bu show olayına biraz transition eklenecek
   const [show, setShow] = useState(false);
   // Tags kısmını hamburger menü ye eklesek
@@ -241,7 +247,10 @@ function Feed() {
   return (
     <div className="w-full pt-8 ">
       <HamburgerMenu setShowMenu={setShowMenu} showMenu={showMenu} />
-      <HamburgerMenuContent showMenu={showMenu} />
+      <HamburgerMenuContent
+        showMenu={showMenu}
+        setIsAuthenticated={setIsAuthenticated}
+      />
       <Heading />
       <div className="px-3 pt-3">
         <TagsHeading show={show} setShow={setShow} />
