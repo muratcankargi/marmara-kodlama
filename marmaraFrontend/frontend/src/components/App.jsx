@@ -11,10 +11,8 @@ import { Route, Routes, useLocation } from "react-router-dom";
 function App() {
   const { pathname } = useLocation();
 
-  //normalde burda bi token doğrulaması olacak
-  const [isAuthenticated, setIsAuthenticated] = useState(
-    localStorage?.getItem("auth") || false
-  );
+  // token database çekme işlemleri yapılacak
+  const [token, setToken] = useState("");
 
   const [studentInfo, setStudentInfo] = useState({});
   // Bu yaptığımız kayıt olurken yaptığımız
@@ -61,29 +59,17 @@ function App() {
       )}
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route
-          path="/signin"
-          element={
-            <ProtectedRoute isAuthenticated={!isAuthenticated} ifNot="/feed">
-              <SignInPage setIsAuthenticated={setIsAuthenticated} />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/signin" element={<SignInPage setToken={setToken} />} />
         <Route
           path="/signup"
           element={
-            <ProtectedRoute isAuthenticated={!isAuthenticated} ifNot="/feed">
-              <SignUpPage
-                setIsAuthenticated={setIsAuthenticated}
-                setStudentInfo={setStudentInfo}
-              />
-            </ProtectedRoute>
+            <SignUpPage setToken={setToken} setStudentInfo={setStudentInfo} />
           }
         />
         <Route
           path="/createprofile"
           element={
-            <ProtectedRoute isAuthenticated={isAuthenticated} ifNot="/signin">
+            <ProtectedRoute token={token} ifNot="/signin">
               <CreateProfilePage studentInfo={studentInfo} />
             </ProtectedRoute>
           }
@@ -91,8 +77,8 @@ function App() {
         <Route
           path="/feed"
           element={
-            <ProtectedRoute isAuthenticated={isAuthenticated} ifNot="/signin">
-              <Feed setIsAuthenticated={setIsAuthenticated} />
+            <ProtectedRoute token={token} ifNot="/signin">
+              <Feed setToken={setToken} />
             </ProtectedRoute>
           }
         />
