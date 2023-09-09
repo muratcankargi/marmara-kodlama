@@ -9,10 +9,19 @@ function Heading() {
   );
 }
 
-function TagsHeading() {
+function TagsHeading({ show, setShow }) {
+  const handleClick = () => {
+    setShow(false);
+  };
+
   return (
-    <div className="text-gray-500 ">
+    <div className="text-gray-500 flex w-full justify-between pb-2 pr-2">
       <p>Etiketler</p>
+      {show && (
+        <button onClick={handleClick} className="font-bold text-accent ">
+          Gizle
+        </button>
+      )}
     </div>
   );
 }
@@ -60,7 +69,7 @@ function Tag({ text }) {
     <button
       className={`${
         selected ? "bg-accent" : "bg-black"
-      } py-1 px-3 rounded-sm font-semibold  text-neutral`}
+      } first:bg-accent py-1 px-3 rounded-sm font-semibold transition-all ease-in-out  text-neutral`}
       onClick={handleClick}
     >
       {text}
@@ -175,13 +184,17 @@ function ShowMoreGradient({ show }) {
 
 function TagsContainer({ show, children }) {
   return (
-    <div className={`${show ? "h-auto" : "h-24"} overflow-y-hidden relative`}>
+    <div
+      className={`${
+        show ? "h-auto" : "h-24"
+      } overflow-y-hidden relative transition-all duration-[2000ms]`}
+    >
       {children}
     </div>
   );
 }
 
-function HamburgerMenu({ setShowMenu }) {
+function HamburgerMenu({ showMenu, setShowMenu }) {
   const handleClick = () => {
     setShowMenu((prevValue) => {
       return !prevValue;
@@ -189,22 +202,31 @@ function HamburgerMenu({ setShowMenu }) {
   };
 
   return (
-    <button className="z-50 absolute top-4 right-5" onClick={handleClick}>
-      <img className="w-8 aspect-square" src="./images/menu.png" alt="menu" />
+    <button
+      className={`z-50 absolute top-5 right-5 
+      before:my-1 before:block before:w-8 before:h-1 before:rounded-md before:bg-black
+      after:my-1 after:block after:w-8 after:h-1 after:rounded-md after:bg-black
+      before:transition-all after:transition-all
+      ${
+        showMenu && " before:rotate-45 after:-rotate-45 before:translate-y-2 "
+      }`}
+      onClick={handleClick}
+    >
+      {!showMenu && <div className="w-8 h-1 rounded-md bg-black"></div>}
     </button>
   );
 }
 
 function HamburgerMenuContent({ showMenu }) {
-  //slideOut çalışmıyor
   return (
-    showMenu && (
-      <div
-        className={`${showMenu ? "animate-slideIn" : "animate-slideOut"} 
-          z-40 top-0 right-0 absolute w-screen transition-all duration-1000
-       h-screen bg-red-500`}
-      ></div>
-    )
+    <div
+      className={`${showMenu ? "translate-x-0" : "translate-x-full"} 
+           z-40 top-0 right-0 fixed w-screen shadow-md shadow-black 
+           transition-all duration-300
+       h-screen bg-neutral `}
+    >
+      <p>Hello world</p>
+    </div>
   );
 }
 
@@ -218,11 +240,11 @@ function Feed() {
 
   return (
     <div className="w-full pt-8 ">
-      <HamburgerMenu setShowMenu={setShowMenu} />
+      <HamburgerMenu setShowMenu={setShowMenu} showMenu={showMenu} />
       <HamburgerMenuContent showMenu={showMenu} />
       <Heading />
       <div className="px-3 pt-3">
-        <TagsHeading />
+        <TagsHeading show={show} setShow={setShow} />
         <TagsContainer show={show}>
           <ShowMoreGradient show={show} />
           <ShowMoreButton show={show} setShow={setShow} />
