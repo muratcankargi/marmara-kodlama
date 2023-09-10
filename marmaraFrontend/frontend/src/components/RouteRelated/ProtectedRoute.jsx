@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuthenticate } from "../CustomHooks/useAuthenticate";
+import { useAuthorization } from "../CustomHooks/useAuthorization";
 
 // Kullanıcının token olmadan göremeyeceği sayfalar bu şekilde ayarlanacak
 
@@ -8,8 +9,10 @@ import { useAuthenticate } from "../CustomHooks/useAuthenticate";
 // gidememeli, feed'e yönlendirilmeli.
 const ProtectedRoute = ({ children, ifNot }) => {
   const { authenticate } = useAuthenticate();
+  const { getPermissions } = useAuthorization();
 
   const [authenticated, setAuthenticated] = useState(null);
+  const [permission, setPermission] = useState(null);
 
   useEffect(() => {
     const checkAuthentication = async () => {
@@ -17,6 +20,7 @@ const ProtectedRoute = ({ children, ifNot }) => {
         // localStorage token vs server token doğrulaması
         const isAuthenticated = await authenticate();
         setAuthenticated(isAuthenticated.token);
+        checkPermissions();
       } catch (error) {
         // Handle any errors that may occur during authentication.
         console.error("Authentication error:", error);
@@ -24,17 +28,43 @@ const ProtectedRoute = ({ children, ifNot }) => {
       }
     };
 
+    const checkPermissions = async () => {
+      const permission = await getPermissions();
+      setPermission(permission);
+    };
+
     checkAuthentication();
   }, []);
 
-  // burası olmadan çalışmıyor
-  if (authenticated === null) {
+  // burası bir nevi async functionların bitmesini beklerken
+  // göstereceğimiz yer
+  if (authenticated === null || permission === null) {
     // Loading state, you can render a loading spinner or something else here.
     return <div>Loading...</div>;
   }
 
-  // Authenticated olmuşssa protected route içindeki componenti renderla
-  // olmamışsa ifNot adresine yönlendir
+  // sadece permission kontrol edersek
+  // sürekli createprofilepage e navigate etmeye çalışıyor
+  // o yüzden children createprofilepage olduğunda navigate işlemini
+  // durduruyoruz
+  if (
+    permission === "almostUser" &&
+    children.type.name !== "CreateProfilePage"
+  ) {
+    return <Navigate to="/createprofile" />;
+  }
+
+  // almostUser yetkin yoksa createprofilepage i tamamlamışsın
+  // demektir yani oraya giriş yapamazsın.
+  // ama burada bir sorun var progessbar renderleniyor bekleme
+  // yaparken onu çözmemiz lazım.
+  if (
+    permission !== "almostUser" &&
+    children.type.name === "CreateProfilePage"
+  ) {
+    return <Navigate to="/feed" />;
+  }
+
   return authenticated ? children : <Navigate to={ifNot} />;
 };
 

@@ -30,7 +30,7 @@ function App() {
         <Route
           path="/createprofile"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute ifNot="/signin">
               <CreateProfilePage studentInfo={studentInfo} />
             </ProtectedRoute>
           }

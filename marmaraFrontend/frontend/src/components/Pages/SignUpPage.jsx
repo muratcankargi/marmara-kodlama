@@ -10,6 +10,7 @@ import CenteredContainer from "../Utilities/CenteredContainer";
 import { useValidate } from "../CustomHooks/useValidate";
 import { useUserInfo } from "../CustomHooks/useUserInfo";
 import { useAuthenticate } from "../CustomHooks/useAuthenticate";
+import { useAuthorization } from "../CustomHooks/useAuthorization";
 
 function Inputs({ setUserInfo, invalid }) {
   return (
@@ -76,9 +77,8 @@ function ButtonContainer({ userInfo, setStudentInfo, validation }) {
       if (response) {
         // Burada bir token oluşturucaz tokene ait kişinin abilitysi
         // almostUser olacak bu sayede başka yerlere gidemeyecek
-        // const tokenResponse = await login("user@gmail.com", "123");
-        // console.log(tokenResponse);
-        // localStorage.setItem("auth", tokenResponse);
+        const tokenResponse = await login("user@gmail.com", "123");
+        localStorage.setItem("auth", tokenResponse);
 
         // createprofilepage a göndermek için bu bilgileri app'deki studentInfo'ya gönderiyoruz
         setStudentInfo({

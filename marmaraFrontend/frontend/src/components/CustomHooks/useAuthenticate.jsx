@@ -52,18 +52,18 @@ export function useAuthenticate() {
 
   // Burası kullanıcının emailini ve şifresini servera yollayacak ve
   // Tokenin yetkileri güncellenecek (serverda)
-  // const saveUser = async (userInfo) => {
-  //   try {
-  //     const response = await axios.post(
-  //       "http://localhost:8000/api/signup",
-  //       userInfo
-  //     );
+  const saveUser = async (userInfo) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/signup",
+        userInfo
+      );
 
-  //     return response.data.message;
-  //   } catch (error) {
-  //     console.log("Error: ", error.message);
-  //   }
-  // };
+      return response.data.message;
+    } catch (error) {
+      console.log("Error: ", error.message);
+    }
+  };
 
   // Localstorage daki token ile serverda oluşturulmuş token aynı mı diye bakılıyor
   const authenticate = async () => {
