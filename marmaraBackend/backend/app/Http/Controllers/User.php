@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LoginRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Mockery\Exception;
 
@@ -67,9 +68,15 @@ class User extends Controller
         return $response;
     }
 
-    public function login(LoginRequest $request)
-    { //email kontrolü yanlış, boş bıraktığında veya yanlış bilgi girildiğinde olmuyor.
-        $credentials=$request->validated();
+    public function login(Request $request)
+    {
+        $credentials = $request->only('email', 'password');
+
+        Validator::make($credentials, [
+            'email' => 'required|email|exists:users,email',
+            'password' => 'required',
+        ]);
+
         if(!Auth::attempt($credentials)){
 
             return response([
