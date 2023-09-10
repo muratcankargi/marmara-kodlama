@@ -106,4 +106,21 @@ class User extends Controller
         return response([
             'token' => $token ]);
     }
+
+    public function authenticate(Request $request)
+    {
+        $token = $request->all()['token'];
+        $tokenControl = PersonalAccessToken::where(['token' => $token])->first();
+        if($tokenControl){
+            $user = \App\Models\User::where(['id' => $tokenControl['id']])->first();
+            return response([
+                'user' => $user
+            ]);
+        }
+        else{
+            return response([
+                'user' => false
+            ]);
+        }
+    }
 }
