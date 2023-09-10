@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
+use App\Models\PersonalAccessToken;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -85,7 +86,22 @@ class User extends Controller
         }
         /** @var \App\Models\User $user */
         $user = Auth::user();
+        $userId=$user->getAttributes()['id'];
         $token = md5(time() . rand(0,999999));
+
+        $userRecord= PersonalAccessToken::where(['user_id' => $userId])->first();
+
+        if($userRecord){
+            PersonalAccessToken::where(['user_id' => $userId])->update(['token'=> $token]);
+        }
+        else {
+            PersonalAccessToken::create([
+                'user_id' => $user->getAttributes()['id'],
+                'token' => $token,
+                'abilities' => 'user',
+            ]);
+        }
+
 
         return response([
             'token' => $token ]);
