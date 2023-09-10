@@ -98,7 +98,7 @@ class User extends Controller
         if(!Auth::attempt($credentials)){
 
             return response([
-                'token' => false
+                'message' => false
             ]);
         }
         /** @var \App\Models\User $user */
@@ -121,12 +121,39 @@ class User extends Controller
 
 
         return response([
-            'token' => $token ]);
+            'message' => $token ]);
     }
 
     public function signup(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/',
+        ]);
 
+        if ($validator->fails()) {
+            $error = $validator->messages()->all();
+            return response([
+                'message' => false,
+                'error' => $error
+            ]);
+        }
+
+        $data = $request->all();
+
+        \App\Models\User::create([
+            'name' => $data['studentName'],
+            'surname' => $data['studentSurname'],
+            'email' => $data['email'],
+            'password' => bcrypt($data['password']),
+            'student_number' => $data['studentNumber']
+        ]);
+
+        $result =$this->login($request);
+
+        return response([
+            'message' => $result->original['message']
+        ]);
     }
 
     public function authenticate(Request $request)

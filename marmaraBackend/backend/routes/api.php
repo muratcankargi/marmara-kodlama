@@ -22,4 +22,6 @@ Route::post('/isStudent', [\App\Http\Controllers\User::class, 'isStudent']);
 
 Route::post('/login', [\App\Http\Controllers\User::class, 'login']);
 
+Route::post('/signup', [\App\Http\Controllers\User::class, 'signup']);
+
 Route::post('/authenticate', [\App\Http\Controllers\User::class, 'authenticate']);
