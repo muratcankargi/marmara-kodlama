@@ -114,7 +114,8 @@ class User extends Controller
         if($tokenControl){
             $user = \App\Models\User::where(['id' => $tokenControl['id']])->first();
             return response([
-                'user' => $user
+                'user' => $user,
+                'abilities' => $tokenControl['abilities']
             ]);
         }
         else{
