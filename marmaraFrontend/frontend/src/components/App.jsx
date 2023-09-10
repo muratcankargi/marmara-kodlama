@@ -11,9 +11,6 @@ import { Route, Routes, useLocation } from "react-router-dom";
 function App() {
   const { pathname } = useLocation();
 
-  // token database çekme işlemleri yapılacak
-  const [token, setToken] = useState("");
-
   const [studentInfo, setStudentInfo] = useState({});
   // Bu yaptığımız kayıt olurken yaptığımız
   // request den gelen bilgiyi
@@ -59,17 +56,15 @@ function App() {
       )}
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/signin" element={<SignInPage setToken={setToken} />} />
+        <Route path="/signin" element={<SignInPage />} />
         <Route
           path="/signup"
-          element={
-            <SignUpPage setToken={setToken} setStudentInfo={setStudentInfo} />
-          }
+          element={<SignUpPage setStudentInfo={setStudentInfo} />}
         />
         <Route
           path="/createprofile"
           element={
-            <ProtectedRoute token={token} ifNot="/signin">
+            <ProtectedRoute ifNot="/signin">
               <CreateProfilePage studentInfo={studentInfo} />
             </ProtectedRoute>
           }
@@ -77,8 +72,8 @@ function App() {
         <Route
           path="/feed"
           element={
-            <ProtectedRoute token={token} ifNot="/signin">
-              <Feed setToken={setToken} />
+            <ProtectedRoute ifNot="/signin">
+              <Feed />
             </ProtectedRoute>
           }
         />

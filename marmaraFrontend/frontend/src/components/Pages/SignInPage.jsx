@@ -44,7 +44,7 @@ function Inputs({ setUserInfo, invalid }) {
   );
 }
 
-function ButtonContainer({ userInfo, validation, login, setToken }) {
+function ButtonContainer({ userInfo, validation, login }) {
   const navigate = useNavigate();
   const { email, password } = userInfo;
 
@@ -57,9 +57,19 @@ function ButtonContainer({ userInfo, validation, login, setToken }) {
     if (checkInputs()) {
       const token = await login(email, password);
       if (token) {
-        setToken(token);
+        swal({
+          title: "Bilgileriniz Doğrulandı!",
+          icon: "success",
+          button: "Tamam",
+        });
         localStorage.setItem("auth", token);
         navigate("/feed");
+      } else {
+        swal({
+          title: "Bilgileriniz Doğrulanamadı",
+          icon: "error",
+          button: "Tamam",
+        });
       }
     }
   };
@@ -71,7 +81,7 @@ function ButtonContainer({ userInfo, validation, login, setToken }) {
   );
 }
 
-function SignInPage({ setToken }) {
+function SignInPage() {
   const [userInfo, setUserInfo] = useUserInfo({
     email: "",
     password: "",
@@ -90,7 +100,6 @@ function SignInPage({ setToken }) {
       <Inputs setUserInfo={setUserInfo} invalid={invalid} />
       <CustomLinkContainer />
       <ButtonContainer
-        setToken={setToken}
         login={login}
         userInfo={userInfo}
         validation={validation}
