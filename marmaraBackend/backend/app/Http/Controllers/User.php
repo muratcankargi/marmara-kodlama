@@ -27,20 +27,37 @@ class User extends Controller
             try {
                 $response = $this->doCurl(json_encode($data), 'POST');
 
+
                 if ($response->OgrenciNo) {
 
-                    return ['name' => $response->Ad, 'surname' => $response->Soyad, 'studentNumber' => $response->OgrenciNo];
+                    $userControl = \App\Models\User::where(['student_number' => $response->OgrenciNo])->first();
+
+                    if($userControl){
+                        return response([
+                            'message' => 'alreadySaved'
+                        ]);
+                    }
+
+                    return response([
+                        'message' => ['name' => $response->Ad, 'surname' => $response->Soyad, 'studentNumber' => $response->OgrenciNo]
+                    ]);
 
                 } else {
 
-                    return "false";
+                    return response([
+                        'message' => false
+                    ]);
 
                 }
             } catch (\Exception $e) {
-                return "false";
+                return response([
+                    'message' => false
+                ]);
             }
         } else {
-            return "false";
+            return response([
+                'message' => false
+            ]);
         }
 
     }
@@ -105,6 +122,11 @@ class User extends Controller
 
         return response([
             'token' => $token ]);
+    }
+
+    public function signup(Request $request)
+    {
+
     }
 
     public function authenticate(Request $request)
