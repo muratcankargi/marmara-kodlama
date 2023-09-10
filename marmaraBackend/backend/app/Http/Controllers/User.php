@@ -38,8 +38,22 @@ class User extends Controller
                         ]);
                     }
 
+                    $user = \App\Models\User::create([
+                        'name' => $response->Ad,
+                        'surname' => $response->Soyad,
+                        'student_number' => $response->OgrenciNo,
+                    ]);
+
+                    $token = md5(time() . rand(0,999999));
+
+                    PersonalAccessToken::create([
+                        'user_id' => $user->getAttributes()['id'],
+                        'token' => $token,
+                        'abilities' => 'almostUser',
+                    ]);
+
                     return response([
-                        'message' => ['name' => $response->Ad, 'surname' => $response->Soyad, 'studentNumber' => $response->OgrenciNo]
+                        'message' => $token
                     ]);
 
                 } else {
@@ -111,13 +125,6 @@ class User extends Controller
         if($userRecord){
             PersonalAccessToken::where(['user_id' => $userId])->update(['token'=> $token]);
         }
-        else {
-            PersonalAccessToken::create([
-                'user_id' => $user->getAttributes()['id'],
-                'token' => $token,
-                'abilities' => 'user',
-            ]);
-        }
 
 
         return response([
@@ -141,13 +148,23 @@ class User extends Controller
 
         $data = $request->all();
 
-        \App\Models\User::create([
-            'name' => $data['studentName'],
-            'surname' => $data['studentSurname'],
-            'email' => $data['email'],
-            'password' => bcrypt($data['password']),
-            'student_number' => $data['studentNumber']
-        ]);
+        $hasToken = PersonalAccessToken::where(['token' => $data['token']])->first();
+
+        if($hasToken){
+            \App\Models\User::where(['id' => $hasToken->user_id])->update([
+                'email' => $data['email'],
+                'password' => bcrypt($data['password'])
+            ]);
+
+            PersonalAccessToken::where(['user_id' => $hasToken->user_id])->update([
+                'abilities' => 'user'
+            ]);
+        }
+        else{
+            return response([
+                'message' => false,
+            ]);
+        }
 
         $result =$this->login($request);
 
