@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuthenticate } from "../CustomHooks/useAuthenticate";
 import { useAuthorization } from "../CustomHooks/useAuthorization";
+import LoadingState from "../Utilities/LoadingState";
 
 // Kullanıcının token olmadan göremeyeceği sayfalar bu şekilde ayarlanacak
 
@@ -39,8 +40,7 @@ const ProtectedRoute = ({ children, ifNot }) => {
   // burası bir nevi async functionların bitmesini beklerken
   // göstereceğimiz yer
   if (authenticated === null || permission === null) {
-    // Loading state, you can render a loading spinner or something else here.
-    return <div>Loading...</div>;
+    return <LoadingState />;
   }
 
   // sadece permission kontrol edersek
