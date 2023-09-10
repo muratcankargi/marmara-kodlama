@@ -57,6 +57,7 @@ function ButtonContainer({ userInfo, validation, login }) {
     if (checkInputs()) {
       const token = await login(email, password);
       if (token) {
+        // loginden token gelmişse kaydediyoruz ve yönlendiriyoruz
         swal({
           title: "Bilgileriniz Doğrulandı!",
           icon: "success",

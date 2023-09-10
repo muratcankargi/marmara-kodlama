@@ -13,6 +13,9 @@ function Input({ setState, inputName, src, alt, type, placeholder, invalid }) {
     }));
   };
 
+  // shake animasyonunu hangi inputa ekleyeceğimizi belirlemek için
+  // invalid.inputName'i gönderiyoruz props olarak
+  // invalid.value useValidate sayfasında true veya false olarak belirleniyor
   return (
     <>
       <div

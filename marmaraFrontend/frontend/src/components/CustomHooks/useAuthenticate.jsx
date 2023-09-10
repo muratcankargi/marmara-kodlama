@@ -1,19 +1,24 @@
 import axios from "axios";
 
 export function useAuthenticate() {
+  // Login yapıldığı zaman email ve password gönderiyoruz
+  // Server token gönderiyor
   const login = async (email, password) => {
     try {
+      // Böyle bir kullanıcı varsa
       const response = await axios.post("http://localhost:8000/api/login", {
         email: email,
         password: password,
       });
 
-      return response.data.token;
+      return response.data.message;
     } catch (error) {
       console.log("Error: ", error.message);
     }
   };
 
+  // Logout yapıldığı zaman localStorage dan siliyoruz serverdan
+  // silmiyoruz ama silinebilir?
   const logout = () => {
     try {
       localStorage.removeItem("auth");
@@ -24,6 +29,43 @@ export function useAuthenticate() {
     }
   };
 
+  // SignUp yapıldığı zaman bir token döndürülücek
+  // Serverda kullanıcının adı,soyadı,numarası kayıt ediliyor o tokenle beraber
+  // Tokeni olduğu için createprofilepage e geçebilecek ama daha ilerleyemeyecek
+  // tokenin yetkilerine bakılacak
+  const signup = async (personalId, fatherName, birthDate) => {
+    // Burada bir token döndürülecek serverdan
+    try {
+      // Sign upda girilen bilgilere sahip öğrenci var mı diye bakılıyor
+      const response = await axios.post("http://localhost:8000/api/isStudent", {
+        TCKimlikNo: personalId,
+        BabaAdi: fatherName,
+        DogumTarihi: birthDate,
+      });
+
+      // öğrenci adı soyadı numarası
+      return response.data.message;
+    } catch (error) {
+      console.log("Error: ", error.message);
+    }
+  };
+
+  // Burası kullanıcının emailini ve şifresini servera yollayacak ve
+  // Tokenin yetkileri güncellenecek (serverda)
+  // const saveUser = async (userInfo) => {
+  //   try {
+  //     const response = await axios.post(
+  //       "http://localhost:8000/api/signup",
+  //       userInfo
+  //     );
+
+  //     return response.data.message;
+  //   } catch (error) {
+  //     console.log("Error: ", error.message);
+  //   }
+  // };
+
+  // Localstorage daki token ile serverda oluşturulmuş token aynı mı diye bakılıyor
   const authenticate = async () => {
     try {
       const response = await axios.post(
@@ -33,6 +75,7 @@ export function useAuthenticate() {
         }
       );
 
+      // Aynıysa o tokenin sahibinin bilgileri geliyor
       return response.data;
     } catch (error) {
       console.log("Error: ", error.message);
@@ -40,5 +83,5 @@ export function useAuthenticate() {
     }
   };
 
-  return { login, logout, authenticate };
+  return { login, logout, signup, saveUser, authenticate };
 }

@@ -8,6 +8,7 @@ import InputWithShowPassword from "../Utilities/InputWithShowPassword";
 import AddPicture from "../Utilities/AddPicture";
 import { useValidate } from "../CustomHooks/useValidate";
 import { useUserInfo } from "../CustomHooks/useUserInfo";
+import { useAuthenticate } from "../CustomHooks/useAuthenticate";
 
 function Inputs({ setUserInfo, invalid }) {
   const [inputType, setInputType] = useState("password");
@@ -56,25 +57,26 @@ function ButtonContainer({ userInfo, validation }) {
     );
   };
 
-  const handleSave = () => {
+  const { saveUser } = useAuthenticate();
+
+  const handleSave = async () => {
     if (checkInputs()) {
       try {
-        const response = { data: true };
-        if (response.data) {
+        console.log(userInfo);
+        const response = await saveUser(userInfo);
+        if (response) {
           swal({
             title: "Bilgileriniz Kaydedildi!",
             icon: "success",
             button: "Tamam",
           });
-
           navigate("/feed");
         } else {
           swal({
-            title: "Başarısız işlem, lütfen daha sonra tekrar deneyin.",
-            icon: "error",
+            title: "Bilgileriniz Kaydedilemedi.",
+            icon: "Error",
             button: "Tamam",
           });
-          localStorage.removeItem("auth");
           navigate("/signup");
         }
       } catch (error) {

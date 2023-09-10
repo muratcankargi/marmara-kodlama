@@ -205,6 +205,8 @@ function HamburgerMenu({ showMenu, setShowMenu }) {
     });
   };
 
+  // after ve before hamburgermenu iconunu oluşturmak
+  // için kullanıldı
   return (
     <button
       className={`z-50 absolute top-5 right-5 
@@ -254,12 +256,17 @@ function HamburgerMenuContent({ showMenu }) {
   );
 }
 
+// burası biraz taslak halinde şuanda
+// yukardaki componentleri bu sayfa içinde tutmak yerine
+// ayırmak daha mantıklı olabilir
 function Feed() {
   // Bu show olayına biraz transition eklenecek
+  // Tags kısmını kontrol ediyor
   const [showMoreTags, setShowMoreTags] = useState(false);
   // Tags kısmını hamburger menü ye eklesek
   // daha mantıklı olabilir gibi çok item olursa hoş durmayacak
 
+  // hamburger menüyü kontrol ediyor
   const [showMenu, setShowMenu] = useState(false);
 
   return (

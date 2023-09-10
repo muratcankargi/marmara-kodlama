@@ -66,7 +66,6 @@ export function useValidate() {
 
   const fatherNameValidation = (fatherName) => {
     // Use a regular expression to check if the name contains only letters and spaces
-    // Türkçe karakterler de dahil olduğu için böyle garip durdu
     return /^[A-Za-z\u00C0-\u017F\s]+$/.test(fatherName);
   };
 

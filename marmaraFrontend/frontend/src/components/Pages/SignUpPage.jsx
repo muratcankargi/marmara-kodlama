@@ -9,6 +9,7 @@ import CustomLink from "../RouteRelated/CustomLink";
 import CenteredContainer from "../Utilities/CenteredContainer";
 import { useValidate } from "../CustomHooks/useValidate";
 import { useUserInfo } from "../CustomHooks/useUserInfo";
+import { useAuthenticate } from "../CustomHooks/useAuthenticate";
 
 function Inputs({ setUserInfo, invalid }) {
   return (
@@ -53,12 +54,7 @@ function CustomLinkContainer() {
   );
 }
 
-function ButtonContainer({
-  userInfo,
-  setStudentInfo,
-  setIsAuthenticated,
-  validation,
-}) {
+function ButtonContainer({ userInfo, setStudentInfo, validation }) {
   const navigate = useNavigate();
   const { personalId, fatherName, birthDate } = userInfo;
 
@@ -72,46 +68,36 @@ function ButtonContainer({
     );
   };
 
+  const { login, signup } = useAuthenticate();
+
   const handleSignUp = async () => {
     if (checkInputs()) {
-      try {
-        const response = await axios.post(
-          "http://localhost:8000/api/isStudent",
-          {
-            TCKimlikNo: personalId,
-            BabaAdi: fatherName,
-            DogumTarihi: birthDate,
-          }
-        );
+      const response = await signup(personalId, fatherName, birthDate);
+      if (response) {
+        // Burada bir token oluşturucaz tokene ait kişinin abilitysi
+        // almostUser olacak bu sayede başka yerlere gidemeyecek
+        // const tokenResponse = await login("user@gmail.com", "123");
+        // console.log(tokenResponse);
+        // localStorage.setItem("auth", tokenResponse);
 
-        // Gelen blgiler doğruysa devam değilse olduğu yerde kalıyor
-        if (response.data) {
-          swal({
-            title: "Bilgileriniz Doğrulandı!",
-            icon: "success",
-            button: "Tamam",
-          });
-          //Kullanıcı giriş yaptığında server'dan bir adet
-          // token isticez sonra bu tokenı localStorage'a kaydedicez
-          setIsAuthenticated(true);
-          localStorage.setItem("auth", "true");
-
-          setStudentInfo({
-            studentName: response.data.name,
-            studentSurname: response.data.surname,
-            studentNumber: response.data.studentNumber,
-          });
-
-          navigate("/createprofile");
-        } else {
-          swal({
-            title: "Bilgileriniz Doğrulanamadı",
-            icon: "error",
-            button: "Tamam",
-          });
-        }
-      } catch (error) {
-        console.log("Error: ", error.message);
+        // createprofilepage a göndermek için bu bilgileri app'deki studentInfo'ya gönderiyoruz
+        setStudentInfo({
+          studentName: response.name,
+          studentSurname: response.surname,
+          studentNumber: response.studentNumber,
+        });
+        swal({
+          title: "Bilgileriniz Doğrulandı!",
+          icon: "success",
+          button: "Tamam",
+        });
+        navigate("/createprofile");
+      } else {
+        swal({
+          title: "Bilgileriniz Doğrulanamadı!",
+          icon: "success",
+          button: "Tamam",
+        });
       }
     }
   };
