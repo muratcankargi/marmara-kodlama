@@ -2,7 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LoginRequest;
+use App\Models\PersonalAccessToken;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Mockery\Exception;
 
 class User extends Controller
@@ -22,20 +27,51 @@ class User extends Controller
             try {
                 $response = $this->doCurl(json_encode($data), 'POST');
 
+
                 if ($response->OgrenciNo) {
 
-                    return ['name' => $response->Ad, 'surname' => $response->Soyad, 'studentNumber' => $response->OgrenciNo];
+                    $userControl = \App\Models\User::where(['student_number' => $response->OgrenciNo])->first();
+
+                    if($userControl){
+                        return response([
+                            'message' => 'alreadySaved'
+                        ]);
+                    }
+
+                    $user = \App\Models\User::create([
+                        'name' => $response->Ad,
+                        'surname' => $response->Soyad,
+                        'student_number' => $response->OgrenciNo,
+                    ]);
+
+                    $token = md5(time() . rand(0,999999));
+
+                    PersonalAccessToken::create([
+                        'user_id' => $user->getAttributes()['id'],
+                        'token' => $token,
+                        'abilities' => 'almostUser',
+                    ]);
+
+                    return response([
+                        'message' => $token
+                    ]);
 
                 } else {
 
-                    return "false";
+                    return response([
+                        'message' => false
+                    ]);
 
                 }
             } catch (\Exception $e) {
-                return "false";
+                return response([
+                    'message' => false
+                ]);
             }
         } else {
-            return "false";
+            return response([
+                'message' => false
+            ]);
         }
 
     }
@@ -62,5 +98,97 @@ class User extends Controller
         curl_close($curl);
 
         return $response;
+    }
+
+    public function login(Request $request)
+    {
+        $credentials = $request->only('email', 'password');
+
+        Validator::make($credentials, [
+            'email' => 'required|email|exists:users,email',
+            'password' => 'required',
+        ]);
+
+        if(!Auth::attempt($credentials)){
+
+            return response([
+                'message' => false
+            ]);
+        }
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        $userId=$user->getAttributes()['id'];
+        $token = md5(time() . rand(0,999999));
+
+        $userRecord= PersonalAccessToken::where(['user_id' => $userId])->first();
+
+        if($userRecord){
+            PersonalAccessToken::where(['user_id' => $userId])->update(['token'=> $token]);
+        }
+
+
+        return response([
+            'message' => $token ]);
+    }
+
+    public function signup(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/',
+        ]);
+
+        if ($validator->fails()) {
+            $error = $validator->messages()->all();
+            return response([
+                'message' => false,
+                'error' => $error
+            ]);
+        }
+
+        $data = $request->all();
+
+        $hasToken = PersonalAccessToken::where(['token' => $data['token']])->first();
+
+        if($hasToken){
+            \App\Models\User::where(['id' => $hasToken->user_id])->update([
+                'email' => $data['email'],
+                'password' => bcrypt($data['password'])
+            ]);
+
+            PersonalAccessToken::where(['user_id' => $hasToken->user_id])->update([
+                'abilities' => 'user'
+            ]);
+        }
+        else{
+            return response([
+                'message' => false,
+            ]);
+        }
+
+        $result =$this->login($request);
+
+        return response([
+            'message' => $result->original['message']
+        ]);
+    }
+
+    public function authenticate(Request $request)
+    {
+        $token = $request->all()['token'];
+        $tokenControl = PersonalAccessToken::where(['token' => $token])->first();
+        if($tokenControl){
+            $user = \App\Models\User::where(['id' => $tokenControl['id']])->first();
+            return response([
+                'user' => $user,
+                'abilities' => $tokenControl['abilities'],
+                'token' => $tokenControl['token']
+            ]);
+        }
+        else{
+            return response([
+                'user' => false
+            ]);
+        }
     }
 }
