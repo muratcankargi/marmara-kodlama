@@ -69,17 +69,24 @@ function ButtonContainer({ userInfo, setStudentInfo, validation }) {
     );
   };
 
-  const { login, signup } = useAuthenticate();
+  const { signup } = useAuthenticate();
 
   const handleSignUp = async () => {
     if (checkInputs()) {
       const response = await signup(personalId, fatherName, birthDate);
-      if (response) {
-        // Burada bir token oluşturucaz tokene ait kişinin abilitysi
-        // almostUser olacak bu sayede başka yerlere gidemeyecek
-        const tokenResponse = await login("user@gmail.com", "123");
-        localStorage.setItem("auth", tokenResponse);
 
+      if (response) {
+        if (response === "alreadySaved") {
+          // tamama bastıktan sonra yönlendir.
+          swal({
+            title: "Zaten kaydınız var, lütfen giriş yapınız.",
+            icon: "success",
+            button: "Tamam",
+          });
+          navigate("/signin");
+          return;
+        }
+        localStorage.setItem("auth", response);
         // createprofilepage a göndermek için bu bilgileri app'deki studentInfo'ya gönderiyoruz
         setStudentInfo({
           studentName: response.name,

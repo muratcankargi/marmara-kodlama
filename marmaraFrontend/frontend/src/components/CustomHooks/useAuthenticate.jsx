@@ -43,7 +43,7 @@ export function useAuthenticate() {
         DogumTarihi: birthDate,
       });
 
-      // öğrenci adı soyadı numarası
+      // token
       return response.data.message;
     } catch (error) {
       console.log("Error: ", error.message);
@@ -74,6 +74,8 @@ export function useAuthenticate() {
           token: localStorage.getItem("auth"),
         }
       );
+
+      console.log(response.data);
 
       // Aynıysa o tokenin sahibinin bilgileri geliyor
       return response.data;

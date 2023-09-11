@@ -47,6 +47,7 @@ const ProtectedRoute = ({ children, ifNot }) => {
   // sürekli createprofilepage e navigate etmeye çalışıyor
   // o yüzden children createprofilepage olduğunda navigate işlemini
   // durduruyoruz
+
   if (
     permission === "almostUser" &&
     children.type.name !== "CreateProfilePage"

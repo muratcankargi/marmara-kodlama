@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import swal from "sweetalert";
 import Input from "../Utilities/Input";
@@ -63,13 +63,19 @@ function ButtonContainer({ userInfo, validation }) {
   const handleSave = async () => {
     if (checkInputs()) {
       try {
-        const response = await saveUser(userInfo);
+        const response = await saveUser({
+          email: userInfo.email,
+          password: userInfo.password,
+          token: localStorage.getItem("auth"),
+        });
         if (response) {
           swal({
             title: "Bilgileriniz Kaydedildi!",
             icon: "success",
             button: "Tamam",
           });
+          localStorage.setItem("auth", response);
+          // burası çalışmıyor
           navigate("/feed");
         } else {
           swal({
@@ -94,10 +100,15 @@ function ButtonContainer({ userInfo, validation }) {
 
 //fotoğraf yükleme kısmı yapılacak
 function CreateProfilePage({ studentInfo }) {
+  useEffect(() => {
+    swal({
+      title: "Bu aşamayı geçmeden siteye devam edemezsiniz.",
+      icon: "warning",
+      button: "Tamam",
+    });
+  }, []);
+
   const [userInfo, setUserInfo] = useUserInfo({
-    studentName: studentInfo?.studentName || null,
-    studentSurname: studentInfo?.studentSurname || null,
-    studentNumber: studentInfo?.studentNumber || null,
     email: "",
     password: "",
     passwordRepeat: "",
