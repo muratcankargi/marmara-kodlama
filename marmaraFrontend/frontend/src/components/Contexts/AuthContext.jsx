@@ -1,6 +1,37 @@
+// AuthContext.js
+import { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 
-export function useAuthenticate() {
+const AuthContext = createContext();
+
+export const AuthProvider = ({ children }) => {
+  // Manage user authentication state here, including login, logout, and user information.
+  const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Implement the authenticate function
+  const authenticate = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/authenticate",
+        {
+          token: localStorage.getItem("auth"),
+        }
+      );
+
+      // If authentication is successful, set the user state with user data
+      const userData = response.data.message;
+      setUser(userData);
+    } catch (error) {
+      console.log("Authentication Error: ", error.message);
+      // If authentication fails, set the user state to null
+      setUser(null);
+    } finally {
+      // Set isLoading to false once the authentication process is complete
+      setIsLoading(false);
+    }
+  };
+
   // Login yapıldığı zaman email ve password gönderiyoruz
   // Server token gönderiyor
   const login = async (email, password) => {
@@ -55,9 +86,11 @@ export function useAuthenticate() {
   const saveUser = async (userInfo) => {
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/signup",
+        "http://localhost:8000/api/saveUser",
         userInfo
       );
+
+      setUser(response.data.message);
 
       return response.data.message;
     } catch (error) {
@@ -65,23 +98,13 @@ export function useAuthenticate() {
     }
   };
 
-  // Localstorage daki token ile serverda oluşturulmuş token aynı mı diye bakılıyor
-  const authenticate = async () => {
-    try {
-      const response = await axios.post(
-        "http://localhost:8000/api/authenticate",
-        {
-          token: localStorage.getItem("auth"),
-        }
-      );
+  return (
+    <AuthContext.Provider
+      value={{ user, login, logout, isLoading, authenticate, signup, saveUser }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
+};
 
-      // Aynıysa o tokenin sahibinin bilgileri geliyor
-      return response.data;
-    } catch (error) {
-      console.log("Error: ", error.message);
-      return false;
-    }
-  };
-
-  return { login, logout, signup, saveUser, authenticate };
-}
+export const useAuth = () => useContext(AuthContext);

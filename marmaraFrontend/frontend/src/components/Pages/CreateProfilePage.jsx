@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import swal from "sweetalert";
 import Input from "../Utilities/Input";
 import Button from "../Utilities/Button";
@@ -9,6 +9,9 @@ import AddPicture from "../Utilities/AddPicture";
 import { useValidate } from "../CustomHooks/useValidate";
 import { useUserInfo } from "../CustomHooks/useUserInfo";
 import { useAuthenticate } from "../CustomHooks/useAuthenticate";
+import { useAuthorization } from "../CustomHooks/useAuthorization";
+import LoadingState from "../Utilities/LoadingState";
+import { useAuth } from "../Contexts/AuthContext";
 
 function Inputs({ setUserInfo, invalid }) {
   const [inputType, setInputType] = useState("password");
@@ -57,8 +60,7 @@ function ButtonContainer({ userInfo, validation }) {
     );
   };
 
-  const { saveUser } = useAuthenticate();
-
+  const { saveUser } = useAuth();
   // Bi yerlere bi çıkış yap butonu koymak lazım aslında
   const handleSave = async () => {
     if (checkInputs()) {
@@ -74,8 +76,6 @@ function ButtonContainer({ userInfo, validation }) {
             icon: "success",
             button: "Tamam",
           });
-          localStorage.setItem("auth", response);
-          // burası çalışmıyor
           navigate("/feed");
         } else {
           swal({
@@ -99,15 +99,7 @@ function ButtonContainer({ userInfo, validation }) {
 }
 
 //fotoğraf yükleme kısmı yapılacak
-function CreateProfilePage({ studentInfo }) {
-  useEffect(() => {
-    swal({
-      title: "Bu aşamayı geçmeden siteye devam edemezsiniz.",
-      icon: "warning",
-      button: "Tamam",
-    });
-  }, []);
-
+function CreateProfilePage() {
   const [userInfo, setUserInfo] = useUserInfo({
     email: "",
     password: "",
@@ -116,6 +108,8 @@ function CreateProfilePage({ studentInfo }) {
 
   const { invalid, validation } = useValidate();
 
+  // Bu sayfa sadece almostUser yetkisine sahip kullanıcılara
+  // Gösterilecek
   return (
     <CenteredContainer>
       <AddPicture />
