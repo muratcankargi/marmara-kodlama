@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import swal from "sweetalert";
 import Input from "../Utilities/Input";
 import IntroText from "../Utilities/IntroText";
@@ -9,8 +8,7 @@ import CustomLink from "../RouteRelated/CustomLink";
 import CenteredContainer from "../Utilities/CenteredContainer";
 import { useValidate } from "../CustomHooks/useValidate";
 import { useUserInfo } from "../CustomHooks/useUserInfo";
-import { useAuthenticate } from "../CustomHooks/useAuthenticate";
-import { useAuthorization } from "../CustomHooks/useAuthorization";
+import { useAuth } from "../Contexts/AuthContext";
 
 function Inputs({ setUserInfo, invalid }) {
   return (
@@ -55,7 +53,7 @@ function CustomLinkContainer() {
   );
 }
 
-function ButtonContainer({ userInfo, setStudentInfo, validation }) {
+function ButtonContainer({ userInfo, validation }) {
   const navigate = useNavigate();
   const { personalId, fatherName, birthDate } = userInfo;
 
@@ -68,13 +66,11 @@ function ButtonContainer({ userInfo, setStudentInfo, validation }) {
       checkBirthDate(birthDate)
     );
   };
-
-  const { signup } = useAuthenticate();
+  const { signup } = useAuth();
 
   const handleSignUp = async () => {
     if (checkInputs()) {
       const response = await signup(personalId, fatherName, birthDate);
-
       if (response) {
         if (response === "alreadySaved") {
           // tamama bastıktan sonra yönlendir.
@@ -87,12 +83,6 @@ function ButtonContainer({ userInfo, setStudentInfo, validation }) {
           return;
         }
         localStorage.setItem("auth", response);
-        // createprofilepage a göndermek için bu bilgileri app'deki studentInfo'ya gönderiyoruz
-        setStudentInfo({
-          studentName: response.name,
-          studentSurname: response.surname,
-          studentNumber: response.studentNumber,
-        });
         swal({
           title: "Bilgileriniz Doğrulandı!",
           icon: "success",
@@ -116,7 +106,7 @@ function ButtonContainer({ userInfo, setStudentInfo, validation }) {
   );
 }
 
-function SignUpPage({ setIsAuthenticated, setStudentInfo }) {
+function SignUpPage() {
   const [userInfo, setUserInfo] = useUserInfo({
     personalId: "",
     fatherName: "",
@@ -130,12 +120,7 @@ function SignUpPage({ setIsAuthenticated, setStudentInfo }) {
       <IntroText mainText="Hoş geldiniz" fadedText="Marmara kayıp eşya ağı" />
       <Inputs setUserInfo={setUserInfo} invalid={invalid} />
       <CustomLinkContainer />
-      <ButtonContainer
-        userInfo={userInfo}
-        setIsAuthenticated={setIsAuthenticated}
-        setStudentInfo={setStudentInfo}
-        validation={validation}
-      />
+      <ButtonContainer userInfo={userInfo} validation={validation} />
     </CenteredContainer>
   );
 }
