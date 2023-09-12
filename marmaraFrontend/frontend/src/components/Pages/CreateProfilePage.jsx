@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import swal from "sweetalert";
 import Input from "../Utilities/Input";
@@ -8,6 +8,7 @@ import InputWithShowPassword from "../Utilities/InputWithShowPassword";
 import AddPicture from "../Utilities/AddPicture";
 import { useValidate } from "../CustomHooks/useValidate";
 import { useUserInfo } from "../CustomHooks/useUserInfo";
+import { useAuthenticate } from "../CustomHooks/useAuthenticate";
 
 function Inputs({ setUserInfo, invalid }) {
   const [inputType, setInputType] = useState("password");
@@ -56,25 +57,32 @@ function ButtonContainer({ userInfo, validation }) {
     );
   };
 
-  const handleSave = () => {
+  const { saveUser } = useAuthenticate();
+
+  // Bi yerlere bi çıkış yap butonu koymak lazım aslında
+  const handleSave = async () => {
     if (checkInputs()) {
       try {
-        const response = { data: true };
-        if (response.data) {
+        const response = await saveUser({
+          email: userInfo.email,
+          password: userInfo.password,
+          token: localStorage.getItem("auth"),
+        });
+        if (response) {
           swal({
             title: "Bilgileriniz Kaydedildi!",
             icon: "success",
             button: "Tamam",
           });
-
+          localStorage.setItem("auth", response);
+          // burası çalışmıyor
           navigate("/feed");
         } else {
           swal({
-            title: "Başarısız işlem, lütfen daha sonra tekrar deneyin.",
-            icon: "error",
+            title: "Bilgileriniz Kaydedilemedi.",
+            icon: "Error",
             button: "Tamam",
           });
-          localStorage.removeItem("auth");
           navigate("/signup");
         }
       } catch (error) {
@@ -92,10 +100,15 @@ function ButtonContainer({ userInfo, validation }) {
 
 //fotoğraf yükleme kısmı yapılacak
 function CreateProfilePage({ studentInfo }) {
+  useEffect(() => {
+    swal({
+      title: "Bu aşamayı geçmeden siteye devam edemezsiniz.",
+      icon: "warning",
+      button: "Tamam",
+    });
+  }, []);
+
   const [userInfo, setUserInfo] = useUserInfo({
-    studentName: studentInfo?.studentName || null,
-    studentSurname: studentInfo?.studentSurname || null,
-    studentNumber: studentInfo?.studentNumber || null,
     email: "",
     password: "",
     passwordRepeat: "",

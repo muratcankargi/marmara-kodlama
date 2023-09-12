@@ -9,6 +9,7 @@ import CenteredContainer from "../Utilities/CenteredContainer";
 import InputWithShowPassword from "../Utilities/InputWithShowPassword";
 import { useValidate } from "../CustomHooks/useValidate";
 import { useUserInfo } from "../CustomHooks/useUserInfo";
+import { useAuthenticate } from "../CustomHooks/useAuthenticate";
 
 function CustomLinkContainer() {
   return (
@@ -43,7 +44,7 @@ function Inputs({ setUserInfo, invalid }) {
   );
 }
 
-function ButtonContainer({ userInfo, validation, setIsAuthenticated }) {
+function ButtonContainer({ userInfo, validation, login }) {
   const navigate = useNavigate();
   const { email, password } = userInfo;
 
@@ -52,12 +53,24 @@ function ButtonContainer({ userInfo, validation, setIsAuthenticated }) {
     return checkEmail(email);
   };
 
-  const handleClick = () => {
+  const handleClick = async () => {
     if (checkInputs()) {
-      if (email === "user@gmail.com" && password === "123") {
-        setIsAuthenticated(true);
-        localStorage.setItem("auth", "true");
+      const token = await login(email, password);
+      if (token) {
+        // loginden token gelmişse kaydediyoruz ve yönlendiriyoruz
+        swal({
+          title: "Bilgileriniz Doğrulandı!",
+          icon: "success",
+          button: "Tamam",
+        });
+        localStorage.setItem("auth", token);
         navigate("/feed");
+      } else {
+        swal({
+          title: "Bilgileriniz Doğrulanamadı",
+          icon: "error",
+          button: "Tamam",
+        });
       }
     }
   };
@@ -69,13 +82,15 @@ function ButtonContainer({ userInfo, validation, setIsAuthenticated }) {
   );
 }
 
-function SignInPage({ setIsAuthenticated }) {
+function SignInPage() {
   const [userInfo, setUserInfo] = useUserInfo({
     email: "",
     password: "",
   });
 
   const { invalid, validation } = useValidate();
+
+  const { login } = useAuthenticate();
 
   return (
     <CenteredContainer>
@@ -86,7 +101,7 @@ function SignInPage({ setIsAuthenticated }) {
       <Inputs setUserInfo={setUserInfo} invalid={invalid} />
       <CustomLinkContainer />
       <ButtonContainer
-        setIsAuthenticated={setIsAuthenticated}
+        login={login}
         userInfo={userInfo}
         validation={validation}
       />

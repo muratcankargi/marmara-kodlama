@@ -1,29 +1,62 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import ProgressBarCircle from "./ProgressBarCircle";
 import ProgressBarLineSpaceHolder from "./ProgressBarLineSpaceHolder";
 import ProgressBarLine from "./ProgressBarLine";
 
-function ProgressBar(props) {
+function ProgressBar({ pathname }) {
   // Tailwind'e props la className gönderirken buna dikkat etmek lazım
   // https://tailwindcss.com/docs/content-configuration#class-detection-in-depth
 
-  const { properties } = props;
-  const { width, circles } = properties;
+  const [progressBarStyles, setProgressBarStyles] = useState({
+    width: "w-20",
+    circles: ["1", "2", "3"],
+  });
 
-  // circles?.[0] undefined olursa diye kontrol yapıyoruz böyle bi değer varsa onu yoksa defafult
-  // olarak "1" gösteriyor
-  return (
+  useEffect(() => {
+    switch (pathname) {
+      case "/":
+        setProgressBarStyles({
+          width: "w-12",
+          circles: ["1", "2", "3"],
+        });
+        break;
+      case "/signin":
+      case "/signup":
+        setProgressBarStyles({
+          width: "w-48",
+          circles: ["✓", "2", "3"],
+        });
+        break;
+      case "/createprofile":
+        setProgressBarStyles({
+          width: "w-64",
+          circles: ["✓", "✓", "3"],
+        });
+        break;
+      default:
+        break;
+    }
+  }, [pathname]);
+
+  const progressBarPaths = ["/", "/signin", "/signup", "/createprofile"];
+
+  return progressBarPaths.includes(pathname) ? (
     <div className="w-full mt-7 flex justify-center">
       <div className="relative flex justify-center items-center text-white  ">
-        <ProgressBarCircle content={circles?.[0] ?? "1"} />
+        <ProgressBarCircle content={progressBarStyles.circles[0] ?? "1"} />
         <ProgressBarLineSpaceHolder />
-        <ProgressBarCircle content={circles?.[1] ?? "2"} />
+        <ProgressBarCircle content={progressBarStyles.circles[1] ?? "2"} />
         <ProgressBarLineSpaceHolder />
-        <ProgressBarCircle content={circles?.[2] ?? "3"} />
+        <ProgressBarCircle content={progressBarStyles.circles[2] ?? "3"} />
         <ProgressBarLine width="w-[90%]" bgColor="bg-black" />
-        <ProgressBarLine width={width ?? "w-20"} bgColor="bg-primary-200" />
+        <ProgressBarLine
+          width={progressBarStyles.width ?? "w-20"}
+          bgColor="bg-primary-200"
+        />
       </div>
     </div>
+  ) : (
+    <div></div>
   );
 }
 

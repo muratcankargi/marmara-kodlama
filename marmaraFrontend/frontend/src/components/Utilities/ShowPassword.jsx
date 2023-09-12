@@ -4,6 +4,8 @@ function ShowPassword({ setInputType }) {
   // Eye kapalı mı açık mı diye kontrol ediyoruz default olarak false yani eye-closed geliyor.
   const [eye, setEye] = useState(false);
 
+  // Eye basıldığı zaman inputun type ını değiştirerek
+  // parolayı gösteriyoruz
   const changeType = () => {
     setEye((prevValue) => {
       return !prevValue;

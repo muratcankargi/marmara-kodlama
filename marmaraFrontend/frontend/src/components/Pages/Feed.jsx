@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+import swal from "sweetalert";
 import Button from "../Utilities/Button";
-import { logout } from "../logout";
+import { useAuthenticate } from "../CustomHooks/useAuthenticate";
+import { useNavigate } from "react-router-dom";
 
 function Heading() {
   return (
@@ -11,15 +13,15 @@ function Heading() {
   );
 }
 
-function TagsHeading({ show, setShow }) {
+function TagsHeading({ showMoreTags, setShowMoreTags }) {
   const handleClick = () => {
-    setShow(false);
+    setShowMoreTags(false);
   };
 
   return (
     <div className="text-gray-500 flex w-full justify-between pb-2 pr-2">
       <p>Etiketler</p>
-      {show && (
+      {showMoreTags && (
         <button onClick={handleClick} className="font-bold text-accent ">
           Gizle
         </button>
@@ -28,13 +30,13 @@ function TagsHeading({ show, setShow }) {
   );
 }
 
-function ShowMoreButton({ show, setShow }) {
+function ShowMoreButton({ showMoreTags, setShowMoreTags }) {
   const handleClick = () => {
-    setShow(true);
+    setShowMoreTags(true);
   };
 
   return (
-    !show && (
+    !showMoreTags && (
       <button
         className="bottom-2 right-0 left-0 m-auto w-6 h-6 
   flex items-center justify-center bg-white
@@ -176,19 +178,19 @@ function Tags() {
   );
 }
 
-function ShowMoreGradient({ show }) {
+function ShowMoreGradient({ showMoreTags }) {
   return (
-    !show && (
+    !showMoreTags && (
       <div className="bg-gradient-to-t opacity-20 rounded-sm from-black absolute w-full h-full bottom-0"></div>
     )
   );
 }
 
-function TagsContainer({ show, children }) {
+function TagsContainer({ showMoreTags, children }) {
   return (
     <div
       className={`${
-        show ? "h-auto" : "h-24"
+        showMoreTags ? "h-auto" : "h-24"
       } overflow-y-hidden relative transition-all duration-[2000ms]`}
     >
       {children}
@@ -203,6 +205,8 @@ function HamburgerMenu({ showMenu, setShowMenu }) {
     });
   };
 
+  // after ve before hamburgermenu iconunu oluşturmak
+  // için kullanıldı
   return (
     <button
       className={`z-50 absolute top-5 right-5 
@@ -219,9 +223,25 @@ function HamburgerMenu({ showMenu, setShowMenu }) {
   );
 }
 
-function HamburgerMenuContent({ showMenu, setIsAuthenticated }) {
+function HamburgerMenuContent({ showMenu }) {
+  const { logout } = useAuthenticate();
+  const navigate = useNavigate();
+
   const handleClick = () => {
-    logout(setIsAuthenticated);
+    if (logout()) {
+      swal({
+        title: "Başarıyla çıkış yaptınız.",
+        icon: "success",
+        button: "Tamam",
+      });
+      navigate("/signin");
+    } else {
+      swal({
+        title: "Çıkış yapılamadı.",
+        icon: "error",
+        button: "Tamam",
+      });
+    }
   };
 
   return (
@@ -236,27 +256,35 @@ function HamburgerMenuContent({ showMenu, setIsAuthenticated }) {
   );
 }
 
-function Feed({ setIsAuthenticated }) {
+// burası biraz taslak halinde şuanda
+// yukardaki componentleri bu sayfa içinde tutmak yerine
+// ayırmak daha mantıklı olabilir
+function Feed() {
   // Bu show olayına biraz transition eklenecek
-  const [show, setShow] = useState(false);
+  // Tags kısmını kontrol ediyor
+  const [showMoreTags, setShowMoreTags] = useState(false);
   // Tags kısmını hamburger menü ye eklesek
   // daha mantıklı olabilir gibi çok item olursa hoş durmayacak
 
+  // hamburger menüyü kontrol ediyor
   const [showMenu, setShowMenu] = useState(false);
 
   return (
     <div className="w-full pt-8 ">
       <HamburgerMenu setShowMenu={setShowMenu} showMenu={showMenu} />
-      <HamburgerMenuContent
-        showMenu={showMenu}
-        setIsAuthenticated={setIsAuthenticated}
-      />
+      <HamburgerMenuContent showMenu={showMenu} />
       <Heading />
       <div className="px-3 pt-3">
-        <TagsHeading show={show} setShow={setShow} />
-        <TagsContainer show={show}>
-          <ShowMoreGradient show={show} />
-          <ShowMoreButton show={show} setShow={setShow} />
+        <TagsHeading
+          showMoreTags={showMoreTags}
+          setShowMoreTags={setShowMoreTags}
+        />
+        <TagsContainer showMoreTags={showMoreTags}>
+          <ShowMoreGradient showMoreTags={showMoreTags} />
+          <ShowMoreButton
+            showMoreTags={showMoreTags}
+            setShowMoreTags={setShowMoreTags}
+          />
           <Tags />
         </TagsContainer>
       </div>
