@@ -166,10 +166,10 @@ class User extends Controller
             ]);
         }
 
-        $result =$this->login($request);
+        //$result =$this->login($request);
 
         return response([
-            'message' => $result->original['message']
+            'message' => true
         ]);
     }
 
@@ -177,17 +177,23 @@ class User extends Controller
     {
         $token = $request->all()['token'];
         $tokenControl = PersonalAccessToken::where(['token' => $token])->first();
+        $tokenControl['counter']+=1;
+       PersonalAccessToken::where(['token' => $token])->update(['counter' => $tokenControl['counter']]);
+
         if($tokenControl){
             $user = \App\Models\User::where(['id' => $tokenControl['id']])->first();
             return response([
                 'user' => $user,
                 'abilities' => $tokenControl['abilities'],
-                'token' => $tokenControl['token']
+                'token' => $tokenControl['token'],
+                'counter' => $tokenControl['counter'],
             ]);
         }
         else{
+
             return response([
-                'user' => false
+                'user' => false,
+                'counter' => $tokenControl['counter'],
             ]);
         }
     }

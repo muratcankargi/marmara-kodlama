@@ -16,5 +16,6 @@ class PersonalAccessToken extends Model
         'user_id',
         'token',
         'abilities',
+        'counter'
     ];
 }
