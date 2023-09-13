@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import swal from "sweetalert";
 import Input from "../Utilities/Input";
@@ -7,7 +7,6 @@ import Button from "../Utilities/Button";
 import CustomLink from "../RouteRelated/CustomLink";
 import CenteredContainer from "../Utilities/CenteredContainer";
 import { useValidate } from "../CustomHooks/useValidate";
-import { useUserInfo } from "../CustomHooks/useUserInfo";
 import { useAuth } from "../Contexts/AuthContext";
 
 function Inputs({ setUserInfo, invalid }) {
@@ -76,7 +75,7 @@ function ButtonContainer({ userInfo, validation }) {
           // tamama bastıktan sonra yönlendir.
           swal({
             title: "Zaten kaydınız var, lütfen giriş yapınız.",
-            icon: "success",
+            icon: "error",
             button: "Tamam",
           });
           navigate("/signin");
@@ -91,8 +90,8 @@ function ButtonContainer({ userInfo, validation }) {
         navigate("/createprofile");
       } else {
         swal({
-          title: "Bilgileriniz Doğrulanamadı!",
-          icon: "success",
+          title: "Bilgileriniz Doğrulanamadı.",
+          icon: "error",
           button: "Tamam",
         });
       }
@@ -107,7 +106,7 @@ function ButtonContainer({ userInfo, validation }) {
 }
 
 function SignUpPage() {
-  const [userInfo, setUserInfo] = useUserInfo({
+  const [userInfo, setUserInfo] = useState({
     personalId: "",
     fatherName: "",
     birthDate: "",

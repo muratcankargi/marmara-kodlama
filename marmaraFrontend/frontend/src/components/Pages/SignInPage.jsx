@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import swal from "sweetalert";
 import Input from "../Utilities/Input";
@@ -8,9 +8,7 @@ import Button from "../Utilities/Button";
 import CenteredContainer from "../Utilities/CenteredContainer";
 import InputWithShowPassword from "../Utilities/InputWithShowPassword";
 import { useValidate } from "../CustomHooks/useValidate";
-import { useUserInfo } from "../CustomHooks/useUserInfo";
 import { useAuth } from "../Contexts/AuthContext";
-import LoadingState from "../Utilities/LoadingState";
 
 function CustomLinkContainer() {
   return (
@@ -86,7 +84,7 @@ function ButtonContainer({ userInfo, validation }) {
 }
 
 function SignInPage() {
-  const [userInfo, setUserInfo] = useUserInfo({
+  const [userInfo, setUserInfo] = useState({
     email: "",
     password: "",
   });

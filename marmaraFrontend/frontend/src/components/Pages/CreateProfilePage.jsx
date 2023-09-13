@@ -7,7 +7,6 @@ import CenteredContainer from "../Utilities/CenteredContainer";
 import InputWithShowPassword from "../Utilities/InputWithShowPassword";
 import AddPicture from "../Utilities/AddPicture";
 import { useValidate } from "../CustomHooks/useValidate";
-import { useUserInfo } from "../CustomHooks/useUserInfo";
 import { useAuth } from "../Contexts/AuthContext";
 
 function Inputs({ setUserInfo, invalid }) {
@@ -97,7 +96,7 @@ function ButtonContainer({ userInfo, validation }) {
 
 //fotoğraf yükleme kısmı yapılacak
 function CreateProfilePage() {
-  const [userInfo, setUserInfo] = useUserInfo({
+  const [userInfo, setUserInfo] = useState({
     email: "",
     password: "",
     passwordRepeat: "",
