@@ -7,12 +7,7 @@ import LoadingState from "../Utilities/LoadingState";
 
 // TODO: kullanıcı giriş yapmışsa signin ve signup sayfalarına
 // gidememeli, feed'e yönlendirilmeli.
-const ProtectedRoute = ({
-  children,
-  redirect,
-  reverse = false,
-  reversedRedirect,
-}) => {
+const ProtectedRoute = ({ children, redirect }) => {
   const { user, authenticate } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -20,7 +15,6 @@ const ProtectedRoute = ({
     async function checkAuthentication() {
       try {
         await authenticate();
-        console.log(user);
         setIsLoading(false);
       } catch (error) {
         console.error("Authentication failed:", error.message);

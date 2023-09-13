@@ -21,6 +21,7 @@ export const AuthProvider = ({ children }) => {
 
       // If authentication is successful, set the user state with user data
       const userData = response.data.message;
+
       setUser(userData);
     } catch (error) {
       console.log("Authentication Error: ", error.message);
@@ -42,6 +43,9 @@ export const AuthProvider = ({ children }) => {
         password: password,
       });
 
+      // serverdan gene bütün bilgiler gelmeli
+      setUser({ abilities: "user" });
+
       return response.data.message;
     } catch (error) {
       console.log("Error: ", error.message);
@@ -53,6 +57,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     try {
       localStorage.removeItem("auth");
+      setUser(null);
       return true;
     } catch (error) {
       console.log("Error: ", error.message);
@@ -73,6 +78,9 @@ export const AuthProvider = ({ children }) => {
         BabaAdi: fatherName,
         DogumTarihi: birthDate,
       });
+
+      // bilgileri döndürmeli
+      console.log(response.data.message);
 
       // token
       return response.data.message;
@@ -100,7 +108,15 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, login, logout, isLoading, authenticate, signup, saveUser }}
+      value={{
+        user,
+        login,
+        logout,
+        isLoading,
+        authenticate,
+        signup,
+        saveUser,
+      }}
     >
       {children}
     </AuthContext.Provider>

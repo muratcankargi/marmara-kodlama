@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import swal from "sweetalert";
 import Input from "../Utilities/Input";
@@ -9,7 +9,8 @@ import CenteredContainer from "../Utilities/CenteredContainer";
 import InputWithShowPassword from "../Utilities/InputWithShowPassword";
 import { useValidate } from "../CustomHooks/useValidate";
 import { useUserInfo } from "../CustomHooks/useUserInfo";
-import { useAuthenticate } from "../CustomHooks/useAuthenticate";
+import { useAuth } from "../Contexts/AuthContext";
+import LoadingState from "../Utilities/LoadingState";
 
 function CustomLinkContainer() {
   return (
@@ -44,9 +45,11 @@ function Inputs({ setUserInfo, invalid }) {
   );
 }
 
-function ButtonContainer({ userInfo, validation, login }) {
+function ButtonContainer({ userInfo, validation }) {
   const navigate = useNavigate();
   const { email, password } = userInfo;
+
+  const { login } = useAuth();
 
   const checkInputs = () => {
     const { checkEmail } = validation;
@@ -90,8 +93,6 @@ function SignInPage() {
 
   const { invalid, validation } = useValidate();
 
-  const { login } = useAuthenticate();
-
   return (
     <CenteredContainer>
       <IntroText
@@ -100,11 +101,7 @@ function SignInPage() {
       />
       <Inputs setUserInfo={setUserInfo} invalid={invalid} />
       <CustomLinkContainer />
-      <ButtonContainer
-        login={login}
-        userInfo={userInfo}
-        validation={validation}
-      />
+      <ButtonContainer userInfo={userInfo} validation={validation} />
     </CenteredContainer>
   );
 }

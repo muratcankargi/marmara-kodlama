@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import swal from "sweetalert";
 import Button from "../Utilities/Button";
-import { useAuthenticate } from "../CustomHooks/useAuthenticate";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../Contexts/AuthContext";
 
 function Heading() {
   return (
@@ -224,7 +224,7 @@ function HamburgerMenu({ showMenu, setShowMenu }) {
 }
 
 function HamburgerMenuContent({ showMenu }) {
-  const { logout } = useAuthenticate();
+  const { logout } = useAuth();
   const navigate = useNavigate();
 
   const handleClick = () => {

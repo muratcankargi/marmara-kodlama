@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import swal from "sweetalert";
 import Input from "../Utilities/Input";
 import Button from "../Utilities/Button";
@@ -8,9 +8,6 @@ import InputWithShowPassword from "../Utilities/InputWithShowPassword";
 import AddPicture from "../Utilities/AddPicture";
 import { useValidate } from "../CustomHooks/useValidate";
 import { useUserInfo } from "../CustomHooks/useUserInfo";
-import { useAuthenticate } from "../CustomHooks/useAuthenticate";
-import { useAuthorization } from "../CustomHooks/useAuthorization";
-import LoadingState from "../Utilities/LoadingState";
 import { useAuth } from "../Contexts/AuthContext";
 
 function Inputs({ setUserInfo, invalid }) {

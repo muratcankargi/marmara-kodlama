@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Route, Routes, useLocation, Navigate } from "react-router-dom";
+import React from "react";
+import { Route, Routes, useLocation } from "react-router-dom";
 import LandingPage from "./Pages/LandingPage";
 import SignInPage from "./Pages/SignInPage";
 import CreateProfilePage from "./Pages/CreateProfilePage";
@@ -8,7 +8,6 @@ import ProgressBar from "./ProgressBar/ProgressBar";
 import ProtectedRoute from "./RouteRelated/ProtectedRoute";
 import Feed from "./Pages/Feed";
 import WithPermission from "./RouteRelated/WithPermission";
-import { useAuth } from "./Contexts/AuthContext";
 
 function App() {
   const { pathname } = useLocation();
