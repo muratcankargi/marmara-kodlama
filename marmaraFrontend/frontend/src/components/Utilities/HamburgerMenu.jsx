@@ -12,9 +12,9 @@ function HamburgerMenuButton({ showMenu, setShowMenu }) {
   // için kullanıldı
   return (
     <button
-      className={`z-50 absolute top-5 right-5 
-          before:my-1 before:block before:w-8 before:h-1 before:rounded-md before:bg-black
-          after:my-1 after:block after:w-8 after:h-1 after:rounded-md after:bg-black
+      className={` z-50 absolute top-0 bottom-0 right-5
+          before:my-1 before:block before:w-8 before:h-1 before:rounded-md before:bg-black dark:before:bg-neutral
+          after:my-1 after:block after:w-8 after:h-1 after:rounded-md after:bg-black dark:after:bg-neutral
           before:transition-all after:transition-all
           ${
             showMenu &&
@@ -22,7 +22,9 @@ function HamburgerMenuButton({ showMenu, setShowMenu }) {
           }`}
       onClick={handleClick}
     >
-      {!showMenu && <div className="w-8 h-1 rounded-md bg-black"></div>}
+      {!showMenu && (
+        <div className="w-8 h-1 rounded-md bg-black dark:bg-neutral"></div>
+      )}
     </button>
   );
 }
@@ -31,9 +33,9 @@ function HamburgerMenuContent({ showMenu }) {
   return (
     <div
       className={`${showMenu ? "translate-x-0" : "translate-x-full"} 
-               z-40 top-0 right-0 fixed w-screen shadow-md shadow-black 
+               z-40 top-0 right-0 fixed w-screen  
                transition-all duration-300
-           h-screen bg-neutral `}
+           h-screen bg-neutral dark:bg-[#10141A]`}
     >
       <Logout />
     </div>

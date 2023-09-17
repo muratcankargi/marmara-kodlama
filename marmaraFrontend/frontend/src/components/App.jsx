@@ -13,7 +13,7 @@ function App() {
   const { pathname } = useLocation();
 
   return (
-    <div className="w-screen bg-neutral">
+    <div className="w-screen bg-neutral dark">
       <ProgressBar pathname={pathname} />
 
       <Routes>
