@@ -1,5 +1,5 @@
 import React from "react";
-import swal from "sweetalert";
+import { alert } from "./alert";
 
 function AddPictureLogo() {
   return (
@@ -17,11 +17,7 @@ function AddPictureInput() {
   const handleFileChange = (e) => {
     // bu şekilde fotoğrafı alıyoruz ama kaydetmemiz lazım
     if (e.target.files[0]) {
-      swal({
-        title: "Fotoğrafınız başarıyla yüklendi.",
-        icon: "success",
-        button: "Tamam",
-      });
+      alert("pictureSaved");
     }
   };
 

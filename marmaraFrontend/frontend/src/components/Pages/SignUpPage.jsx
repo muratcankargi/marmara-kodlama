@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import swal from "sweetalert";
+import { alert } from "../Utilities/alert";
 import Input from "../Utilities/Input";
 import IntroText from "../Utilities/IntroText";
 import Button from "../Utilities/Button";
@@ -73,27 +73,15 @@ function ButtonContainer({ userInfo, validation }) {
       if (response) {
         if (response === "alreadySaved") {
           // tamama bastıktan sonra yönlendir.
-          swal({
-            title: "Zaten kaydınız var, lütfen giriş yapınız.",
-            icon: "error",
-            button: "Tamam",
-          });
+          alert("alreadySaved");
           navigate("/signin");
           return;
         }
         localStorage.setItem("auth", response);
-        swal({
-          title: "Bilgileriniz Doğrulandı!",
-          icon: "success",
-          button: "Tamam",
-        });
+        alert("authenticated");
         navigate("/createprofile");
       } else {
-        swal({
-          title: "Bilgileriniz Doğrulanamadı.",
-          icon: "error",
-          button: "Tamam",
-        });
+        alert("notAuthenticated");
       }
     }
   };

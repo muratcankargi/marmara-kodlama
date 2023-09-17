@@ -18,9 +18,17 @@ module.exports = {
           "75%": { marginLeft: "-0.5rem" },
           "100%": { marginLeft: "0rem" },
         },
+        // Bir şey denemek için oluşturdum bunu ilerde kullanmak
+        // isteyebiliriz dursun
+        buttonHover: {
+          "0%": { left: "-1rem" },
+          "100%": { left: "12rem" },
+        },
       },
+
       animation: {
         shake: "shake 0.2s ease-in-out 0s 2",
+        buttonHover: "buttonHover 0.75s ease-in-out infinite",
       },
     },
   },

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import swal from "sweetalert";
+import { alert } from "../Utilities/alert";
 import Input from "../Utilities/Input";
 import IntroText from "../Utilities/IntroText";
 import CustomLink from "../RouteRelated/CustomLink";
@@ -59,19 +59,11 @@ function ButtonContainer({ userInfo, validation }) {
       const token = await login(email, password);
       if (token) {
         // loginden token gelmişse kaydediyoruz ve yönlendiriyoruz
-        swal({
-          title: "Bilgileriniz Doğrulandı!",
-          icon: "success",
-          button: "Tamam",
-        });
+        alert("authenticated");
         localStorage.setItem("auth", token);
         navigate("/feed");
       } else {
-        swal({
-          title: "Bilgileriniz Doğrulanamadı",
-          icon: "error",
-          button: "Tamam",
-        });
+        alert("notAuthenticated");
       }
     }
   };

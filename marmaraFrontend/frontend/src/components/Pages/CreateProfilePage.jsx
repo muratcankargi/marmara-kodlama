@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import swal from "sweetalert";
+import { alert } from "../Utilities/alert";
 import Input from "../Utilities/Input";
 import Button from "../Utilities/Button";
 import CenteredContainer from "../Utilities/CenteredContainer";
@@ -67,18 +67,10 @@ function ButtonContainer({ userInfo, validation }) {
           token: localStorage.getItem("auth"),
         });
         if (response) {
-          swal({
-            title: "Bilgileriniz Kaydedildi!",
-            icon: "success",
-            button: "Tamam",
-          });
+          alert("saved");
           navigate("/feed");
         } else {
-          swal({
-            title: "Bilgileriniz Kaydedilemedi.",
-            icon: "Error",
-            button: "Tamam",
-          });
+          alert("notSaved");
           navigate("/signup");
         }
       } catch (error) {

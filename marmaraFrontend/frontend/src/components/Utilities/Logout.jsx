@@ -1,7 +1,7 @@
 import React from "react";
 import { useAuth } from "../Contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import swal from "sweetalert";
+import { alert } from "./alert";
 import Button from "./Button";
 
 function Logout() {
@@ -10,18 +10,10 @@ function Logout() {
 
   const handleClick = () => {
     if (logout()) {
-      swal({
-        title: "Başarıyla çıkış yaptınız.",
-        icon: "success",
-        button: "Tamam",
-      });
+      alert("logout");
       navigate("/signin");
     } else {
-      swal({
-        title: "Çıkış yapılamadı.",
-        icon: "error",
-        button: "Tamam",
-      });
+      alert("notLogout");
     }
   };
 
