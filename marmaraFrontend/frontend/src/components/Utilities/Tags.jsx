@@ -181,6 +181,9 @@ function TagsContentContainer({ showMoreTags, setShowMoreTags }) {
   // Default olarak 8rem girdik sonraki
   // Value yu hesaplamak için tags'in kaç tane elementi olduğuna
   // bakıyoruz
+  // * 3 bi satırda ortalama 3 tane tag olmasından geliyor
+  // ama daha kesin bi sonuç için tag'lerin içindeki toplam harf
+  // sayısıyla bi hesaplama yapabiliriz.
   const styles = {
     gridTemplateRows: `${lengthOfTags * 3}rem`,
   };
@@ -207,12 +210,11 @@ function TagsContentContainer({ showMoreTags, setShowMoreTags }) {
 // Tags kısmını hamburger menü ye eklesek
 // daha mantıklı olabilir gibi çok item olursa hoş durmayacak
 function Tags() {
-  // Bu show olayına biraz transition eklenecek
   // Tags kısmını kontrol ediyor
   const [showMoreTags, setShowMoreTags] = useState(false);
 
   return (
-    <div className="px-3 pt-3">
+    <div className="px-3  pt-3">
       <TagsHeader
         showMoreTags={showMoreTags}
         setShowMoreTags={setShowMoreTags}
