@@ -32,7 +32,7 @@ class User extends Controller
 
                     $userControl = \App\Models\User::where(['student_number' => $response->OgrenciNo])->first();
 
-                    if($userControl){
+                    if ($userControl) {
                         return response([
                             'message' => 'alreadySaved'
                         ]);
@@ -44,7 +44,7 @@ class User extends Controller
                         'student_number' => $response->OgrenciNo,
                     ]);
 
-                    $token = md5(time() . rand(0,999999));
+                    $token = md5(time() . rand(0, 999999));
 
                     PersonalAccessToken::create([
                         'user_id' => $user->getAttributes()['id'],
@@ -109,7 +109,7 @@ class User extends Controller
             'password' => 'required',
         ]);
 
-        if(!Auth::attempt($credentials)){
+        if (!Auth::attempt($credentials)) {
 
             return response([
                 'message' => false
@@ -117,21 +117,21 @@ class User extends Controller
         }
         /** @var \App\Models\User $user */
         $user = Auth::user();
-        $userId=$user->getAttributes()['id'];
-        $token = md5(time() . rand(0,999999));
+        $userId = $user->getAttributes()['id'];
+        $token = md5(time() . rand(0, 999999));
 
-        $userRecord= PersonalAccessToken::where(['user_id' => $userId])->first();
+        $userRecord = PersonalAccessToken::where(['user_id' => $userId])->first();
 
-        if($userRecord){
-            PersonalAccessToken::where(['user_id' => $userId])->update(['token'=> $token]);
+        if ($userRecord) {
+            PersonalAccessToken::where(['user_id' => $userId])->update(['token' => $token]);
         }
 
 
         return response([
-            'message' => $token ]);
+            'message' => $token]);
     }
 
-    public function signup(Request $request)
+    public function saveUser(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'email' => 'required|string|email|max:255|unique:users',
@@ -150,7 +150,7 @@ class User extends Controller
 
         $hasToken = PersonalAccessToken::where(['token' => $data['token']])->first();
 
-        if($hasToken){
+        if ($hasToken) {
             \App\Models\User::where(['id' => $hasToken->user_id])->update([
                 'email' => $data['email'],
                 'password' => bcrypt($data['password'])
@@ -159,35 +159,46 @@ class User extends Controller
             PersonalAccessToken::where(['user_id' => $hasToken->user_id])->update([
                 'abilities' => 'user'
             ]);
-        }
-        else{
+
+            $user = \App\Models\User::where(['id' => $hasToken->user_id])->first();
+
+            return response([
+                'message' => [
+                    'user' => $user,
+                    'abilities' => 'user',
+                    'token' => $hasToken->token
+                ],
+            ]);
+
+        } else {
             return response([
                 'message' => false,
             ]);
         }
 
-        $result =$this->login($request);
 
-        return response([
-            'message' => $result->original['message']
-        ]);
     }
 
     public function authenticate(Request $request)
     {
         $token = $request->all()['token'];
         $tokenControl = PersonalAccessToken::where(['token' => $token])->first();
-        if($tokenControl){
+        $tokenControl['counter'] += 1;
+        PersonalAccessToken::where(['token' => $token])->update(['counter' => $tokenControl['counter']]);
+
+        if ($tokenControl) {
             $user = \App\Models\User::where(['id' => $tokenControl['id']])->first();
             return response([
-                'user' => $user,
-                'abilities' => $tokenControl['abilities'],
-                'token' => $tokenControl['token']
+                'message' => ['user' => $user,
+                    'abilities' => $tokenControl['abilities'],
+                    'token' => $tokenControl['token'],
+                    'counter' => $tokenControl['counter'],]
             ]);
-        }
-        else{
+        } else {
+
             return response([
-                'user' => false
+                'user' => false,
+                'counter' => $tokenControl['counter'],
             ]);
         }
     }
