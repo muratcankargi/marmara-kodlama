@@ -214,7 +214,6 @@ class User extends Controller
             'tags' => 'required|array',
             'image_source' => 'nullable|string'
         ]);
-        dd($request);
 
         if ($validator->fails()) {
             return response([
@@ -230,7 +229,7 @@ class User extends Controller
                 Declaration::create(['user_id' => $user['id'],
                     'title' => $request->title,
                     'description' => $request->description,
-                    'tags' => $request->tags,
+                    'tags' => json_encode($request->tags),
                     'visibility' => boolval($request->visibility),
                     'image_source' => $request->image_source,
                 ]);
