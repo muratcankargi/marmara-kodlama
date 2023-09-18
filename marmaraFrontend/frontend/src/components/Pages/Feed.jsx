@@ -13,16 +13,26 @@ function FeedHeading({ text }) {
 }
 
 function FeedNavbar() {
+  // Bu kısımdaki transition olayı biraz yanlış kodlanmış gibi geliyor
+  // doğrusunu yapana kadar bu şekilde kalabilir
+
   // Navbar'ın style'ını ne kadar scroll edildiğine
   // göre değiştiricez
   const { scrollY } = useWindowScrollPosition();
-  console.log(scrollY);
 
+  // top property sini transition etmek için
+  // scroll 200 den küçükken top: -5 yapıyoruz
+  // görüntüsel olarak dengelemek içinde üstten boşluk bırakıyoruz margin top ile
   return (
     <div
-      className={`${
-        scrollY > 50 && "bg-white dark:bg-[#1B2430]  shadow-xl py-2"
-      } z-30 sticky top-0  `}
+      className={`
+      ${
+        // 200 random bi rakam değiştirilebilir
+        scrollY > 200
+          ? `bg-white dark:bg-darkPrimary top-0 sticky shadow-2xl py-2 transition-[top]  ease-in`
+          : "-top-5 mt-10"
+      } 
+          z-30 relative`}
     >
       <FeedHeading text="İlanlar" />
       <HamburgerMenu />
@@ -34,7 +44,7 @@ function FeedNavbar() {
 // Onu çözmemiz lazım bulamadım
 function Feed() {
   return (
-    <div className="w-full pt-4  bg-neutral dark:bg-[#10141A]">
+    <div className="w-full pt-4  bg-neutral dark:bg-darkNeutral">
       <FeedNavbar />
       <Tags />
       <Cards />

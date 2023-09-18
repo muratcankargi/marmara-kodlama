@@ -11,6 +11,8 @@ module.exports = {
           100: "#0B3160",
           200: "#6B8AB2",
         },
+        darkNeutral: "#10141A",
+        darkPrimary: "#1B2430",
       },
       keyframes: {
         shake: {

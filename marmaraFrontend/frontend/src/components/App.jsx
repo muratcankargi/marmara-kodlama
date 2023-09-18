@@ -8,12 +8,14 @@ import ProgressBar from "./ProgressBar/ProgressBar";
 import ProtectedRoute from "./RouteRelated/ProtectedRoute";
 import Feed from "./Pages/Feed";
 import WithPermission from "./RouteRelated/WithPermission";
+import { useTheme } from "./Contexts/ThemeContext";
 
 function App() {
   const { pathname } = useLocation();
+  const { theme } = useTheme();
 
   return (
-    <div className="w-screen bg-neutral dark">
+    <div className={`w-screen bg-neutral ${theme}`}>
       <ProgressBar pathname={pathname} />
 
       <Routes>
