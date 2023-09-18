@@ -5,7 +5,7 @@ import React from "react";
 function CardHeading({ author, date }) {
   return (
     <div className="dark:bg-[#1B2430] relative flex justify-between items-center py-1 px-2 text-sm bg-primary-100 text-neutral">
-      <span className="w-[98%] h-[2px] -bottom-1 left-1/2 -translate-x-1/2 rounded-lg dark:bg-[#0D1218] bg-none absolute"></span>
+      <span className="w-[96%] h-[2px] -bottom-1 left-1/2 -translate-x-1/2 rounded-lg dark:bg-[#10141A] bg-none absolute"></span>
       <div>{author}</div>
       <div>{date}</div>
     </div>

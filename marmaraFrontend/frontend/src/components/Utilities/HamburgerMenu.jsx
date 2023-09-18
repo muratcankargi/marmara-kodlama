@@ -1,5 +1,6 @@
 import { React, useState } from "react";
 import Logout from "./Logout";
+import ThemeSwitcher from "./ThemeSwitcher";
 
 function HamburgerMenuButton({ showMenu, setShowMenu }) {
   const handleClick = () => {
@@ -33,10 +34,12 @@ function HamburgerMenuContent({ showMenu }) {
   return (
     <div
       className={`${showMenu ? "translate-x-0" : "translate-x-full"} 
-               z-40 top-0 right-0 fixed w-screen  
+              flex justify-center items-center gap-12 
+              z-40 top-0 right-0 fixed w-screen  
                transition-all duration-300
-           h-screen bg-neutral dark:bg-[#10141A]`}
+           h-screen bg-neutral dark:bg-darkNeutral`}
     >
+      <ThemeSwitcher />
       <Logout />
     </div>
   );
