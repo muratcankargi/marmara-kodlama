@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
+use App\Models\Declaration;
 use App\Models\PersonalAccessToken;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -183,10 +184,12 @@ class User extends Controller
     {
         $token = $request->all()['token'];
         $tokenControl = PersonalAccessToken::where(['token' => $token])->first();
-        $tokenControl['counter'] += 1;
-        PersonalAccessToken::where(['token' => $token])->update(['counter' => $tokenControl['counter']]);
+
 
         if ($tokenControl) {
+            $tokenControl['counter'] += 1;
+            PersonalAccessToken::where(['token' => $token])->update(['counter' => $tokenControl['counter']]);
+
             $user = \App\Models\User::where(['id' => $tokenControl['id']])->first();
             return response([
                 'message' => ['user' => $user,
@@ -197,9 +200,50 @@ class User extends Controller
         } else {
 
             return response([
-                'user' => false,
-                'counter' => $tokenControl['counter'],
-            ]);
+                'message' => [
+                    'user' => false,
+                ]]);
+        }
+    }
+
+    public function createDeclaration(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|string|max:200',
+            'description' => 'required|string|max:2000',
+            'tags' => 'required|string',
+            'image_source' => 'nullable|string'
+        ]);
+
+        if ($validator->fails()) {
+            return response([
+                'message' => [
+                    'status' => false,
+                    'fails' => $validator->messages()->all()
+                ]]);
+        } else {
+
+            $result = $this->authenticate($request);
+            $user = json_decode(json_encode($result), true)['original']['message']['user'];
+            if ($user) {
+                Declaration::create(['user_id' => $user['id'],
+                    'title' => $request->title,
+                    'description' => $request->description,
+                    'tags' => $request->tags,
+                    'visibility' => boolval($request->visibility),
+                    'image_source' => $request->image_source,
+                ]);
+
+                return response([
+                    'message' => [
+                        'status' => true
+                    ]]);
+            } else {
+                return response([
+                    'message' => [
+                        'status' => 'notAuthenticated'
+                    ]]);
+            }
         }
     }
 }
