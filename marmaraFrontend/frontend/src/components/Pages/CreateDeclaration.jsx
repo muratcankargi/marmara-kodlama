@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { alert } from "../Utilities/alert";
 import Input from "../Utilities/Input";
+import IntroText from "../Utilities/IntroText";
 import Button from "../Utilities/Button";
 import CenteredContainer from "../Utilities/CenteredContainer";
 import { useValidate } from "../CustomHooks/useValidate";
 import { useAuth } from "../Contexts/AuthContext";
+import HamburgerMenu from "../Utilities/HamburgerMenu";
 import AddPicture from "../Utilities/AddPicture";
-import Navbar from "../Utilities/Navbar";
 
 function Inputs({ setDeclaration, invalid }) {
   return (
@@ -21,7 +22,6 @@ function Inputs({ setDeclaration, invalid }) {
         src="/images/title.png"
         alt="Title Icon"
       />
-
       <Input
         invalid={invalid}
         type="textarea"
@@ -47,6 +47,7 @@ function ButtonContainer({ declaration, validation }) {
     );
   };
 
+  // title ve description yolluyoruz daha sonra tags ve photo da yollanacak
   const handleClick = async () => {
     if (checkInputs()) {
       const result = await createDeclaration(title, description);
@@ -66,7 +67,9 @@ function ButtonContainer({ declaration, validation }) {
   );
 }
 
+// tags eklenecek
 function CreateDeclaration() {
+  // buraya visibility, image_source ve tags eklenecek (database bu şekilde)
   const [declaration, setDeclaration] = useState({
     title: "",
     description: "",
@@ -75,14 +78,15 @@ function CreateDeclaration() {
   const { invalid, validation } = useValidate();
 
   return (
-    <>
-      <Navbar text="İlan Oluştur" />
-      <CenteredContainer>
-        <AddPicture />
-        <Inputs setDeclaration={setDeclaration} invalid={invalid} />
-        <ButtonContainer declaration={declaration} validation={validation} />
-      </CenteredContainer>
-    </>
+    <CenteredContainer>
+      <div className="absolute top-16 right-2">
+        <HamburgerMenu />
+      </div>
+      <IntroText mainText="İlan Oluştur" />
+      <AddPicture />
+      <Inputs setDeclaration={setDeclaration} invalid={invalid} />
+      <ButtonContainer declaration={declaration} validation={validation} />
+    </CenteredContainer>
   );
 }
 

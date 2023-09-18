@@ -114,7 +114,7 @@ export const AuthProvider = ({ children }) => {
           title: title,
           description: description,
           token: localStorage.getItem("auth"),
-          tags: ["cüzdan"],
+          tags: ["cüzdan", "maltepe"],
           visibility: true,
           image_source: "",
         }

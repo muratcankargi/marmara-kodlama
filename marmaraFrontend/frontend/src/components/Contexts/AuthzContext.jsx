@@ -5,6 +5,7 @@ import { useAuth } from "./AuthContext";
 const AuthzContext = createContext();
 
 export const AuthzProvider = ({ children }) => {
+  // user permissonları buraya yönetiliyor
   const { user } = useAuth();
   const [permissions, setPermissions] = useState(null);
 

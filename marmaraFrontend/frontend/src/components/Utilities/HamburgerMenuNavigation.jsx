@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 
 function HamburgerMenuNavigation() {
+  // hamburgermenu deki yönlendirmeler burdan kontrol edilecek
+
   const navigate = useNavigate();
 
   const links = [
