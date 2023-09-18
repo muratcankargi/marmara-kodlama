@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->string('title',200);
             $table->string('description',2000);
-            $table->string('tags');
+            $table->json('tags');
             $table->boolean('visibility');
             $table->string('image_source')->nullable();
             $table->timestamps();
