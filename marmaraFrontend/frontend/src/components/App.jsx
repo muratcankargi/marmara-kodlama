@@ -7,6 +7,7 @@ import SignUpPage from "./Pages/SignUpPage";
 import ProgressBar from "./ProgressBar/ProgressBar";
 import ProtectedRoute from "./RouteRelated/ProtectedRoute";
 import Feed from "./Pages/Feed";
+import CreateDeclaration from "./Pages/CreateDeclaration";
 import WithPermission from "./RouteRelated/WithPermission";
 import { useTheme } from "./Contexts/ThemeContext";
 
@@ -31,6 +32,17 @@ function App() {
             <ProtectedRoute redirect="/signin">
               <WithPermission mustPermission="user" redirect="/createprofile">
                 <Feed />
+              </WithPermission>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/createDeclaration"
+          element={
+            <ProtectedRoute redirect="/signin">
+              <WithPermission mustPermission="user" redirect="/createprofile">
+                <CreateDeclaration />
               </WithPermission>
             </ProtectedRoute>
           }

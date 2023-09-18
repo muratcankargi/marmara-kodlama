@@ -65,7 +65,12 @@ function Card() {
 // Bu componentler farklı sayfalara ayrılacak
 function Cards() {
   return (
-    <div className="w-full pt-5">
+    <div className="w-full pt-5 md:grid md:grid-cols-3 h-full">
+      <Card />
+      <Card />
+      <Card />
+      <Card />
+      <Card />
       <Card />
       <Card />
     </div>

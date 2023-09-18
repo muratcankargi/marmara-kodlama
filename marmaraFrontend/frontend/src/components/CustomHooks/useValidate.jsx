@@ -164,6 +164,32 @@ export function useValidate() {
     }
   };
 
+  const checkDeclarationTitle = (title) => {
+    if (!title) {
+      applyEffect("title", "Başlık boş bırakılamaz.");
+      return false;
+    } else if (title.length > 25) {
+      applyEffect("title", "Başlık 25 harften uzun olamaz.");
+      return false;
+    } else {
+      removeEffect("title");
+      return true;
+    }
+  };
+
+  const checkDeclarationDescription = (description) => {
+    if (!description) {
+      applyEffect("description", "Açıklama boş bırakılamaz.");
+      return false;
+    } else if (description.length > 250) {
+      applyEffect("description", "Açıklama 250 harften uzun olamaz.");
+      return false;
+    } else {
+      removeEffect("description");
+      return true;
+    }
+  };
+
   return {
     invalid,
     validation: {
@@ -173,6 +199,8 @@ export function useValidate() {
       checkPersonalId,
       checkFatherName,
       checkBirthDate,
+      checkDeclarationTitle,
+      checkDeclarationDescription,
     },
   };
 }
