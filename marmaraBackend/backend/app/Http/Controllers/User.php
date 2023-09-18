@@ -211,7 +211,7 @@ class User extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:200',
             'description' => 'required|string|max:2000',
-            'tags' => 'required|string',
+            'tags' => 'required',
             'image_source' => 'nullable|string'
         ]);
 
