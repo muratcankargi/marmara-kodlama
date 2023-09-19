@@ -28,8 +28,8 @@ function Input({ setState, inputName, src, alt, type, placeholder, invalid }) {
           invalid.inputName === inputName && invalid.value && "animate-shake"
         } ${
           type !== "textarea"
-            ? "mt-12 w-full flex border-2 border-b-slate-300 border-x-0 border-t-0 p-2 pl-0"
-            : "mt-12 w-full border-2 border-slate-300 rounded-md p-2 "
+            ? "mt-12 w-full flex border-2 border-b-slate-300 dark:border-b-darkPrimary border-x-0 border-t-0 p-2 pl-0"
+            : "mt-12 w-full border-2 border-slate-300 dark:border-darkPrimary rounded-md p-2 "
         } `}
       >
         {type !== "textarea" ? (

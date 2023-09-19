@@ -1,21 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-const tags = [
-  {
-    text: "Tüm İlanlar",
-    selected: false,
-  },
-  {
-    text: "Akbil",
-    selected: false,
-  },
-  {
-    text: "Maltepe",
-    selected: false,
-  },
-];
-
 function TagsHeader({ showMoreTags, setShowMoreTags }) {
   const handleClick = () => {
     setShowMoreTags(false);
@@ -56,7 +41,7 @@ function ShowMoreButton({ showMoreTags, setShowMoreTags }) {
   );
 }
 
-function Tag({ text, setTags, tag }) {
+function Tag({ text, tag, tags, setTags }) {
   // Bu tagları seçtiğimizde servere istek atıcaz
   // ve ona göre ilanları listelicez ama
   // hızlı bi şekilde basıp kaldırma durumlarında
@@ -67,10 +52,23 @@ function Tag({ text, setTags, tag }) {
   const [selected, setSelected] = useState(tag.selected);
 
   const handleClick = () => {
-    //setSelected -> siyah turuncu arası geçiş sağlıyor ve object'teki değerleri değiştiriyor
-    setSelected((tag.selected = !tag.selected));
-    //setTags tags objectini createdeclaration a yolluyor
-    setTags(tags);
+    // burasının yaptığı şey doğru tag için selected değerini değiştirmek
+    // best practice için bu şekilde yeni bi object yaratarak yapılıyor ama aslında yapılan şey şu
+    // tag.selected = !tag.selected
+    const updatedTags = tags.map((mapTag) => {
+      if (mapTag.text === tag.text) {
+        return {
+          ...mapTag,
+          selected: !mapTag.selected, // Toggle the selected property
+        };
+      }
+      return mapTag;
+    });
+
+    setTags(updatedTags); // Update the state with the new array
+
+    // style ı değiştiriyor
+    setSelected(tag.selected);
   };
 
   return (
@@ -85,18 +83,26 @@ function Tag({ text, setTags, tag }) {
   );
 }
 
-function TagsContent({ setTags }) {
+function TagsContent({ getTags, setTags, tags }) {
   return (
     <div className="flex flex-wrap gap-3 ">
       {tags.map((tag) => {
         return (
-          <Tag key={uuidv4()} text={tag.text} tag={tag} setTags={setTags} />
+          <Tag
+            key={uuidv4()}
+            text={tag.text}
+            tag={tag}
+            tags={tags}
+            setTags={setTags}
+            getTags={getTags}
+          />
         );
       })}
     </div>
   );
 }
 
+// bunu pek sevmiyorum değiştirebiliriz
 function ShowMoreGradient({ showMoreTags }) {
   return (
     !showMoreTags && (
@@ -105,7 +111,14 @@ function ShowMoreGradient({ showMoreTags }) {
   );
 }
 
-function TagsContentContainer({ showMoreTags, setShowMoreTags, setTags }) {
+function TagsContentContainer({
+  showMoreTags,
+  setShowMoreTags,
+  getTags,
+  setTags,
+  tags,
+}) {
+  // bu hiç düzgün çalışmıyor değiştirmemiz lazım
   const lengthOfTags = Math.round(tags.length / 3);
 
   // Transition eklemek için grid kullanıyoruz
@@ -131,7 +144,7 @@ function TagsContentContainer({ showMoreTags, setShowMoreTags, setTags }) {
             showMoreTags={showMoreTags}
             setShowMoreTags={setShowMoreTags}
           />
-          <TagsContent setTags={setTags} />
+          <TagsContent getTags={getTags} setTags={setTags} tags={tags} />
         </>
       </div>
     </div>
@@ -140,7 +153,27 @@ function TagsContentContainer({ showMoreTags, setShowMoreTags, setTags }) {
 
 // Tags kısmını hamburger menü ye eklesek
 // daha mantıklı olabilir gibi çok item olursa hoş durmayacak
-function Tags({ setTags = () => {} }) {
+function Tags({ getTags }) {
+  const [tags, setTags] = useState([
+    {
+      text: "Tüm İlanlar",
+      selected: false,
+    },
+    {
+      text: "Akbil",
+      selected: false,
+    },
+    {
+      text: "Maltepe",
+      selected: false,
+    },
+  ]);
+
+  useEffect(() => {
+    // getTags'i herhangi bir componentden yollararak hangi taglerin seçildiğini alabiliriz
+    getTags(tags);
+  }, [tags]);
+
   // Tags kısmını kontrol ediyor
   const [showMoreTags, setShowMoreTags] = useState(false);
 
@@ -151,6 +184,8 @@ function Tags({ setTags = () => {} }) {
         setShowMoreTags={setShowMoreTags}
       />
       <TagsContentContainer
+        tags={tags}
+        getTags={getTags}
         setTags={setTags}
         showMoreTags={showMoreTags}
         setShowMoreTags={setShowMoreTags}

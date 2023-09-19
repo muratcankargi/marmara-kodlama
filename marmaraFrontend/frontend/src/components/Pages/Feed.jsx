@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import HamburgerMenu from "../Utilities/HamburgerMenu";
 import Tags from "../Utilities/Tags";
 import Cards from "../Utilities/Cards";
@@ -43,10 +43,12 @@ function FeedNavbar() {
 // Bu sayfadaki bir şey overflow x yaratıyor
 // Onu çözmemiz lazım bulamadım
 function Feed() {
+  const [tags, setTags] = useState([]);
+
   return (
     <div className="w-full pt-4  bg-neutral dark:bg-darkNeutral">
       <FeedNavbar />
-      <Tags />
+      <Tags getTags={setTags} />
       <Cards />
     </div>
   );

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-// Ne kadar scroll yapıldığını alıyoruz
+// Ne kadar scroll yapıldığını alıyoruz, feed sayfasındaki sticky için
 export const useWindowScrollPosition = () => {
   const [scrollPosition, setPosition] = useState({ scrollX: 0, scrollY: 0 });
 
