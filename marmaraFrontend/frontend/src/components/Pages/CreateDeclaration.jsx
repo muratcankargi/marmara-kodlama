@@ -9,6 +9,7 @@ import { useValidate } from "../CustomHooks/useValidate";
 import { useAuth } from "../Contexts/AuthContext";
 import HamburgerMenu from "../Utilities/HamburgerMenu";
 import AddPicture from "../Utilities/AddPicture";
+import Tags from "../Utilities/Tags";
 
 function Inputs({ setDeclaration, invalid }) {
   return (
@@ -35,22 +36,36 @@ function Inputs({ setDeclaration, invalid }) {
   );
 }
 
-function ButtonContainer({ declaration, validation }) {
+function ButtonContainer({ declaration, validation, tags }) {
   const navigate = useNavigate();
   const { title, description } = declaration;
   const { createDeclaration } = useAuth();
+  const tagsArray = [];
 
   const checkInputs = () => {
-    const { checkDeclarationTitle, checkDeclarationDescription } = validation;
+    const {
+      checkDeclarationTitle,
+      checkDeclarationDescription,
+      checkDeclarationTags,
+    } = validation;
     return (
-      checkDeclarationTitle(title) && checkDeclarationDescription(description)
+      checkDeclarationTitle(title) &&
+      checkDeclarationDescription(description) &&
+      checkDeclarationTags(tagsArray)
     );
   };
 
   // title ve description yolluyoruz daha sonra tags ve photo da yollanacak
   const handleClick = async () => {
+    tags.forEach((tag) => {
+      // server'a  array gönderdiğimiz için elimizdeki objecti array'e çeviriyoruz
+      // sadece selected'i true olanları alıyoruz
+      if (tag.selected) tagsArray.push(tag.text);
+    });
+    // tagsArray'i validation da kullandığımız için üst tarafta
+    // işlemleri tamamlıyoruz
     if (checkInputs()) {
-      const result = await createDeclaration(title, description);
+      const result = await createDeclaration(title, description, tagsArray);
       if (result) {
         alert("declarationSaved");
         // navigate("/feed");
@@ -69,6 +84,8 @@ function ButtonContainer({ declaration, validation }) {
 
 // tags eklenecek
 function CreateDeclaration() {
+  const [tags, setTags] = useState([]);
+
   // buraya visibility, image_source ve tags eklenecek (database bu şekilde)
   const [declaration, setDeclaration] = useState({
     title: "",
@@ -85,7 +102,12 @@ function CreateDeclaration() {
       <IntroText mainText="İlan Oluştur" />
       <AddPicture />
       <Inputs setDeclaration={setDeclaration} invalid={invalid} />
-      <ButtonContainer declaration={declaration} validation={validation} />
+      <Tags setTags={setTags} />
+      <ButtonContainer
+        declaration={declaration}
+        validation={validation}
+        tags={tags}
+      />
     </CenteredContainer>
   );
 }

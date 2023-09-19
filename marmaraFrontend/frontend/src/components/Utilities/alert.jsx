@@ -53,6 +53,9 @@ export function alert(state) {
     case "declarationNotSaved":
       alertError("İlan paylaşılamadı.");
       break;
+    case "emptyTags":
+      alertError("Lütfen en az bir adet etiket seçiniz.");
+      break;
     default:
       // Burası production da kaldırılıcak şuanlık
       // yanlış state girişi yaparsak çalışıcak düzeltelim

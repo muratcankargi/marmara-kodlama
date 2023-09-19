@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { alert } from "../Utilities/alert";
 
 export function useValidate() {
   // Shake Animation
@@ -190,6 +191,15 @@ export function useValidate() {
     }
   };
 
+  const checkDeclarationTags = (tags) => {
+    if (tags.length === 0) {
+      alert("emptyTags");
+      return false;
+    } else {
+      return true;
+    }
+  };
+
   return {
     invalid,
     validation: {
@@ -201,6 +211,7 @@ export function useValidate() {
       checkBirthDate,
       checkDeclarationTitle,
       checkDeclarationDescription,
+      checkDeclarationTags,
     },
   };
 }

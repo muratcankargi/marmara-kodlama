@@ -37,7 +37,7 @@ function Input({ setState, inputName, src, alt, type, placeholder, invalid }) {
             <img className="w-6 h-6" src={src} alt={alt} />
             <input
               onChange={handleOnChange}
-              className="pl-2 w-3/4 outline-0 border-0  "
+              className="pl-2 w-3/4 outline-0 border-0 dark:bg-darkNeutral dark:text-neutral"
               style={type === "Date" ? styles : {}}
               type={type}
               placeholder={placeholder}
@@ -46,7 +46,7 @@ function Input({ setState, inputName, src, alt, type, placeholder, invalid }) {
           </>
         ) : (
           <textarea
-            className="w-full resize-none outline-0 border-0"
+            className="w-full resize-none outline-0 border-0 dark:bg-darkNeutral dark:text-neutral"
             onChange={handleOnChange}
             type={type}
             rows="10"

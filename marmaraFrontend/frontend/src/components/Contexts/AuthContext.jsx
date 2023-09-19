@@ -106,7 +106,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const createDeclaration = async (title, description) => {
+  const createDeclaration = async (title, description, tagsArray) => {
     try {
       const response = await axios.post(
         "http://localhost:8000/api/createDeclaration",
@@ -114,7 +114,7 @@ export const AuthProvider = ({ children }) => {
           title: title,
           description: description,
           token: localStorage.getItem("auth"),
-          tags: ["cüzdan", "maltepe"],
+          tags: tagsArray,
           visibility: true,
           image_source: "",
         }

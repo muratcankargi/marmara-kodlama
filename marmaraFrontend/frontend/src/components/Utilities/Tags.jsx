@@ -1,90 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 const tags = [
   {
     text: "Tüm İlanlar",
+    selected: false,
   },
   {
     text: "Akbil",
+    selected: false,
   },
   {
     text: "Maltepe",
-  },
-  {
-    text: "Para",
-  },
-  {
-    text: "Elektronik",
-  },
-  {
-    text: "Kadıköy",
-  },
-  {
-    text: "Cüzdan",
-  },
-  {
-    text: "Kitap",
-  },
-  {
-    text: "Otomobil",
-  },
-  {
-    text: "Ev Eşyaları",
-  },
-  {
-    text: "Bilgisayar",
-  },
-  {
-    text: "Spor",
-  },
-  {
-    text: "Kıyafet",
-  },
-  {
-    text: "Müzik",
-  },
-  {
-    text: "Mobilya",
-  },
-  {
-    text: "Ofis Malzemeleri",
-  },
-  {
-    text: "Bahçe",
-  },
-  {
-    text: "Yemek",
-  },
-  {
-    text: "Eğitim",
-  },
-  {
-    text: "Sağlık",
-  },
-  {
-    text: "Seyahat",
-  },
-  {
-    text: "Hobi",
-  },
-  {
-    text: "Sanat",
-  },
-  {
-    text: "Telefon",
-  },
-  {
-    text: "Film",
-  },
-  {
-    text: "Mücevher",
-  },
-  {
-    text: "Kamera",
-  },
-  {
-    text: "Saat",
+    selected: false,
   },
 ];
 
@@ -128,7 +56,7 @@ function ShowMoreButton({ showMoreTags, setShowMoreTags }) {
   );
 }
 
-function Tag({ text }) {
+function Tag({ text, setTags, tag }) {
   // Bu tagları seçtiğimizde servere istek atıcaz
   // ve ona göre ilanları listelicez ama
   // hızlı bi şekilde basıp kaldırma durumlarında
@@ -136,19 +64,20 @@ function Tag({ text }) {
   // bu videonun bi yerinde bunu nasıl engelleyeceğimiz
   // vardı oraya gelince bakarız
   // https://www.youtube.com/watch?v=-yIsQPp31L0
-  const [selected, setSelected] = useState(false);
+  const [selected, setSelected] = useState(tag.selected);
 
   const handleClick = () => {
-    setSelected((prevValue) => {
-      return !prevValue;
-    });
+    //setSelected -> siyah turuncu arası geçiş sağlıyor ve object'teki değerleri değiştiriyor
+    setSelected((tag.selected = !tag.selected));
+    //setTags tags objectini createdeclaration a yolluyor
+    setTags(tags);
   };
 
   return (
     <button
       className={`${
         selected ? "bg-accent" : "bg-black"
-      } first:bg-accent py-1 px-3 rounded-sm font-semibold transition-all ease-in-out  text-neutral`}
+      } py-1 px-3 rounded-sm font-semibold transition-all ease-in-out  text-neutral`}
       onClick={handleClick}
     >
       {text}
@@ -156,11 +85,13 @@ function Tag({ text }) {
   );
 }
 
-function TagsContent() {
+function TagsContent({ setTags }) {
   return (
     <div className="flex flex-wrap gap-3 ">
       {tags.map((tag) => {
-        return <Tag key={uuidv4()} text={tag.text} />;
+        return (
+          <Tag key={uuidv4()} text={tag.text} tag={tag} setTags={setTags} />
+        );
       })}
     </div>
   );
@@ -174,7 +105,7 @@ function ShowMoreGradient({ showMoreTags }) {
   );
 }
 
-function TagsContentContainer({ showMoreTags, setShowMoreTags }) {
+function TagsContentContainer({ showMoreTags, setShowMoreTags, setTags }) {
   const lengthOfTags = Math.round(tags.length / 3);
 
   // Transition eklemek için grid kullanıyoruz
@@ -200,7 +131,7 @@ function TagsContentContainer({ showMoreTags, setShowMoreTags }) {
             showMoreTags={showMoreTags}
             setShowMoreTags={setShowMoreTags}
           />
-          <TagsContent />
+          <TagsContent setTags={setTags} />
         </>
       </div>
     </div>
@@ -209,7 +140,7 @@ function TagsContentContainer({ showMoreTags, setShowMoreTags }) {
 
 // Tags kısmını hamburger menü ye eklesek
 // daha mantıklı olabilir gibi çok item olursa hoş durmayacak
-function Tags() {
+function Tags({ setTags = () => {} }) {
   // Tags kısmını kontrol ediyor
   const [showMoreTags, setShowMoreTags] = useState(false);
 
@@ -220,6 +151,7 @@ function Tags() {
         setShowMoreTags={setShowMoreTags}
       />
       <TagsContentContainer
+        setTags={setTags}
         showMoreTags={showMoreTags}
         setShowMoreTags={setShowMoreTags}
       />
