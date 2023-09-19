@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LoginRequest;
 use App\Models\Declaration;
 use App\Models\PersonalAccessToken;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -252,6 +253,9 @@ class User extends Controller
         foreach ($declarations as $declaration) {
             $user = json_decode(Models\User::where(['id' => $declaration->user_id])->first());
 
+            $declaration->created_at = Carbon::parse($declaration->created_at)->format('d/m/Y');
+            $declaration->updated_at = Carbon::parse($declaration->updated_at)->format('d/m/Y');
+            $declaration->tags = json_decode($declaration->tags);
             $declaration->user = $user->name . ' ' . $user->surname;
         }
         return response([
