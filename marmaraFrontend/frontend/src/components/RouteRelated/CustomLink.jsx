@@ -10,7 +10,7 @@ function CustomLink(props) {
   return (
     <Link
       to={props.to}
-      className="text-black font-semibold"
+      className="text-black font-semibold dark:text-neutral"
       style={props.text.length > 15 ? styles : {}}
     >
       {props.text}

@@ -44,7 +44,7 @@ function AddPictureInput() {
 
 function AddPicture() {
   return (
-    <div className="mt-14 flex-col flex items-center justify-center ">
+    <div className="flex-col flex items-center justify-center ">
       <AddPictureLogo />
       <AddPictureInput />
     </div>

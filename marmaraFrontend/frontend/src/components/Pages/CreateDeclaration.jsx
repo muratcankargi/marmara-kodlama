@@ -101,18 +101,20 @@ function CreateDeclaration() {
   const { invalid, validation } = useValidate();
 
   return (
-    <CenteredContainer>
+    <CenteredContainer paddingTop="pt-12">
       {/* Bu hamburgermenu nün positonunu bu şekilde vermek aslında biraz saçma
         yani en azından her sayfada aynı tutmak zor, ama her yerde aynı yapmaya çalışmakta zor
         feed sayfasında sticky ye bağlı olduğu için çok sıkıntı yaratıyor
         diğer sayfalarda veya buna benzer sayfalarda bu değerleri kullanarak en azından
         bi kısmını stabil tutabiliriz
       */}
-      <div className="absolute top-16 right-2">
+      <div className="flex w-full justify-between">
+        <IntroText mainText="İlan Oluştur" />
         <HamburgerMenu />
       </div>
-      <IntroText mainText="İlan Oluştur" />
-      <AddPicture />
+      <div className="p-12">
+        <AddPicture />
+      </div>
       <Inputs setDeclaration={setDeclaration} invalid={invalid} />
       <Tags getTags={setTags} />
       <ButtonContainer

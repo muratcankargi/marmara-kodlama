@@ -5,10 +5,11 @@ import FadedText from "../Utilities/FadedText";
 import Waves from "../Utilities/Waves";
 import QuestionMark from "../Utilities/QuestionMark";
 import Button from "../Utilities/Button";
+import CenteredContainer from "../Utilities/CenteredContainer";
 
 function FadedTextContainer() {
   return (
-    <div className="w-full flex items-center justify-center mt-12 font-medium">
+    <div className=" w-full flex items-center justify-center mt-12 font-medium">
       <FadedText text="Eşya" />
     </div>
   );
@@ -31,13 +32,13 @@ function Buttons() {
 
 function LandingPage() {
   return (
-    <div className="w-full h-full ">
+    <CenteredContainer>
       <Logo />
       <FadedTextContainer />
       <Buttons />
       <QuestionMark />
       <Waves />
-    </div>
+    </CenteredContainer>
   );
 }
 

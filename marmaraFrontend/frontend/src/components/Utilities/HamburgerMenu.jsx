@@ -1,7 +1,6 @@
 import { React, useState } from "react";
 import Logout from "./Logout";
 import ThemeSwitcher from "./ThemeSwitcher";
-import { useNavigate } from "react-router-dom";
 import HamburgerMenuNavigation from "./HamburgerMenuNavigation";
 
 function HamburgerMenuButton({ showMenu, setShowMenu }) {
@@ -15,9 +14,7 @@ function HamburgerMenuButton({ showMenu, setShowMenu }) {
   // için kullanıldı
   return (
     <button
-      className={` z-50 ${
-        showMenu ? "fixed" : "absolute top-0 bottom-0"
-      }  right-5
+      className={`z-50 ${showMenu ? "fixed top-12 right-44" : ""}  
           before:my-1 before:block before:w-8 before:h-1 before:rounded-md before:bg-black dark:before:bg-neutral
           after:my-1 after:block after:w-8 after:h-1 after:rounded-md after:bg-black dark:after:bg-neutral
           before:transition-all after:transition-all

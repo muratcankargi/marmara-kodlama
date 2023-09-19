@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { useTheme } from "../Contexts/ThemeContext";
 
 function ShowPassword({ setInputType }) {
   // Eye kapalı mı açık mı diye kontrol ediyoruz default olarak false yani eye-closed geliyor.
   const [eye, setEye] = useState(false);
+  const { theme } = useTheme();
 
   // Eye basıldığı zaman inputun type ını değiştirerek
   // parolayı gösteriyoruz
@@ -21,7 +23,15 @@ function ShowPassword({ setInputType }) {
       onClick={changeType}
     >
       <img
-        src={eye ? "images/eye.png" : "images/eye-closed.png"}
+        src={
+          theme !== "dark"
+            ? eye
+              ? "images/eye.png"
+              : "images/eye-closed.png"
+            : eye
+            ? "images/eyeDark.png"
+            : "images/eye-closedDark.png"
+        }
         alt="Show password"
       />
     </button>

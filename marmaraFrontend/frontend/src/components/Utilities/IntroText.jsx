@@ -3,7 +3,7 @@ import FadedText from "./FadedText";
 
 function IntroText(props) {
   return (
-    <div className="mt-16">
+    <div>
       <h1 className="text-2xl font-extrabold tracking-wider dark:text-neutral">
         {props.mainText}
       </h1>
