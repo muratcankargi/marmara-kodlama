@@ -8,8 +8,7 @@ use App\Models\PersonalAccessToken;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
-use Mockery\Exception;
+use \App\Models;
 
 class User extends Controller
 {
@@ -245,5 +244,18 @@ class User extends Controller
                     ]]);
             }
         }
+    }
+
+    public function getDeclaration()
+    {
+        $declarations = json_decode(Declaration::all());
+        foreach ($declarations as $declaration) {
+            $user = json_decode(Models\User::where(['id' => $declaration->user_id])->first());
+
+            $declaration->user = $user->name . ' ' . $user->surname;
+        }
+        return response([
+            'message' => $declarations
+        ]);
     }
 }

@@ -27,3 +27,5 @@ Route::post('/saveUser', [\App\Http\Controllers\User::class, 'saveUser']);
 Route::post('/authenticate', [\App\Http\Controllers\User::class, 'authenticate']);
 
 Route::post('/createDeclaration', [\App\Http\Controllers\User::class, 'createDeclaration']);
+
+Route::get('/getDeclaration', [\App\Http\Controllers\User::class, 'getDeclaration']);
