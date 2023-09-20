@@ -9,6 +9,8 @@ import CenteredContainer from "../Utilities/CenteredContainer";
 import InputWithShowPassword from "../Utilities/InputWithShowPassword";
 import { useValidate } from "../CustomHooks/useValidate";
 import { useAuth } from "../Contexts/AuthContext";
+import ThemeSwitcher from "../Utilities/ThemeSwitcher";
+import QuestionMark from "../Utilities/QuestionMark";
 
 function CustomLinkContainer() {
   return (
@@ -91,6 +93,9 @@ function SignInPage() {
       />
       <Inputs setUserInfo={setUserInfo} invalid={invalid} />
       <CustomLinkContainer />
+      <div className="absolute bottom-12 z-50">
+        <ThemeSwitcher />
+      </div>
       <ButtonContainer userInfo={userInfo} validation={validation} />
     </CenteredContainer>
   );

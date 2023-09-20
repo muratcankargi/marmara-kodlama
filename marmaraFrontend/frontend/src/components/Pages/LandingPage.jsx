@@ -6,11 +6,27 @@ import Waves from "../Utilities/Waves";
 import QuestionMark from "../Utilities/QuestionMark";
 import Button from "../Utilities/Button";
 import CenteredContainer from "../Utilities/CenteredContainer";
+import ThemeSwitcher from "../Utilities/ThemeSwitcher";
 
 function FadedTextContainer() {
   return (
     <div className=" w-full flex items-center justify-center mt-12 font-medium">
       <FadedText text="Eşya" />
+    </div>
+  );
+}
+
+function FooterContainer() {
+  return (
+    <div className="mt-48">
+      <div className="flex justify-between items-center ">
+        <div className="z-50">
+          <ThemeSwitcher />
+        </div>
+        <div className="z-50">
+          <QuestionMark />
+        </div>
+      </div>
     </div>
   );
 }
@@ -36,7 +52,7 @@ function LandingPage() {
       <Logo />
       <FadedTextContainer />
       <Buttons />
-      <QuestionMark />
+      <FooterContainer />
       <Waves />
     </CenteredContainer>
   );

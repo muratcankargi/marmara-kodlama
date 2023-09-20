@@ -2,11 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useTheme } from "../Contexts/ThemeContext";
 
 function Input({ setState, inputName, src, alt, type, placeholder, invalid }) {
-  const styles = {
-    background: "none",
-    width: "100%",
-  };
-
   // dark theme için kullandığımız her icon un sonu Dark ile bitecek örnek:
   // calendarDark, id-cardDark, bunu kullanarak her yerde farklı yollar vermektense
   // theme dark ise verilen yolu editliyoruz useEffect içinde
@@ -21,6 +16,12 @@ function Input({ setState, inputName, src, alt, type, placeholder, invalid }) {
       setDarkSrc(path + extension);
     }
   }, []);
+
+  const styles = {
+    background: "none",
+    width: "100%",
+    // color: theme === "dark" ? "#10141A" : "white",
+  };
 
   const handleOnChange = (e) => {
     setState((prevValue) => ({
@@ -57,7 +58,7 @@ function Input({ setState, inputName, src, alt, type, placeholder, invalid }) {
             />
             <input
               onChange={handleOnChange}
-              className="pl-2 w-3/4 outline-0 border-0 dark:bg-darkNeutral dark:text-neutral"
+              className="pl-2 w-3/4 outline-0 border-0 bg-transparent dark:text-neutral"
               style={type === "Date" ? styles : {}}
               type={type}
               placeholder={placeholder}
@@ -66,7 +67,7 @@ function Input({ setState, inputName, src, alt, type, placeholder, invalid }) {
           </>
         ) : (
           <textarea
-            className="w-full resize-none outline-0 border-0 dark:bg-darkNeutral dark:text-neutral"
+            className="w-full resize-none outline-0 border-0 bg-transparent dark:text-neutral"
             onChange={handleOnChange}
             type={type}
             rows="10"

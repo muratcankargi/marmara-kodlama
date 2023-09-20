@@ -8,6 +8,7 @@ import CustomLink from "../RouteRelated/CustomLink";
 import CenteredContainer from "../Utilities/CenteredContainer";
 import { useValidate } from "../CustomHooks/useValidate";
 import { useAuth } from "../Contexts/AuthContext";
+import ThemeSwitcher from "../Utilities/ThemeSwitcher";
 
 function Inputs({ setUserInfo, invalid }) {
   return (
@@ -107,6 +108,9 @@ function SignUpPage() {
       <IntroText mainText="Hoş geldiniz" fadedText="Marmara kayıp eşya ağı" />
       <Inputs setUserInfo={setUserInfo} invalid={invalid} />
       <CustomLinkContainer />
+      <div className="absolute bottom-12 z-50">
+        <ThemeSwitcher />
+      </div>
       <ButtonContainer userInfo={userInfo} validation={validation} />
     </CenteredContainer>
   );

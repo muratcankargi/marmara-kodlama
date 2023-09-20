@@ -8,6 +8,7 @@ import InputWithShowPassword from "../Utilities/InputWithShowPassword";
 import AddPicture from "../Utilities/AddPicture";
 import { useValidate } from "../CustomHooks/useValidate";
 import { useAuth } from "../Contexts/AuthContext";
+import ThemeSwitcher from "../Utilities/ThemeSwitcher";
 
 function Inputs({ setUserInfo, invalid }) {
   const [inputType, setInputType] = useState("password");
@@ -102,6 +103,9 @@ function CreateProfilePage() {
     <CenteredContainer>
       <AddPicture />
       <Inputs setUserInfo={setUserInfo} invalid={invalid} />
+      <div className="absolute bottom-16 z-50">
+        <ThemeSwitcher />
+      </div>
       <ButtonContainer userInfo={userInfo} validation={validation} />
     </CenteredContainer>
   );

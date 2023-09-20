@@ -46,9 +46,9 @@ function QuestionMark() {
       </div>
       <button
         onClick={triggerMessageBox}
-        className="absolute right-4 bottom-12 z-50 mt-auto w-10 h-10 text-white font-extrabold text-3xl flex items-center justify-center"
+        className="w-6 h-6 text-white font-extrabold text-3xl"
       >
-        ?
+        <img src="/images/questionMark.png" alt="Question mark" />
       </button>
     </div>
   );
