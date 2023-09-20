@@ -84,7 +84,7 @@ function SignInPage() {
   const { invalid, validation } = useValidate();
 
   return (
-    <CenteredContainer>
+    <CenteredContainer paddingTop="pt-32">
       <IntroText
         mainText="Tekrar hoş geldiniz"
         fadedText="Marmara kayıp eşya ağı"

@@ -45,7 +45,14 @@ function FeedNavbar() {
   // grid ile centered container gibi gözükmesini sağlıyoruz hamburgermenu
   // aynı yerde olsun diye
   return (
-    <div className={`w-full flex justify-center`}>
+    <div
+      className={`w-full flex justify-center static h-14 transition-[top]
+      ${
+        scrollY > 200
+          ? "z-50 sticky top-0 bg-neutral dark:bg-darkPrimary"
+          : "-top-14"
+      }`}
+    >
       <div className="w-3/4 grid grid-cols-3 place-items-center">
         <div></div>
         <FeedHeading text="İlanlar" />

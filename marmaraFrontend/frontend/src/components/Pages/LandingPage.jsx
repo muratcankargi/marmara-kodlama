@@ -32,7 +32,7 @@ function Buttons() {
 
 function LandingPage() {
   return (
-    <CenteredContainer>
+    <CenteredContainer paddingTop="pt-16">
       <Logo />
       <FadedTextContainer />
       <Buttons />

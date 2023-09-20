@@ -103,7 +103,7 @@ function SignUpPage() {
   const { invalid, validation } = useValidate();
 
   return (
-    <CenteredContainer>
+    <CenteredContainer paddingTop="pt-32">
       <IntroText mainText="Hoş geldiniz" fadedText="Marmara kayıp eşya ağı" />
       <Inputs setUserInfo={setUserInfo} invalid={invalid} />
       <CustomLinkContainer />
