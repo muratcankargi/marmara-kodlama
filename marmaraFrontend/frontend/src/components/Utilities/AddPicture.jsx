@@ -23,7 +23,10 @@ function AddPictureInput() {
 
   return (
     <>
-      <label className="pt-3 cursor-pointer" htmlFor="fileInput">
+      <label
+        className="pt-3 cursor-pointer dark:text-neutral"
+        htmlFor="fileInput"
+      >
         Fotoğraf Yükle
       </label>
       <input
@@ -41,7 +44,7 @@ function AddPictureInput() {
 
 function AddPicture() {
   return (
-    <div className="mt-14 flex-col flex items-center justify-center ">
+    <div className="flex-col flex items-center justify-center ">
       <AddPictureLogo />
       <AddPictureInput />
     </div>

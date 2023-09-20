@@ -5,7 +5,7 @@ function Waves() {
     <img
       src="/images/Waves.png"
       alt="Waves"
-      className="absolute bottom-0 h-72 w-full z-0"
+      className="absolute left-0 bottom-0 h-72 w-full z-0"
     />
   );
 }

@@ -7,6 +7,8 @@ import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "./components/Contexts/AuthContext";
 import { AuthzProvider } from "./components/Contexts/AuthzContext";
 import { ThemeProvider } from "./components/Contexts/ThemeContext";
+import { LocationProvider } from "./components/Contexts/LocationContext";
+import { HamburgerMenuProvider } from "./components/Contexts/HamburgerMenuContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -15,7 +17,11 @@ root.render(
       <AuthzProvider>
         <ThemeProvider>
           <BrowserRouter>
-            <App />
+            <LocationProvider>
+              <HamburgerMenuProvider>
+                <App />
+              </HamburgerMenuProvider>
+            </LocationProvider>
           </BrowserRouter>
         </ThemeProvider>
       </AuthzProvider>

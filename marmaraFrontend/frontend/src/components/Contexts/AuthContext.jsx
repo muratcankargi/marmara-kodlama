@@ -106,6 +106,26 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const createDeclaration = async (title, description, tagsArray) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/createDeclaration",
+        {
+          title: title,
+          description: description,
+          token: localStorage.getItem("auth"),
+          tags: tagsArray,
+          visibility: true,
+          image_source: "",
+        }
+      );
+
+      return response.data.message;
+    } catch (error) {
+      console.log("Error: ", error.message);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -116,6 +136,7 @@ export const AuthProvider = ({ children }) => {
         authenticate,
         signup,
         saveUser,
+        createDeclaration,
       }}
     >
       {children}

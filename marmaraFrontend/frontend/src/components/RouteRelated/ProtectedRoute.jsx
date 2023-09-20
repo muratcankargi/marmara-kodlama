@@ -28,7 +28,9 @@ const ProtectedRoute = ({ children, redirect }) => {
     return <LoadingState />;
   }
 
-  if (!user) {
+  // return değerleri daha açık olmalı sadece
+  // false yapınca karışıyor
+  if (!user.user) {
     return <Navigate to={redirect} />;
   }
 

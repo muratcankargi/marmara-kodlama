@@ -1,92 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-
-const tags = [
-  {
-    text: "Tüm İlanlar",
-  },
-  {
-    text: "Akbil",
-  },
-  {
-    text: "Maltepe",
-  },
-  {
-    text: "Para",
-  },
-  {
-    text: "Elektronik",
-  },
-  {
-    text: "Kadıköy",
-  },
-  {
-    text: "Cüzdan",
-  },
-  {
-    text: "Kitap",
-  },
-  {
-    text: "Otomobil",
-  },
-  {
-    text: "Ev Eşyaları",
-  },
-  {
-    text: "Bilgisayar",
-  },
-  {
-    text: "Spor",
-  },
-  {
-    text: "Kıyafet",
-  },
-  {
-    text: "Müzik",
-  },
-  {
-    text: "Mobilya",
-  },
-  {
-    text: "Ofis Malzemeleri",
-  },
-  {
-    text: "Bahçe",
-  },
-  {
-    text: "Yemek",
-  },
-  {
-    text: "Eğitim",
-  },
-  {
-    text: "Sağlık",
-  },
-  {
-    text: "Seyahat",
-  },
-  {
-    text: "Hobi",
-  },
-  {
-    text: "Sanat",
-  },
-  {
-    text: "Telefon",
-  },
-  {
-    text: "Film",
-  },
-  {
-    text: "Mücevher",
-  },
-  {
-    text: "Kamera",
-  },
-  {
-    text: "Saat",
-  },
-];
 
 function TagsHeader({ showMoreTags, setShowMoreTags }) {
   const handleClick = () => {
@@ -128,7 +41,7 @@ function ShowMoreButton({ showMoreTags, setShowMoreTags }) {
   );
 }
 
-function Tag({ text }) {
+function Tag({ text, tag, tags, setTags }) {
   // Bu tagları seçtiğimizde servere istek atıcaz
   // ve ona göre ilanları listelicez ama
   // hızlı bi şekilde basıp kaldırma durumlarında
@@ -136,19 +49,33 @@ function Tag({ text }) {
   // bu videonun bi yerinde bunu nasıl engelleyeceğimiz
   // vardı oraya gelince bakarız
   // https://www.youtube.com/watch?v=-yIsQPp31L0
-  const [selected, setSelected] = useState(false);
+  const [selected, setSelected] = useState(tag.selected);
 
   const handleClick = () => {
-    setSelected((prevValue) => {
-      return !prevValue;
+    // burasının yaptığı şey doğru tag için selected değerini değiştirmek
+    // best practice için bu şekilde yeni bi object yaratarak yapılıyor ama aslında yapılan şey şu
+    // tag.selected = !tag.selected
+    const updatedTags = tags.map((mapTag) => {
+      if (mapTag.text === tag.text) {
+        return {
+          ...mapTag,
+          selected: !mapTag.selected, // Toggle the selected property
+        };
+      }
+      return mapTag;
     });
+
+    setTags(updatedTags); // Update the state with the new array
+
+    // style ı değiştiriyor
+    setSelected(tag.selected);
   };
 
   return (
     <button
       className={`${
         selected ? "bg-accent" : "bg-black"
-      } first:bg-accent py-1 px-3 rounded-sm font-semibold transition-all ease-in-out  text-neutral`}
+      } py-1 px-3 rounded-sm font-semibold transition-all ease-in-out  text-neutral`}
       onClick={handleClick}
     >
       {text}
@@ -156,16 +83,26 @@ function Tag({ text }) {
   );
 }
 
-function TagsContent() {
+function TagsContent({ getTags, setTags, tags }) {
   return (
     <div className="flex flex-wrap gap-3 ">
       {tags.map((tag) => {
-        return <Tag key={uuidv4()} text={tag.text} />;
+        return (
+          <Tag
+            key={uuidv4()}
+            text={tag.text}
+            tag={tag}
+            tags={tags}
+            setTags={setTags}
+            getTags={getTags}
+          />
+        );
       })}
     </div>
   );
 }
 
+// bunu pek sevmiyorum değiştirebiliriz
 function ShowMoreGradient({ showMoreTags }) {
   return (
     !showMoreTags && (
@@ -174,7 +111,14 @@ function ShowMoreGradient({ showMoreTags }) {
   );
 }
 
-function TagsContentContainer({ showMoreTags, setShowMoreTags }) {
+function TagsContentContainer({
+  showMoreTags,
+  setShowMoreTags,
+  getTags,
+  setTags,
+  tags,
+}) {
+  // bu hiç düzgün çalışmıyor değiştirmemiz lazım
   const lengthOfTags = Math.round(tags.length / 3);
 
   // Transition eklemek için grid kullanıyoruz
@@ -200,7 +144,7 @@ function TagsContentContainer({ showMoreTags, setShowMoreTags }) {
             showMoreTags={showMoreTags}
             setShowMoreTags={setShowMoreTags}
           />
-          <TagsContent />
+          <TagsContent getTags={getTags} setTags={setTags} tags={tags} />
         </>
       </div>
     </div>
@@ -209,7 +153,27 @@ function TagsContentContainer({ showMoreTags, setShowMoreTags }) {
 
 // Tags kısmını hamburger menü ye eklesek
 // daha mantıklı olabilir gibi çok item olursa hoş durmayacak
-function Tags() {
+function Tags({ getTags }) {
+  const [tags, setTags] = useState([
+    {
+      text: "Tüm İlanlar",
+      selected: false,
+    },
+    {
+      text: "Akbil",
+      selected: false,
+    },
+    {
+      text: "Maltepe",
+      selected: false,
+    },
+  ]);
+
+  useEffect(() => {
+    // getTags'i herhangi bir componentden yollararak hangi taglerin seçildiğini alabiliriz
+    getTags(tags);
+  }, [tags]);
+
   // Tags kısmını kontrol ediyor
   const [showMoreTags, setShowMoreTags] = useState(false);
 
@@ -220,6 +184,9 @@ function Tags() {
         setShowMoreTags={setShowMoreTags}
       />
       <TagsContentContainer
+        tags={tags}
+        getTags={getTags}
+        setTags={setTags}
         showMoreTags={showMoreTags}
         setShowMoreTags={setShowMoreTags}
       />

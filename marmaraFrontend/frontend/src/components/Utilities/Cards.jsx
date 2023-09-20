@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { v4 as uuidv4 } from "uuid";
 
 // span, dark modda altta çıkan siyah çizgi
 // borderla vermedim çünkü sağdan soldan boşluk olsun istedim
@@ -16,7 +18,7 @@ function CardImage({ source }) {
   return (
     <img
       className="object-cover rounded-sm pt-3 h-56 "
-      src={source}
+      src="/images/cuzdan.jpg"
       alt="Kayıp Eşya"
     />
   );
@@ -39,35 +41,87 @@ function CardContent({ heading, content }) {
   );
 }
 
-function CardBody() {
+function CardBody({ title, description }) {
   return (
     <div className="bg-white dark:bg-[#1B2430]  shadow-md p-2 py-3 flex flex-col">
-      <CardContent
-        heading="Kayıp Siyah Cüzdan"
-        content="Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque
-    aperiam repudiandae unde non? Quae, odit."
-      />
+      <CardContent heading={title} content={description} />
       <CardImage source="./images/cuzdan.jpg" />
       <CardButton />
     </div>
   );
 }
 
-function Card() {
+function Card({ author, date, title, description }) {
+  function capitalizeName(name) {
+    // Split the name into words based on spaces
+    const words = name.split(" ");
+
+    // Create an array to store the capitalized words
+    const capitalizedWords = [];
+
+    // Iterate through the words and capitalize the first letter of each word
+    for (const word of words) {
+      // Check if the word is not empty
+      if (word.length > 0) {
+        // Capitalize the first letter of the word and convert the rest to lowercase (Turkish locale)
+        const capitalizedWord =
+          word.charAt(0).toLocaleUpperCase("tr-TR") +
+          word.slice(1).toLocaleLowerCase("tr-TR");
+        // Push the capitalized word to the array
+        capitalizedWords.push(capitalizedWord);
+      }
+    }
+
+    // Join the capitalized words back together with spaces and return the result
+    return capitalizedWords.join(" ");
+  }
+
+  const convertedName = capitalizeName(author);
+
   return (
     <div className="pb-5 px-3 ">
-      <CardHeading author="Serkan Bayram" date="20/08/2023" />
-      <CardBody />
+      <CardHeading author={convertedName} date={date} />
+      <CardBody title={title} description={description} />
     </div>
   );
 }
 
 // Bu componentler farklı sayfalara ayrılacak
+
 function Cards() {
+  const [cards, setCards] = useState([]);
+
+  useEffect(() => {
+    const asyncFunction = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8000/api/getDeclaration"
+        );
+
+        setCards(response.data.message);
+
+        return response.data.message;
+      } catch (error) {
+        console.log("Error: ", error.message);
+      }
+    };
+
+    asyncFunction();
+  }, []);
+
   return (
-    <div className="w-full pt-5">
-      <Card />
-      <Card />
+    <div className="w-full pt-5 md:grid md:grid-cols-3 ">
+      {cards.map((card) => {
+        return (
+          <Card
+            key={uuidv4()}
+            author={card.user}
+            date={card.created_at}
+            title={card.title}
+            description={card.description}
+          />
+        );
+      })}
     </div>
   );
 }

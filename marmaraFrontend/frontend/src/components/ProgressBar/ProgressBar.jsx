@@ -41,7 +41,7 @@ function ProgressBar({ pathname }) {
   const progressBarPaths = ["/", "/signin", "/signup", "/createprofile"];
 
   return progressBarPaths.includes(pathname) ? (
-    <div className="w-full mt-7 flex justify-center">
+    <div className="absolute w-full pt-7 flex justify-center">
       <div className="relative flex justify-center items-center text-white  ">
         <ProgressBarCircle content={progressBarStyles.circles[0] ?? "1"} />
         <ProgressBarLineSpaceHolder />

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { alert } from "../Utilities/alert";
 
 export function useValidate() {
   // Shake Animation
@@ -164,6 +165,41 @@ export function useValidate() {
     }
   };
 
+  const checkDeclarationTitle = (title) => {
+    if (!title) {
+      applyEffect("title", "Başlık boş bırakılamaz.");
+      return false;
+    } else if (title.length > 25) {
+      applyEffect("title", "Başlık 25 harften uzun olamaz.");
+      return false;
+    } else {
+      removeEffect("title");
+      return true;
+    }
+  };
+
+  const checkDeclarationDescription = (description) => {
+    if (!description) {
+      applyEffect("description", "Açıklama boş bırakılamaz.");
+      return false;
+    } else if (description.length > 250) {
+      applyEffect("description", "Açıklama 250 harften uzun olamaz.");
+      return false;
+    } else {
+      removeEffect("description");
+      return true;
+    }
+  };
+
+  const checkDeclarationTags = (tags) => {
+    if (tags.length === 0) {
+      alert("emptyTags");
+      return false;
+    } else {
+      return true;
+    }
+  };
+
   return {
     invalid,
     validation: {
@@ -173,6 +209,9 @@ export function useValidate() {
       checkPersonalId,
       checkFatherName,
       checkBirthDate,
+      checkDeclarationTitle,
+      checkDeclarationDescription,
+      checkDeclarationTags,
     },
   };
 }

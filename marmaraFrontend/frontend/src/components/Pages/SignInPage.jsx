@@ -9,6 +9,7 @@ import CenteredContainer from "../Utilities/CenteredContainer";
 import InputWithShowPassword from "../Utilities/InputWithShowPassword";
 import { useValidate } from "../CustomHooks/useValidate";
 import { useAuth } from "../Contexts/AuthContext";
+import ThemeSwitcher from "../Utilities/ThemeSwitcher";
 
 function CustomLinkContainer() {
   return (
@@ -84,13 +85,16 @@ function SignInPage() {
   const { invalid, validation } = useValidate();
 
   return (
-    <CenteredContainer>
+    <CenteredContainer paddingTop="pt-32">
       <IntroText
         mainText="Tekrar hoş geldiniz"
         fadedText="Marmara kayıp eşya ağı"
       />
       <Inputs setUserInfo={setUserInfo} invalid={invalid} />
       <CustomLinkContainer />
+      <div className="absolute bottom-12 z-50">
+        <ThemeSwitcher />
+      </div>
       <ButtonContainer userInfo={userInfo} validation={validation} />
     </CenteredContainer>
   );

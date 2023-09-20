@@ -47,6 +47,15 @@ export function alert(state) {
     case "pictureSaved":
       alertSuccess("Fotoğrafınız başarıyla yüklendi.");
       break;
+    case "declarationSaved":
+      alertSuccess("İlan başarıyla paylaşıldı!");
+      break;
+    case "declarationNotSaved":
+      alertError("İlan paylaşılamadı.");
+      break;
+    case "emptyTags":
+      alertError("Lütfen en az bir adet etiket seçiniz.");
+      break;
     default:
       // Burası production da kaldırılıcak şuanlık
       // yanlış state girişi yaparsak çalışıcak düzeltelim
