@@ -4,6 +4,7 @@ import Tags from "../Utilities/Tags";
 import Cards from "../Utilities/Cards";
 import { useWindowScrollPosition } from "../CustomHooks/useWindowScrollPosition";
 import FullContainer from "../Utilities/FullContainer";
+import { useLocationContext } from "../Contexts/LocationContext";
 
 function FeedHeading({ text }) {
   return (
@@ -43,13 +44,13 @@ function FeedNavbar() {
   // görüntüsel olarak dengelemek içinde üstten boşluk bırakıyoruz margin top ile
 
   // grid ile centered container gibi gözükmesini sağlıyoruz hamburgermenu
-  // aynı yerde olsun diye
+  // aynı yerde olsun diyeuseLocation
   return (
     <div
-      className={`w-full flex justify-center static h-14 transition-[top]
+      className={`w-full flex justify-center static h-14  transition-[top]
       ${
         scrollY > 200
-          ? "z-50 sticky top-0 bg-neutral dark:bg-darkPrimary"
+          ? "z-50 sticky top-0 bg-neutral dark:bg-darkPrimary shadow-2xl"
           : "-top-14"
       }`}
     >
@@ -68,6 +69,11 @@ function FeedNavbar() {
 // Onu çözmemiz lazım bulamadım
 function Feed() {
   const [tags, setTags] = useState([]);
+  const { setLocation } = useLocationContext();
+
+  useEffect(() => {
+    setLocation("/feed");
+  }, []);
 
   return (
     <FullContainer paddingTop="pt-12">

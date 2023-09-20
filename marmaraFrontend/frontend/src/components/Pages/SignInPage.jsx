@@ -10,7 +10,6 @@ import InputWithShowPassword from "../Utilities/InputWithShowPassword";
 import { useValidate } from "../CustomHooks/useValidate";
 import { useAuth } from "../Contexts/AuthContext";
 import ThemeSwitcher from "../Utilities/ThemeSwitcher";
-import QuestionMark from "../Utilities/QuestionMark";
 
 function CustomLinkContainer() {
   return (

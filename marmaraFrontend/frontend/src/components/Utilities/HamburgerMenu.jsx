@@ -1,7 +1,8 @@
-import { React, useState } from "react";
+import { React, useEffect, useState } from "react";
 import Logout from "./Logout";
 import ThemeSwitcher from "./ThemeSwitcher";
 import HamburgerMenuNavigation from "./HamburgerMenuNavigation";
+import { useHamburgerMenu } from "../Contexts/HamburgerMenuContext";
 
 function HamburgerMenuButton({ showMenu, setShowMenu }) {
   const handleClick = () => {
@@ -18,7 +19,7 @@ function HamburgerMenuButton({ showMenu, setShowMenu }) {
       // veya flex bir container in içerisinde olması lazım
       // 2. yolu seçiyoruz ve hamburgermenu kullanacağımız yerlerde
       // bu componenti flex bir containerin içine koyuyoruz
-      className={`z-50
+      className={`z-50 
           before:my-1 before:block before:w-8 before:h-1 before:rounded-md before:bg-black dark:before:bg-neutral
           after:my-1 after:block after:w-8 after:h-1 after:rounded-md after:bg-black dark:after:bg-neutral
           before:transition-all after:transition-all
@@ -41,7 +42,7 @@ function HamburgerMenuContent({ showMenu }) {
       className={`${showMenu ? "translate-x-0" : "translate-x-full"} 
               flex flex-col justify-center items-center gap-12 
               z-40 top-0 right-0 fixed w-screen  
-               transition-all duration-300
+               transition-all duration-300 
            h-screen bg-neutral dark:bg-darkNeutral touch-none`}
     >
       <HamburgerMenuNavigation />
@@ -57,6 +58,11 @@ function HamburgerMenuContent({ showMenu }) {
 function HamburgerMenu() {
   // hamburger menüyü kontrol ediyor
   const [showMenu, setShowMenu] = useState(false);
+  const { setIsActive } = useHamburgerMenu();
+
+  useEffect(() => {
+    setIsActive(showMenu);
+  }, [showMenu]);
   return (
     <>
       <HamburgerMenuButton showMenu={showMenu} setShowMenu={setShowMenu} />

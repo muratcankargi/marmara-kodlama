@@ -52,15 +52,35 @@ function CardBody({ title, description }) {
 }
 
 function Card({ author, date, title, description }) {
-  // function capitalizeFirstLetter(author) {
-  //   return author.charAt(0).toLocaleUpperCase() + author.slice(1);
-  // }
+  function capitalizeName(name) {
+    // Split the name into words based on spaces
+    const words = name.split(" ");
 
-  // const editedAuthor = capitalizeFirstLetter(author.toLocaleLowerCase());
+    // Create an array to store the capitalized words
+    const capitalizedWords = [];
+
+    // Iterate through the words and capitalize the first letter of each word
+    for (const word of words) {
+      // Check if the word is not empty
+      if (word.length > 0) {
+        // Capitalize the first letter of the word and convert the rest to lowercase (Turkish locale)
+        const capitalizedWord =
+          word.charAt(0).toLocaleUpperCase("tr-TR") +
+          word.slice(1).toLocaleLowerCase("tr-TR");
+        // Push the capitalized word to the array
+        capitalizedWords.push(capitalizedWord);
+      }
+    }
+
+    // Join the capitalized words back together with spaces and return the result
+    return capitalizedWords.join(" ");
+  }
+
+  const convertedName = capitalizeName(author);
 
   return (
     <div className="pb-5 px-3 ">
-      <CardHeading author={author} date={date} />
+      <CardHeading author={convertedName} date={date} />
       <CardBody title={title} description={description} />
     </div>
   );

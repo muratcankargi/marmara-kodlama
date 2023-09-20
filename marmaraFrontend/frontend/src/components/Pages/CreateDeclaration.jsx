@@ -10,6 +10,7 @@ import { useAuth } from "../Contexts/AuthContext";
 import HamburgerMenu from "../Utilities/HamburgerMenu";
 import AddPicture from "../Utilities/AddPicture";
 import Tags from "../Utilities/Tags";
+import { useLocationContext } from "../Contexts/LocationContext";
 
 function Inputs({ setDeclaration, invalid }) {
   return (
@@ -90,6 +91,11 @@ function ButtonContainer({ declaration, validation, tags }) {
 function CreateDeclaration() {
   // tags'leri alıyoruz Tags componentinden
   const [tags, setTags] = useState([]);
+  const { setLocation } = useLocationContext();
+
+  useEffect(() => {
+    setLocation("/createDeclaration");
+  }, []);
 
   const [declaration, setDeclaration] = useState({
     title: "",

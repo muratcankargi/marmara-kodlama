@@ -16,7 +16,7 @@ function App() {
   const { theme } = useTheme();
 
   return (
-    <div className={`bg-neutral ${theme} `}>
+    <div className={`bg-neutral ${theme}  `}>
       <ProgressBar pathname={pathname} />
 
       <Routes>
