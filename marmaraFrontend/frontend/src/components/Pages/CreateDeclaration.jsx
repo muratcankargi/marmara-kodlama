@@ -108,11 +108,11 @@ function CreateDeclaration() {
         diğer sayfalarda veya buna benzer sayfalarda bu değerleri kullanarak en azından
         bi kısmını stabil tutabiliriz
       */}
-      <div className="flex w-full justify-between">
+      <div className="flex w-full justify-between items-center">
         <IntroText mainText="İlan Oluştur" />
         <HamburgerMenu />
       </div>
-      <div className="p-12">
+      <div className="pt-12">
         <AddPicture />
       </div>
       <Inputs setDeclaration={setDeclaration} invalid={invalid} />

@@ -56,7 +56,7 @@ function FeedNavbar() {
       <div className="w-3/4 grid grid-cols-3 place-items-center">
         <div></div>
         <FeedHeading text="İlanlar" />
-        <div className="place-self-end">
+        <div className="place-self-end h-full flex items-center justify-center">
           <HamburgerMenu />
         </div>
       </div>

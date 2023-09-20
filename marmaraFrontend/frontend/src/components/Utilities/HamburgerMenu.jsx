@@ -14,13 +14,17 @@ function HamburgerMenuButton({ showMenu, setShowMenu }) {
   // için kullanıldı
   return (
     <button
-      className={`z-50 ${showMenu ? "fixed top-12 right-44" : ""}  
+      // burada z-50 kullandık ama z-index kullanmak için position vermemiz
+      // veya flex bir container in içerisinde olması lazım
+      // 2. yolu seçiyoruz ve hamburgermenu kullanacağımız yerlerde
+      // bu componenti flex bir containerin içine koyuyoruz
+      className={`z-50
           before:my-1 before:block before:w-8 before:h-1 before:rounded-md before:bg-black dark:before:bg-neutral
           after:my-1 after:block after:w-8 after:h-1 after:rounded-md after:bg-black dark:after:bg-neutral
           before:transition-all after:transition-all
           ${
             showMenu &&
-            " before:rotate-45 after:-rotate-45 before:translate-y-2 "
+            " before:rotate-45 after:-rotate-45 before:translate-y-2 pb-2 "
           }`}
       onClick={handleClick}
     >
