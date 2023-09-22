@@ -24,6 +24,8 @@ function ShowPassword({ setInputType }) {
     >
       <img
         src={
+          // Hem dark mod hem de light mode için eye kapalı ve açık farklılıkları
+          // olduğu için burası biraz karışık duruyor
           theme !== "dark"
             ? eye
               ? "images/eye.png"

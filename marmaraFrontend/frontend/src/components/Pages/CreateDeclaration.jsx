@@ -21,7 +21,8 @@ function Inputs({ setDeclaration, invalid }) {
         placeholder="Başlık"
         setState={setDeclaration}
         inputName="title"
-        src="/images/title.png"
+        imageName="title.png"
+        darkImageName="titleDark.png"
         alt="Title Icon"
       />
       <Input
@@ -30,7 +31,6 @@ function Inputs({ setDeclaration, invalid }) {
         placeholder="Açıklama"
         setState={setDeclaration}
         inputName="description"
-        src="/images/title.png"
         alt="Description Icon"
       />
     </>
@@ -93,6 +93,8 @@ function CreateDeclaration() {
   const [tags, setTags] = useState([]);
   const { setLocation } = useLocationContext();
 
+  // bu setLocation'lar hamburgermenu'deki nav lardan hangisinin
+  // altını çizeceğimizi anlamamız için
   useEffect(() => {
     setLocation("/createDeclaration");
   }, []);
@@ -108,12 +110,6 @@ function CreateDeclaration() {
 
   return (
     <CenteredContainer paddingTop="pt-12">
-      {/* Bu hamburgermenu nün positonunu bu şekilde vermek aslında biraz saçma
-        yani en azından her sayfada aynı tutmak zor, ama her yerde aynı yapmaya çalışmakta zor
-        feed sayfasında sticky ye bağlı olduğu için çok sıkıntı yaratıyor
-        diğer sayfalarda veya buna benzer sayfalarda bu değerleri kullanarak en azından
-        bi kısmını stabil tutabiliriz
-      */}
       <div className="flex w-full justify-between items-center">
         <IntroText mainText="İlan Oluştur" />
         <HamburgerMenu />

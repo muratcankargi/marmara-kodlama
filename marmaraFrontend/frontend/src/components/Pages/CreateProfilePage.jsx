@@ -19,7 +19,8 @@ function Inputs({ setUserInfo, invalid }) {
         invalid={invalid}
         setState={setUserInfo}
         inputName="email"
-        src="/images/mailIcon.png"
+        imageName="mailIcon.png"
+        darkImageName="mailIconDark.png"
         alt="User Icon"
         type="Email"
         placeholder="Email"
@@ -34,7 +35,8 @@ function Inputs({ setUserInfo, invalid }) {
         invalid={invalid}
         setState={setUserInfo}
         inputName="passwordRepeat"
-        src="/images/lock.png"
+        imageName="lock.png"
+        darkImageName="lockDark.png"
         alt="Lock Icon"
         type={inputType}
         placeholder="Şifre Yeniden"

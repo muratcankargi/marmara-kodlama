@@ -17,7 +17,8 @@ function Inputs({ setUserInfo, invalid }) {
         invalid={invalid}
         setState={setUserInfo}
         inputName="personalId"
-        src="/images/id-card.png"
+        imageName="id-card.png"
+        darkImageName="id-cardDark.png"
         alt="Id Card icon"
         type="Number"
         placeholder="T.C. Kimlik No"
@@ -26,7 +27,8 @@ function Inputs({ setUserInfo, invalid }) {
         invalid={invalid}
         setState={setUserInfo}
         inputName="fatherName"
-        src="/images/user.png"
+        imageName="user.png"
+        darkImageName="userDark.png"
         alt="User Icon"
         type="Text"
         placeholder="Baba Adı"
@@ -35,7 +37,8 @@ function Inputs({ setUserInfo, invalid }) {
         invalid={invalid}
         setState={setUserInfo}
         inputName="birthDate"
-        src="/images/calendar.png"
+        imageName="calendar.png"
+        darkImageName="calendarDark.png"
         alt="Calendar Icon"
         type="Date"
         placeholder="Doğum Tarihiniz"

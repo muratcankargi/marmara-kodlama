@@ -1,22 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useTheme } from "../Contexts/ThemeContext";
+import Image from "./Image";
 
-function Input({ setState, inputName, src, alt, type, placeholder, invalid }) {
-  // dark theme için kullandığımız her icon un sonu Dark ile bitecek örnek:
-  // calendarDark, id-cardDark, bunu kullanarak her yerde farklı yollar vermektense
-  // theme dark ise verilen yolu editliyoruz useEffect içinde
-  const [darkSrc, setDarkSrc] = useState("");
-
-  const { theme } = useTheme();
-
-  useEffect(() => {
-    if (theme === "dark") {
-      let [path, extension] = src.split("."); // /images/calendar.png
-      path += "Dark.";
-      setDarkSrc(path + extension);
-    }
-  }, []);
-
+function Input({
+  setState,
+  inputName,
+  imageName,
+  darkImageName,
+  alt,
+  type,
+  placeholder,
+  invalid,
+}) {
   const styles = {
     background: "none",
     width: "100%",
@@ -51,9 +46,10 @@ function Input({ setState, inputName, src, alt, type, placeholder, invalid }) {
       >
         {type !== "textarea" ? (
           <>
-            <img
+            <Image
               className="w-6 h-6"
-              src={theme !== "dark" ? src : darkSrc}
+              imageName={imageName}
+              darkImageName={darkImageName}
               alt={alt}
             />
             <input

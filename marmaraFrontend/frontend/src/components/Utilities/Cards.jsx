@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
+import { useAuthz } from "../Contexts/AuthzContext";
+import Image from "./Image";
 
 // span, dark modda altta çıkan siyah çizgi
 // borderla vermedim çünkü sağdan soldan boşluk olsun istedim
@@ -24,10 +26,44 @@ function CardImage({ source }) {
   );
 }
 
-function CardButton() {
+function CardFooter({ id, setIsDeleted }) {
+  const { permissions } = useAuthz();
   return (
-    <button className="text-neutral h-8 flex justify-center items-center self-end mt-3 font-bold bg-accent p-2 rounded-md">
-      Ayrıntıları Gör
+    <div className="flex h-8 pt-3 justify-between items-center ">
+      {permissions === "admin" ? (
+        <DeleteCard id={id} setIsDeleted={setIsDeleted} />
+      ) : (
+        <div></div>
+      )}
+      <button className="text-neutral h-8 flex justify-center items-center  font-bold bg-accent p-2 rounded-md">
+        Ayrıntıları Gör
+      </button>
+    </div>
+  );
+}
+
+function DeleteCard({ id, setIsDeleted }) {
+  const handleClick = async () => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:8000/api/deleteDeclaration/${id}`
+      );
+
+      setIsDeleted(true);
+
+      return response.data.message;
+    } catch (error) {
+      console.log("Error: ", error.message);
+    }
+  };
+
+  return (
+    <button onClick={handleClick}>
+      <Image
+        className="w-6 aspect-square"
+        imageName="trash.png"
+        darkImageName="trashDark.png"
+      />
     </button>
   );
 }
@@ -41,17 +77,25 @@ function CardContent({ heading, content }) {
   );
 }
 
-function CardBody({ title, description }) {
+function CardBody({ title, description, id, setIsDeleted }) {
   return (
     <div className="bg-white dark:bg-[#1B2430]  shadow-md p-2 py-3 flex flex-col">
       <CardContent heading={title} content={description} />
       <CardImage source="./images/cuzdan.jpg" />
-      <CardButton />
+      <CardFooter id={id} setIsDeleted={setIsDeleted} />
     </div>
   );
 }
 
-function Card({ author, date, title, description }) {
+function Card({ author, date, title, description, id }) {
+  const [isDeleted, setIsDeleted] = useState(false);
+
+  // bir card'ı sildiğimiz zaman refresh atmadan silinmeyeceği için
+  // burada null yapıyoruz ki ekrandan gitsin
+  if (isDeleted) {
+    return null;
+  }
+
   function capitalizeName(name) {
     // Split the name into words based on spaces
     const words = name.split(" ");
@@ -81,13 +125,17 @@ function Card({ author, date, title, description }) {
   return (
     <div className="pb-5 px-3 ">
       <CardHeading author={convertedName} date={date} />
-      <CardBody title={title} description={description} />
+      <CardBody
+        title={title}
+        description={description}
+        id={id}
+        setIsDeleted={setIsDeleted}
+      />
     </div>
   );
 }
 
 // Bu componentler farklı sayfalara ayrılacak
-
 function Cards() {
   const [cards, setCards] = useState([]);
 
@@ -115,6 +163,7 @@ function Cards() {
         return (
           <Card
             key={uuidv4()}
+            id={card.id}
             author={card.user}
             date={card.created_at}
             title={card.title}

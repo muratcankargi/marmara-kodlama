@@ -3,7 +3,7 @@ import { Navigate } from "react-router-dom";
 import LoadingState from "../Utilities/LoadingState";
 import { useAuthz } from "../Contexts/AuthzContext";
 
-const WithPermission = ({ children, mustPermission, redirect }) => {
+const WithPermission = ({ children, allowedPermissions, redirect }) => {
   const { permissions } = useAuthz();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -17,7 +17,13 @@ const WithPermission = ({ children, mustPermission, redirect }) => {
     return <LoadingState />;
   }
 
-  return permissions === mustPermission ? children : <Navigate to={redirect} />;
+  // app.jsx de array olarak belirlediğimiz allowedPermissions u burada kullanıyoruz
+  // yani hangi permissonlar bu sayfayı görebilir
+  return allowedPermissions.includes(permissions) ? (
+    children
+  ) : (
+    <Navigate to={redirect} />
+  );
 };
 
 export default WithPermission;

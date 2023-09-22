@@ -30,7 +30,10 @@ function App() {
           path="/feed"
           element={
             <ProtectedRoute redirect="/signin">
-              <WithPermission mustPermission="user" redirect="/createprofile">
+              <WithPermission
+                allowedPermissions={["user", "admin"]}
+                redirect="/createprofile"
+              >
                 <Feed />
               </WithPermission>
             </ProtectedRoute>
@@ -41,7 +44,10 @@ function App() {
           path="/createDeclaration"
           element={
             <ProtectedRoute redirect="/signin">
-              <WithPermission mustPermission="user" redirect="/createprofile">
+              <WithPermission
+                allowedPermissions={["user", "admin"]}
+                redirect="/createprofile"
+              >
                 <CreateDeclaration />
               </WithPermission>
             </ProtectedRoute>
@@ -52,7 +58,10 @@ function App() {
           path="/createprofile"
           element={
             <ProtectedRoute redirect="/signin">
-              <WithPermission mustPermission="almostUser" redirect="/feed">
+              <WithPermission
+                allowedPermissions={("almostUser", "admin")}
+                redirect="/feed"
+              >
                 <CreateProfilePage />
               </WithPermission>
             </ProtectedRoute>

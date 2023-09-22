@@ -29,7 +29,8 @@ function Inputs({ setUserInfo, invalid }) {
         invalid={invalid}
         setState={setUserInfo}
         inputName="email"
-        src="/images/mailIcon.png"
+        imageName="mailIcon.png"
+        darkImageName="mailIconDark.png"
         alt="Mail Icon"
         type="Email"
         placeholder="Email"

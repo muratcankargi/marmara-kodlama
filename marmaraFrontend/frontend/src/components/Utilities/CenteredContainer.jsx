@@ -10,9 +10,7 @@ function CenteredContainer({ children, paddingTop = "pt-40" }) {
 
   return (
     <div
-      className={`${
-        isActive ? "max-h-screen overflow-y-hidden" : "min-h-screen"
-      }
+      className={`${isActive ? "h-screen overflow-y-hidden" : "min-h-screen"}
     flex justify-center ${paddingTop} bg-neutral 
     dark:bg-darkNeutral transition-colors duration-300 `}
     >

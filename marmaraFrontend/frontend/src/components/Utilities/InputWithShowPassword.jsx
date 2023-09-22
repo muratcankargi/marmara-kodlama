@@ -9,7 +9,8 @@ function InputWithShowPassword({ setState, type, setInputType, invalid }) {
         invalid={invalid}
         setState={setState}
         inputName="password"
-        src="/images/lock.png"
+        imageName="lock.png"
+        darkImageName="lockDark.png"
         alt="Lock Icon"
         type={type}
         placeholder="Şifre"

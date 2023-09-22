@@ -9,10 +9,14 @@ function FullContainer({ children, paddingTop = "" }) {
   // başka bi çözüm üretebiliriz
   const { isActive } = useHamburgerMenu();
 
+  // menu transition ile geldiği için feed'de yeterince card yokken
+  // alt tarafta bi beyazlık oluşuyor onu engellemek için isActive'i
+  // timeout ile transition süresine eşitleyebiliriz ama çok yamama oluyor
+  // bu menü açıkken scroll yapamama olayını başka şekillerde çözmemiz lazım
   return (
     <div
       className={`${paddingTop} ${
-        isActive ? "max-h-screen overflow-y-hidden" : "min-h-screen"
+        isActive ? "h-screen overflow-y-hidden" : "min-h-screen"
       } bg-neutral dark:bg-darkNeutral `}
     >
       <div>{children}</div>
