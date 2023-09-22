@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('description',2000);
             $table->json('tags');
             $table->boolean('visibility');
+            $table->enum('type', ['lost', 'found']);
             $table->string('image_source')->nullable();
             $table->timestamps();
 

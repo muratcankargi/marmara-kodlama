@@ -3,15 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
-use App\Models\Declaration;
 use App\Models\PersonalAccessToken;
-use Carbon\Carbon;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use \App\Models;
-
-class User extends Controller
+class UserController extends Controller
 {
 
     public function isStudent(Request $request)
@@ -31,7 +28,7 @@ class User extends Controller
 
                 if ($response->OgrenciNo) {
 
-                    $userControl = \App\Models\User::where(['student_number' => $response->OgrenciNo])->first();
+                    $userControl = User::where(['student_number' => $response->OgrenciNo])->first();
 
                     if ($userControl) {
                         return response([
@@ -39,7 +36,7 @@ class User extends Controller
                         ]);
                     }
 
-                    $user = \App\Models\User::create([
+                    $user = User::create([
                         'name' => $response->Ad,
                         'surname' => $response->Soyad,
                         'student_number' => $response->OgrenciNo,
@@ -116,7 +113,7 @@ class User extends Controller
                 'message' => false
             ]);
         }
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
         $userId = $user->getAttributes()['id'];
         $token = md5(time() . rand(0, 999999));
@@ -152,7 +149,7 @@ class User extends Controller
         $hasToken = PersonalAccessToken::where(['token' => $data['token']])->first();
 
         if ($hasToken) {
-            \App\Models\User::where(['id' => $hasToken->user_id])->update([
+            User::where(['id' => $hasToken->user_id])->update([
                 'email' => $data['email'],
                 'password' => bcrypt($data['password'])
             ]);
@@ -161,7 +158,7 @@ class User extends Controller
                 'abilities' => 'user'
             ]);
 
-            $user = \App\Models\User::where(['id' => $hasToken->user_id])->first();
+            $user = User::where(['id' => $hasToken->user_id])->first();
 
             return response([
                 'message' => [
@@ -190,7 +187,7 @@ class User extends Controller
             $tokenControl['counter'] += 1;
             PersonalAccessToken::where(['token' => $token])->update(['counter' => $tokenControl['counter']]);
 
-            $user = \App\Models\User::where(['id' => $tokenControl['id']])->first();
+            $user = User::where(['id' => $tokenControl['id']])->first();
             return response([
                 'message' => ['user' => $user,
                     'abilities' => $tokenControl['abilities'],
@@ -206,60 +203,4 @@ class User extends Controller
         }
     }
 
-    public function createDeclaration(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:200',
-            'description' => 'required|string|max:2000',
-            'tags' => 'required|array',
-            'image_source' => 'nullable|string'
-        ]);
-
-        if ($validator->fails()) {
-            return response([
-                'message' => [
-                    'status' => false,
-                    'fails' => $validator->messages()->all()
-                ]]);
-        } else {
-
-            $result = $this->authenticate($request);
-            $user = json_decode(json_encode($result), true)['original']['message']['user'];
-            if ($user) {
-                Declaration::create(['user_id' => $user['id'],
-                    'title' => $request->title,
-                    'description' => $request->description,
-                    'tags' => json_encode($request->tags),
-                    'visibility' => boolval($request->visibility),
-                    'image_source' => $request->image_source,
-                ]);
-
-                return response([
-                    'message' => [
-                        'status' => true
-                    ]]);
-            } else {
-                return response([
-                    'message' => [
-                        'status' => 'notAuthenticated'
-                    ]]);
-            }
-        }
-    }
-
-    public function getDeclaration()
-    {
-        $declarations = json_decode(Declaration::all());
-        foreach ($declarations as $declaration) {
-            $user = json_decode(Models\User::where(['id' => $declaration->user_id])->first());
-
-            $declaration->created_at = Carbon::parse($declaration->created_at)->format('d/m/Y');
-            $declaration->updated_at = Carbon::parse($declaration->updated_at)->format('d/m/Y');
-            $declaration->tags = json_decode($declaration->tags);
-            $declaration->user = $user->name . ' ' . $user->surname;
-        }
-        return response([
-            'message' => $declarations
-        ]);
-    }
 }

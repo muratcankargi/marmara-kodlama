@@ -17,6 +17,7 @@ class Declaration extends Model
         'title',
         'description',
         'tags',
-        'visibility'
+        'visibility',
+        'type'
     ];
 }
