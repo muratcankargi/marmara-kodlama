@@ -4,13 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
 use App\Models\PersonalAccessToken;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
-use Mockery\Exception;
-
-class User extends Controller
+class UserController extends Controller
 {
 
     public function isStudent(Request $request)
@@ -30,7 +28,7 @@ class User extends Controller
 
                 if ($response->OgrenciNo) {
 
-                    $userControl = \App\Models\User::where(['student_number' => $response->OgrenciNo])->first();
+                    $userControl = User::where(['student_number' => $response->OgrenciNo])->first();
 
                     if ($userControl) {
                         return response([
@@ -38,7 +36,7 @@ class User extends Controller
                         ]);
                     }
 
-                    $user = \App\Models\User::create([
+                    $user = User::create([
                         'name' => $response->Ad,
                         'surname' => $response->Soyad,
                         'student_number' => $response->OgrenciNo,
@@ -115,7 +113,7 @@ class User extends Controller
                 'message' => false
             ]);
         }
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
         $userId = $user->getAttributes()['id'];
         $token = md5(time() . rand(0, 999999));
@@ -151,7 +149,7 @@ class User extends Controller
         $hasToken = PersonalAccessToken::where(['token' => $data['token']])->first();
 
         if ($hasToken) {
-            \App\Models\User::where(['id' => $hasToken->user_id])->update([
+            User::where(['id' => $hasToken->user_id])->update([
                 'email' => $data['email'],
                 'password' => bcrypt($data['password'])
             ]);
@@ -160,7 +158,7 @@ class User extends Controller
                 'abilities' => 'user'
             ]);
 
-            $user = \App\Models\User::where(['id' => $hasToken->user_id])->first();
+            $user = User::where(['id' => $hasToken->user_id])->first();
 
             return response([
                 'message' => [
@@ -183,11 +181,13 @@ class User extends Controller
     {
         $token = $request->all()['token'];
         $tokenControl = PersonalAccessToken::where(['token' => $token])->first();
-        $tokenControl['counter'] += 1;
-        PersonalAccessToken::where(['token' => $token])->update(['counter' => $tokenControl['counter']]);
+
 
         if ($tokenControl) {
-            $user = \App\Models\User::where(['id' => $tokenControl['id']])->first();
+            $tokenControl['counter'] += 1;
+            PersonalAccessToken::where(['token' => $token])->update(['counter' => $tokenControl['counter']]);
+
+            $user = User::where(['id' => $tokenControl['id']])->first();
             return response([
                 'message' => ['user' => $user,
                     'abilities' => $tokenControl['abilities'],
@@ -197,9 +197,10 @@ class User extends Controller
         } else {
 
             return response([
-                'user' => false,
-                'counter' => $tokenControl['counter'],
-            ]);
+                'message' => [
+                    'user' => false,
+                ]]);
         }
     }
+
 }
