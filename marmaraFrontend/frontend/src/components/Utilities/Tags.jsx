@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 function TagsHeader() {
   return (
     <div className="text-gray-500 flex w-full justify-between pb-2 pr-2">
-      <p>Sık Kullanılanlar</p>
+      <p>Filtreler</p>
     </div>
   );
 }
@@ -72,7 +72,16 @@ function TagsContent({ getTags, setTags, tags }) {
 
 function TagsContentContainer({ getTags, setTags, tags }) {
   return (
-    <div className="overflow-x-auto relative">
+    <div className="overflow-x-auto relative flex">
+      <button
+        className="whitespace-nowrap mr-5 py-1 px-3  relative
+      bg-gradient-to-r from-purple-500 to-pink-500 hover:bg-gradient-to-l 
+      rounded-sm font-semibold  ease-in-out  text-neutral
+      after:h-full after:w-[1px] after:bg-gray-400 after:dark:bg-darkPrimary after:absolute after:top-0 after:-right-3 
+      "
+      >
+        Tüm Filtreler
+      </button>
       <TagsContent getTags={getTags} setTags={setTags} tags={tags} />
     </div>
   );
@@ -82,10 +91,6 @@ function TagsContentContainer({ getTags, setTags, tags }) {
 // daha mantıklı olabilir gibi çok item olursa hoş durmayacak
 function Tags({ getTags }) {
   const [tags, setTags] = useState([
-    {
-      text: "Tüm İlanlar",
-      selected: false,
-    },
     {
       text: "Akbil",
       selected: false,
