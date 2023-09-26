@@ -19,6 +19,8 @@ export const AuthProvider = ({ children }) => {
         }
       );
 
+      console.log(response);
+
       // If authentication is successful, set the user state with user data
       const userData = response.data.message;
 
@@ -117,6 +119,7 @@ export const AuthProvider = ({ children }) => {
           tags: tagsArray,
           visibility: true,
           image_source: "",
+          type: "lost",
         }
       );
 
