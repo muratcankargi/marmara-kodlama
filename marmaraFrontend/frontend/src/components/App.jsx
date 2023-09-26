@@ -59,7 +59,7 @@ function App() {
           element={
             <ProtectedRoute redirect="/signin">
               <WithPermission
-                allowedPermissions={("almostUser", "admin")}
+                allowedPermissions={["almostUser", "admin"]}
                 redirect="/feed"
               >
                 <CreateProfilePage />

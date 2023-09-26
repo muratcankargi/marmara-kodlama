@@ -50,7 +50,7 @@ function FeedNavbar() {
       className={`w-full flex justify-center static h-14  transition-[top]
       ${
         scrollY > 200
-          ? "z-50 sticky top-0 bg-neutral dark:bg-darkPrimary shadow-2xl"
+          ? "z-50 sticky -top-[1px] bg-neutral dark:bg-darkPrimary shadow-2xl"
           : "-top-14"
       }`}
     >
