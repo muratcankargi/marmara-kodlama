@@ -42,8 +42,18 @@ class TagController extends Controller
         }
     }
 
-    public function getTags()
+    public function getTags(Request $request)
     {
+        $UserController = new UserController();
+        $result = $UserController->authenticate($request);
+        $user = json_decode(json_encode($result), true)['original']['status'];
+        if (!$user) {
+            return response([
+                'message' => [
+                    'status' => 'notAuthenticated'
+                ]]);
+        }
+
         try {
             $tags = json_decode(Tag::all());
             foreach ($tags as $tag) {
@@ -70,16 +80,16 @@ class TagController extends Controller
 
             if ($validator->fails()) {
                 return response([
-                    'message' => [
-                        'status' => false,
-                        'fails' => $validator->messages()->all()
-                    ]]);
+                    "status" => false,
+                    "message" =>$validator->messages()->all(),
+                    "data" => []
+                    ], 400);
             }
 
             $UserController = new UserController();
             $result = $UserController->authenticate($request);
 
-            $user = json_decode(json_encode($result), true)['original']['message']['user'];
+            $user = json_decode(json_encode($result), true)['original']['status'];
             if (!$user) {
                 return response([
                     'message' => [

@@ -14,6 +14,8 @@ class DeclarationController extends Controller
     public function createDeclaration(Request $request)
     {
         //visibility admin kontrolünde olabilir
+        //response yollarken status,message,data olucak
+        //resim eklenicek. yolu database'e kaydedilecek
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:200',
             'description' => 'required|string|max:2000',
@@ -24,134 +26,164 @@ class DeclarationController extends Controller
 
         if ($validator->fails()) {
             return response([
-                'message' => [
-                    'status' => false,
-                    'fails' => $validator->messages()->all()
-                ]]);
-        } else {
+                "status" => false,
+                "message" => $validator->messages()->all(),
+                "data" => []
+            ], 400);
+        }
+
+        try {
+
             foreach ($request->tags as $tag) {
                 if (!Tag::where('name', $tag)->first()) {
-                    //eğer tag yoksa oluşturulabilir
-                    //Tag::create('name',$tag);
                     return response([
-                        'message' => [
-                            'status' => false,
-                            'tag' => $tag,
-                        ]]);
+                        "status" => false,
+                        "message" => $tag . " tag was not found",
+                        "data" => []
+                    ], 406);
                 }
             }
 
-            $UserController = new UserController();
-            $result = $UserController->authenticate($request);
+            $result = $this->checkAuthenticate($request);
 
-            $user = json_decode(json_encode($result), true)['original']['message']['user'];
-            if ($user) {
+            if ($result['status']) {
+                $user = $result['data']['user'];
                 Declaration::create(['user_id' => $user['id'],
                     'title' => $request->title,
                     'description' => $request->description,
                     'tags' => json_encode($request->tags),
                     'visibility' => boolval($request->visibility),
-                    'type' => $request->type,
+                    'type' => "found",
                     'image_source' => $request->image_source,
                 ]);
 
                 return response([
-                    'message' => [
-                        'status' => true
-                    ]]);
+                    "status" => true,
+                    "message" => "Declaration has been created",
+                    "data" => []
+                ], 200);
             } else {
-                return response([
-                    'message' => [
-                        'status' => 'notAuthenticated'
-                    ]]);
+                throw new \Exception('Token not found');
             }
+        } catch (\Exception $e) {
+            return response([
+                "status" => false,
+                "message" => $e->getMessage(),
+                "data" => [],
+            ], 401);
         }
     }
 
-    public function getDeclaration()
+    function checkAuthenticate($request)
     {
-        $declarations = json_decode(Declaration::all());
-        foreach ($declarations as $declaration) {
-            $user = json_decode(User::where(['id' => $declaration->user_id])->first());
+        $UserController = new UserController();
+        $authenticate = $UserController->authenticate($request);
 
-            $declaration->created_at = Carbon::parse($declaration->created_at)->format('d/m/Y');
-            $declaration->updated_at = Carbon::parse($declaration->updated_at)->format('d/m/Y');
-            $declaration->tags = json_decode($declaration->tags);
-            $declaration->user = $user->name . ' ' . $user->surname;
+        $result = json_decode(json_encode($authenticate), true)['original'];
+
+        return $result;
+    }
+
+    public function getDeclaration(Request $request)
+    {
+        try {
+
+
+            $result = $this->checkAuthenticate($request);
+
+            if ($result['status']) {
+
+                $declarations = json_decode(Declaration::all());
+                foreach ($declarations as $declaration) {
+                    $user = json_decode(User::where(['id' => $declaration->user_id])->first());
+
+                    $declaration->created_at = Carbon::parse($declaration->created_at)->format('d/m/Y');
+                    $declaration->updated_at = Carbon::parse($declaration->updated_at)->format('d/m/Y');
+                    $declaration->tags = json_decode($declaration->tags);
+                    $declaration->user = $user->name . ' ' . $user->surname;
+                }
+                return response([
+                    "response" => true,
+                    "message" => "Declarations viewing successful",
+                    'data' => $declarations,
+                ], 200);
+            } else {
+                throw new \Exception('Token not found');
+            }
+        } catch (\Exception $e) {
+            return response([
+                "status" => false,
+                "message" => $e->getMessage(),
+                "data" => [],
+            ], 401);
         }
-        return response([
-            'message' => $declarations
-        ]);
     }
 
     public function updateDeclaration(Request $request, $id)
     {
-        try {
-            $validator = Validator::make($request->all(), [
-                'title' => 'required|string|max:200',
-                'description' => 'required|string|max:2000',
-                'tags' => 'required|array',
-                'image_source' => 'nullable|string',
-                'visibility' => 'required|boolean', // Eğer visibility güncellenecekse
-            ]);
 
-            if ($validator->fails()) {
-                return response([
-                    'message' => [
-                        'status' => false,
-                        'fails' => $validator->messages()->all()
-                    ]]);
-            }
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|string|max:200',
+            'description' => 'required|string|max:2000',
+            'tags' => 'required|array',
+            'image_source' => 'nullable|string',
+            'visibility' => 'required|boolean',
+        ]);
 
-            $UserController = new UserController();
-            $result = $UserController->authenticate($request);
-
-            $user = json_decode(json_encode($result), true)['original']['message']['user'];
-            if (!$user) {
-                return response([
-                    'message' => [
-                        'status' => 'notAuthenticated'
-                    ]]);
-            }
-
-            $declaration = Declaration::find($id);
-
-            if (!$declaration) {
-                throw new \Exception('Declaration not found.');
-            }
-
-            foreach ($request->tags as $tag) {
-                if (!Tag::where('name', $tag)->first()) {
-                    //eğer tag yoksa oluşturulabilir
-                    //Tag::create('name',$tag);
-                    return response([
-                        'message' => [
-                            'status' => false,
-                            'tag' => $tag,
-                        ]]);
-                }
-            }
-
-            $declaration->title = $request->title;
-            $declaration->description = $request->description;
-            $declaration->tags = json_encode($request->tags);
-            $declaration->image_source = $request->image_source;
-            $declaration->visibility = boolval($request->visibility);
-            $declaration->type = $request->type;
-            $declaration->save();
-
+        if ($validator->fails()) {
             return response([
                 'message' => [
-                    'status' => true
-                ]
-            ]);
+                    "status" => false,
+                    "message" => $validator->messages()->all(),
+                    "data" => []
+                ]]);
+        }
+
+        try {
+
+            $result = $this->checkAuthenticate($request);
+            if ($result["status"]) {
+
+                $declaration = Declaration::find($id);
+
+                if (!$declaration) {
+                    throw new \Exception('Declaration not found.');
+                }
+
+                foreach ($request->tags as $tag) {
+                    if (!Tag::where('name', $tag)->first()) {
+                        return response([
+                            "status" => false,
+                            "message" => $tag . " tag was not found",
+                            "data" => []
+                        ], 406);
+                    }
+                }
+
+                $declaration->title = $request->title;
+                $declaration->description = $request->description;
+                $declaration->tags = json_encode($request->tags);
+                $declaration->image_source = $request->image_source;
+                $declaration->visibility = boolval($request->visibility);
+                $declaration->type = $request->type;
+                $declaration->save();
+
+                return response([
+                    "status" => true,
+                    "message" => "Declaration update successful",
+                    "data" => $declaration,
+                ], 200);
+
+            } else {
+                throw new \Exception("Token not found");
+            }
+
         } catch (\Exception $e) {
             return response([
-                'message' => [
-                    'status' => 'error',
-                    'error_message' => $e->getMessage()
-                ]
-            ]);
+                "status" => false,
+                'message' => $e->getMessage(),
+                "data" => []
+            ], 400);
         }
     }
 
