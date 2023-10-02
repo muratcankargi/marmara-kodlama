@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import { useAuthz } from "../Contexts/AuthzContext";
+import { useAuth } from "../Contexts/AuthContext";
 import Image from "./Image";
 
 // span, dark modda altta çıkan siyah çizgi
@@ -43,27 +44,43 @@ function CardFooter({ id, setIsDeleted }) {
 }
 
 function DeleteCard({ id, setIsDeleted }) {
+  const { authenticate } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleClick = async () => {
     try {
-      const response = await axios.delete(
-        `http://localhost:8000/api/deleteDeclaration/${id}`
-      );
+      //İlan silme gibi önemli işlemlerde ekstra güvenlik önlemi olarak bir kez daha
+      //doğrulama yapıyoruz, yapmazsak kullanıcının ekranı açıkken localStorage'ı silse bile
+      //silme tuşuna bastığı zaman doğrulama yapılmadığından ilan silinir.
+      setIsLoading(true);
+      const authResponse = await authenticate();
+      if (authResponse.user) {
+        const response = await axios.delete(
+          `http://localhost:8000/api/deleteDeclaration/${id}`
+        );
 
-      setIsDeleted(true);
+        setIsDeleted(true);
 
-      return response.data.message;
+        return response.data.message;
+      }
     } catch (error) {
       console.log("Error: ", error.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <button onClick={handleClick}>
-      <Image
-        className="w-6 aspect-square"
-        imageName="trash.png"
-        darkImageName="trashDark.png"
-      />
+      {isLoading ? (
+        <div>Loading</div>
+      ) : (
+        <Image
+          className="w-6 aspect-square"
+          imageName="trash.png"
+          darkImageName="trashDark.png"
+        />
+      )}
     </button>
   );
 }

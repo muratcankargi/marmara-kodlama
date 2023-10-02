@@ -22,9 +22,9 @@ export const AuthProvider = ({ children }) => {
       // If authentication is successful, set the user state with user data
       const userData = response.data.message;
 
-      console.log(userData);
-
       setUser(userData);
+
+      return response.data.message;
     } catch (error) {
       console.log("Authentication Error: ", error.message);
       // If authentication fails, set the user state to null
