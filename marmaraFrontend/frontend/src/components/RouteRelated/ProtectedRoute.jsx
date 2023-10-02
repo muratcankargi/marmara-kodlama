@@ -30,7 +30,7 @@ const ProtectedRoute = ({ children, redirect }) => {
 
   // return değerleri daha açık olmalı sadece
   // false yapınca karışıyor
-  if (!user.user) {
+  if (!user?.user) {
     return <Navigate to={redirect} />;
   }
 

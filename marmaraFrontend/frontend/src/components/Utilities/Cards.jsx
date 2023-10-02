@@ -35,7 +35,7 @@ function CardFooter({ id, setIsDeleted }) {
       ) : (
         <div></div>
       )}
-      <button className="text-neutral h-8 flex justify-center items-center  font-bold bg-accent p-2 rounded-md">
+      <button className="text-neutral h-8 flex justify-center items-center  font-bold bg-accent p-2 rounded-sm">
         Ayrıntıları Gör
       </button>
     </div>

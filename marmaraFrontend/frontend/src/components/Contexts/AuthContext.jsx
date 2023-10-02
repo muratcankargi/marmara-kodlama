@@ -19,10 +19,10 @@ export const AuthProvider = ({ children }) => {
         }
       );
 
-      console.log(response);
-
       // If authentication is successful, set the user state with user data
       const userData = response.data.message;
+
+      console.log(userData);
 
       setUser(userData);
     } catch (error) {
@@ -129,6 +129,26 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const getTagsList = async () => {
+    try {
+      const response = await axios.get("http://localhost:8000/api/getTags");
+
+      // Gelen response'u istediğimiz şekle çevirip o şekilde döndürüyoruz
+      const newArray = [];
+
+      response.data.message.forEach((item) => {
+        const newObject = {};
+        newObject.text = item.name;
+        newObject.selected = false;
+        newArray.push(newObject);
+      });
+
+      return newArray;
+    } catch (error) {
+      console.log("Error: ", error.message);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -140,6 +160,7 @@ export const AuthProvider = ({ children }) => {
         signup,
         saveUser,
         createDeclaration,
+        getTagsList,
       }}
     >
       {children}
