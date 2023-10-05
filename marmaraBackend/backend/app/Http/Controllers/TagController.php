@@ -44,7 +44,7 @@ class TagController extends Controller
 
     public function getTags(Request $request)
     {
-        $UserController = new UserController();
+        /*$UserController = new UserController();
         $result = $UserController->authenticate($request);
         $user = json_decode(json_encode($result), true)['original']['status'];
         if (!$user) {
@@ -52,7 +52,7 @@ class TagController extends Controller
                 'message' => [
                     'status' => 'notAuthenticated'
                 ]]);
-        }
+        }*/
 
         try {
             $tags = json_decode(Tag::all());

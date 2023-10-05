@@ -6,7 +6,9 @@ use App\Models\PersonalAccessToken;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -49,24 +51,21 @@ class UserController extends Controller
                     ], 202);
                 }
 
-                $user = User::create([
-                    'name' => $response->Ad,
-                    'surname' => $response->Soyad,
-                    'student_number' => $response->OgrenciNo,
-                ]);
-
-                $token = md5(time() . rand(0, 999999));
-
-                PersonalAccessToken::create([
-                    'user_id' => $user->getAttributes()['id'],
-                    'token' => $token,
-                    'abilities' => 'almostUser',
-                ]);
+                $token = Str::random(10);
+                $user = new User();
+                $user->name = $response->Ad;
+                $user->surname = $response->Soyad;
+                $user->student_number = $response->OgrenciNo;
+                $user->remember_token = $token;
+                $user->save();
 
                 return response([
-                    "status" => false,
+                    "status" => true,
                     "message" => "The user has been successfully created.",
-                    "data" => $token,
+                    "data" => [
+                        "user" => $user,
+                        "token" => $token
+                    ],
                 ], 200);
 
             } else {
@@ -82,7 +81,7 @@ class UserController extends Controller
                 "status" => false,
                 "message" => $e->getMessage(),
                 "data" => []
-            ]);
+            ], 400);
         }
     }
 
@@ -110,6 +109,45 @@ class UserController extends Controller
         return $response;
     }
 
+    public function saveUser(Request $request)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|max:55|unique:users',
+            'password' => 'required'
+        ]);
+        if ($validator->fails()) {
+            return response([
+                "status" => false,
+                'message' => $validator->errors()->all(),
+                "data" => []
+            ], 400);
+        }
+
+        $request->password = bcrypt($request->password);
+        $user = User::where('remember_token', $request->token)->first();
+        if ($user) {
+            $user->update(['email' => $request->email,
+                "password" => $request->password
+            ]);
+            return response([
+                "status" => true,
+                "message" => "User information has been successfully updated",
+                "data" => [
+                    'user' => $user,
+                    'abilities' => 'user',
+                ],
+            ], 200);
+        } else {
+            return response([
+                "status" => false,
+                "message" => "User not found",
+                "data" => [],
+            ], 400);
+        }
+
+    }
+
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
@@ -125,98 +163,39 @@ class UserController extends Controller
                 'message' => $validator->errors()->all(),
                 "data" => []
             ], 400);
-        } else if (!Auth::attempt($credentials)) {
-            return response([
-                "status" => false,
-                'message' => "Invalid credentials.",
-                "data" => []
-            ], 400);
         }
 
         try {
-            /** @var User $user */
-            $user = Auth::user();
-            $userId = $user->getAttributes()['id'];
-            $token = md5(time() . rand(0, 999999));
+            if (Auth::attempt($credentials)) {
+                $user = Auth::user();
+                $accessToken = $user->createToken('accessToken')->accessToken;
 
-            $userRecord = PersonalAccessToken::where(['user_id' => $userId])->first();
-
-            if ($userRecord) {
-                PersonalAccessToken::where(['user_id' => $userId])->update(['token' => $token]);
+                return response([
+                    "status" => true,
+                    "message" => "giriş başarılı",
+                    "data" => [
+                        "token" => $accessToken,
+                        "user" => $user
+                    ],
+                ], 200);
+            } else {
+                return response([
+                    "status" => false,
+                    "message" => "unauthorized",
+                    "data" => [],
+                ], 401);
             }
 
-            return response([
-                "status" => true,
-                "message" => "Login process is successful",
-                "data" => $token
-            ], 200);
         } catch (\Exception $e) {
             return response([
                 "status" => false,
                 "message" => $e->getMessage(),
                 "data" => [],
-            ], 400);
+            ], $e->getCode());
         }
     }
 
-    public function saveUser(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/',
-        ]);
 
-        if ($validator->fails()) {
-            return response([
-                "status" => false,
-                "message" => $validator->messages()->all(),
-                "data" => []
-            ], 400);
-        }
-
-        try {
-            $data = $request->all();
-
-            $hasToken = PersonalAccessToken::where(['token' => $data['token']])->first();
-
-            if ($hasToken) {
-                User::where(['id' => $hasToken->user_id])->update([
-                    'email' => $data['email'],
-                    'password' => bcrypt($data['password'])
-                ]);
-
-                PersonalAccessToken::where(['user_id' => $hasToken->user_id])->update([
-                    'abilities' => 'user'
-                ]);
-
-                $user = User::where(['id' => $hasToken->user_id])->first();
-
-                return response([
-                    "status" => true,
-                    "message" => "User information has been successfully updated",
-                    "data" => [
-                        'user' => $user,
-                        'abilities' => 'user',
-                        'token' => $hasToken->token
-                    ],
-                ], 200);
-
-            } else {
-                return response([
-                    "status" => false,
-                    "message" => "Token not found",
-                    "data" => []
-                ], 400);
-            }
-        } catch (\Exception $e) {
-            return response([
-                "status" => false,
-                "message" => $e,
-                "data" => []
-            ], 400);
-        }
-
-    }
 
     public function authenticate(Request $request)
     {

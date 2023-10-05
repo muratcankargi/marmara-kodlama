@@ -84,32 +84,24 @@ class DeclarationController extends Controller
         return $result;
     }
 
-    public function getDeclaration(Request $request)
+    public function getDeclaration()
     {
         try {
 
+            $declarations = json_decode(Declaration::all());
+            foreach ($declarations as $declaration) {
+                $user = json_decode(User::where(['id' => $declaration->user_id])->first());
 
-            $result = $this->checkAuthenticate($request);
-
-            if ($result['status']) {
-
-                $declarations = json_decode(Declaration::all());
-                foreach ($declarations as $declaration) {
-                    $user = json_decode(User::where(['id' => $declaration->user_id])->first());
-
-                    $declaration->created_at = Carbon::parse($declaration->created_at)->format('d/m/Y');
-                    $declaration->updated_at = Carbon::parse($declaration->updated_at)->format('d/m/Y');
-                    $declaration->tags = json_decode($declaration->tags);
-                    $declaration->user = $user->name . ' ' . $user->surname;
-                }
-                return response([
-                    "response" => true,
-                    "message" => "Declarations viewing successful",
-                    'data' => $declarations,
-                ], 200);
-            } else {
-                throw new \Exception('Token not found');
+                $declaration->created_at = Carbon::parse($declaration->created_at)->format('d/m/Y');
+                $declaration->updated_at = Carbon::parse($declaration->updated_at)->format('d/m/Y');
+                $declaration->tags = json_decode($declaration->tags);
+                $declaration->user = $user->name . ' ' . $user->surname;
             }
+            return response([
+                "response" => true,
+                "message" => "Declarations viewing successful",
+                'data' => $declarations,
+            ], 200);
         } catch (\Exception $e) {
             return response([
                 "status" => false,
