@@ -149,6 +149,15 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // details için tek id ile card alabileceğimiz api
+  const getDeclaration = async (id = 3) => {
+    const response = await axios.get(
+      `http://localhost:8000/api/getDeclaration/${id}`
+    );
+
+    console.log(response);
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -161,6 +170,7 @@ export const AuthProvider = ({ children }) => {
         saveUser,
         createDeclaration,
         getTagsList,
+        getDeclaration,
       }}
     >
       {children}

@@ -17,10 +17,12 @@ function CardHeading({ author, date }) {
   );
 }
 
-function CardImage({ source }) {
+function CardImage({ source, isDetails }) {
   return (
     <img
-      className="object-cover rounded-sm pt-3 h-56 "
+      className={`object-cover rounded-sm pt-3 ${
+        isDetails ? "md:h-96 h-56" : "h-56"
+      } `}
       src="/images/cuzdan.jpg"
       alt="Kayıp Eşya"
     />
@@ -94,17 +96,26 @@ function CardContent({ heading, content }) {
   );
 }
 
-function CardBody({ title, description, id, setIsDeleted }) {
+function CardBody({ title, description, id, setIsDeleted, isDetails }) {
   return (
     <div className="bg-white dark:bg-[#1B2430]  shadow-md p-2 py-3 flex flex-col">
       <CardContent heading={title} content={description} />
-      <CardImage source="./images/cuzdan.jpg" />
+      <CardImage source="./images/cuzdan.jpg" isDetails={isDetails} />
       <CardFooter id={id} setIsDeleted={setIsDeleted} />
     </div>
   );
 }
 
-function Card({ author, date, title, description, id }) {
+// isDetails: eğer sayfa declarationDetails ise ona göre bi style
+// vermemiz lazım
+export function Card({
+  author,
+  date,
+  title,
+  description,
+  id,
+  isDetails = false,
+}) {
   const [isDeleted, setIsDeleted] = useState(false);
 
   // bir card'ı sildiğimiz zaman refresh atmadan silinmeyeceği için
@@ -140,9 +151,10 @@ function Card({ author, date, title, description, id }) {
   const convertedName = capitalizeName(author);
 
   return (
-    <div className="pb-5 px-3 ">
+    <div className={`pb-5 px-3 ${isDetails ? "pt-16" : ""}`}>
       <CardHeading author={convertedName} date={date} />
       <CardBody
+        isDetails={isDetails}
         title={title}
         description={description}
         id={id}
