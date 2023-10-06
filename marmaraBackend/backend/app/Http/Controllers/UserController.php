@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+
 class UserController extends Controller
 {
 
@@ -15,11 +16,25 @@ class UserController extends Controller
     {
         $data = ($request->all());
 
+        $validator = Validator::make($request->all(), [
+            'TCKimlikNo' => 'required',
+            'BabaAdi' => 'required|string',
+            'DogumTarihi' => 'required'
+        ]);
+        $formatControl = preg_match('/^\d{4}-\d{2}-\d{2}$/', $request->DogumTarihi);
+
+        if ($validator->fails() || !$formatControl) {
+            $error = $validator->messages()->all();
+            return response([
+                "status" => false,
+                "message" => $error,
+                "data" => []
+            ]);
+        }
         $personalId = $data['TCKimlikNo'];
         $fatherName = $data['BabaAdi'];
         $birthDate = $data['DogumTarihi'];
 
-        $formatControl = preg_match('/^\d{4}-\d{2}-\d{2}$/', $birthDate);
 
         if ($personalId != "" && $fatherName != "" && $formatControl) {
             try {
@@ -32,7 +47,9 @@ class UserController extends Controller
 
                     if ($userControl) {
                         return response([
-                            'message' => 'alreadySaved'
+                            "status" => false,
+                            'message' => "alreadySaved",
+                            "data" => [],
                         ]);
                     }
 
@@ -51,25 +68,35 @@ class UserController extends Controller
                     ]);
 
                     return response([
-                        'message' => $token
-                    ]);
+                        "status" => true,
+                        'message' => "Student registration successful.",
+                        "data" => [
+                            "token" => $token
+                        ]
+                    ], 200);
 
                 } else {
 
                     return response([
-                        'message' => false
-                    ]);
+                        "status" => false,
+                        "message" => "Student not found",
+                        "data" => []
+                    ], 400);
 
                 }
             } catch (\Exception $e) {
                 return response([
-                    'message' => false
-                ]);
+                    "status" => false,
+                    "message" => $e->getMessage(),
+                    "data" => []
+                ], 400);
             }
         } else {
             return response([
-                'message' => false
-            ]);
+                "status" => false,
+                'message' => "format wrong",
+                "data" => []
+            ], 400);
         }
 
     }
@@ -110,8 +137,10 @@ class UserController extends Controller
         if (!Auth::attempt($credentials)) {
 
             return response([
-                'message' => false
-            ]);
+                "status" => false,
+                'message' => "Unauthenticate",
+                "data" => []
+            ], 401);
         }
         /** @var User $user */
         $user = Auth::user();
@@ -126,7 +155,11 @@ class UserController extends Controller
 
 
         return response([
-            'message' => $token]);
+            "status" => true,
+            "message" => "User login has been completed successfully.",
+            'data' => [
+                "token" => $token
+            ]]);
     }
 
     public function saveUser(Request $request)
@@ -139,8 +172,9 @@ class UserController extends Controller
         if ($validator->fails()) {
             $error = $validator->messages()->all();
             return response([
-                'message' => false,
-                'error' => $error
+                'status' => false,
+                "message" => $error,
+                'data' => []
             ]);
         }
 
@@ -161,17 +195,22 @@ class UserController extends Controller
             $user = User::where(['id' => $hasToken->user_id])->first();
 
             return response([
-                'message' => [
+                "status" => true,
+                "message" => "User registration successful.",
+                'data' => [
                     'user' => $user,
                     'abilities' => 'user',
                     'token' => $hasToken->token
                 ],
+
             ]);
 
         } else {
             return response([
-                'message' => false,
-            ]);
+                "status" => false,
+                'message' => "Unauthentication",
+                "data" => []
+            ], 401);
         }
 
 
@@ -189,7 +228,10 @@ class UserController extends Controller
 
             $user = User::where(['id' => $tokenControl['id']])->first();
             return response([
-                'message' => ['user' => $user,
+                "status" => true,
+                "message" => "User authentication successful.",
+                'data' => [
+                    'user' => $user,
                     'abilities' => $tokenControl['abilities'],
                     'token' => $tokenControl['token'],
                     'counter' => $tokenControl['counter'],]
@@ -197,9 +239,10 @@ class UserController extends Controller
         } else {
 
             return response([
-                'message' => [
-                    'user' => false,
-                ]]);
+                "status" => false,
+                'message' => "Unauthenticate",
+                "data"
+            ]);
         }
     }
 

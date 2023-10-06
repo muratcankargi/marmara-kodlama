@@ -27,7 +27,8 @@ Route::post('/saveUser', [UserController::class, 'saveUser']);
 Route::post('/authenticate', [UserController::class, 'authenticate']);
 
 Route::post('/createDeclaration', [DeclarationController::class, 'createDeclaration']);
-Route::get('/getDeclaration', [DeclarationController::class, 'getDeclaration']);
+Route::get('/declarations', [DeclarationController::class, 'getDeclarations']);
+Route::get('/declarations/{id}', [DeclarationController::class, 'getDeclaration']);
 Route::put('/updateDeclaration/{id}', [DeclarationController::class, 'updateDeclaration']);
 Route::delete('deleteDeclaration/{id}', [DeclarationController::class, 'deleteDeclaration']);
 
