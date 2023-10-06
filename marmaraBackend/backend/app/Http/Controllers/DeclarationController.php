@@ -24,6 +24,7 @@ class DeclarationController extends Controller
 
         if ($validator->fails()) {
             return response([
+
                 'message' => [
                     'status' => false,
                     'fails' => $validator->messages()->all()
@@ -68,7 +69,7 @@ class DeclarationController extends Controller
         }
     }
 
-    public function getDeclaration()
+    public function getDeclarations()
     {
         $declarations = json_decode(Declaration::all());
         foreach ($declarations as $declaration) {
@@ -80,8 +81,39 @@ class DeclarationController extends Controller
             $declaration->user = $user->name . ' ' . $user->surname;
         }
         return response([
-            'message' => $declarations
-        ]);
+            "status" => true,
+            'message' => "declarations founds",
+            "data" => $declarations
+        ], 200);
+    }
+
+    public function getDeclaration($id)
+    {
+        $declaration = Declaration::where('id', $id)->first();
+
+
+        if ($declaration) {
+            $user = json_decode(User::where(['id' => $declaration->user_id])->first());
+
+            $declaration->created_at = Carbon::parse($declaration->created_at)->format('d/m/Y');
+            $declaration->updated_at = Carbon::parse($declaration->updated_at)->format('d/m/Y');
+            $declaration->tags = json_decode($declaration->tags);
+            $declaration->user = $user->name . ' ' . $user->surname;
+
+            return response([
+                'status' => true,
+                'message' => 'declaration found',
+                'data' => $declaration
+            ], 200);
+        }
+        else {
+            return response([
+                'status' => false,
+                'message' => 'declaration not found',
+                'data' => []
+            ], 400);
+        }
+
     }
 
     public function updateDeclaration(Request $request, $id)
