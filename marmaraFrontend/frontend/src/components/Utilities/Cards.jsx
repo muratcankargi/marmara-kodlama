@@ -3,7 +3,9 @@ import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import { useAuthz } from "../Contexts/AuthzContext";
 import { useAuth } from "../Contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 import Image from "./Image";
+import { useLocationContext } from "../Contexts/LocationContext";
 
 // span, dark modda altta çıkan siyah çizgi
 // borderla vermedim çünkü sağdan soldan boşluk olsun istedim
@@ -31,6 +33,14 @@ function CardImage({ source, isDetails }) {
 
 function CardFooter({ id, setIsDeleted }) {
   const { permissions } = useAuthz();
+  const navigate = useNavigate();
+  const { setLocation } = useLocationContext();
+
+  const handleClick = () => {
+    setLocation("");
+    navigate(`/declarationdetails/${id}`);
+  };
+
   return (
     <div className="flex h-8 pt-3 justify-between items-center ">
       {permissions === "admin" ? (
@@ -38,7 +48,10 @@ function CardFooter({ id, setIsDeleted }) {
       ) : (
         <div></div>
       )}
-      <button className="text-neutral h-8 flex justify-center items-center  font-bold bg-accent p-2 rounded-sm">
+      <button
+        onClick={handleClick}
+        className="text-neutral h-8 flex justify-center items-center  font-bold bg-accent p-2 rounded-sm"
+      >
         Ayrıntıları Gör
       </button>
     </div>
@@ -167,23 +180,20 @@ export function Card({
 // Bu componentler farklı sayfalara ayrılacak
 function Cards() {
   const [cards, setCards] = useState([]);
+  const { getDeclaration } = useAuth();
 
   useEffect(() => {
-    const asyncFunction = async () => {
+    const getDeclarations = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:8000/api/getDeclaration"
-        );
+        const response = await getDeclaration();
 
-        setCards(response.data.message);
-
-        return response.data.message;
+        setCards(response);
       } catch (error) {
         console.log("Error: ", error.message);
       }
     };
 
-    asyncFunction();
+    getDeclarations();
   }, []);
 
   return (

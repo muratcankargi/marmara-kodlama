@@ -60,7 +60,7 @@ function ButtonContainer({ userInfo, validation }) {
   };
 
   const { saveUser } = useAuth();
-  // Bi yerlere bi çıkış yap butonu koymak lazım aslında
+
   const handleSave = async () => {
     if (checkInputs()) {
       try {

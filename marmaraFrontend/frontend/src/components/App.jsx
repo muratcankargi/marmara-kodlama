@@ -70,7 +70,7 @@ function App() {
         />
 
         <Route
-          path="/declarationdetails"
+          path="/declarationdetails/:id"
           element={
             <ProtectedRoute redirect="/signin">
               <WithPermission

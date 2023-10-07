@@ -6,14 +6,7 @@ const AuthzContext = createContext();
 
 export const AuthzProvider = ({ children }) => {
   // user permissonları buraya yönetiliyor
-  const { user } = useAuth();
-  const [permissions, setPermissions] = useState(null);
-
-  useEffect(() => {
-    if (user) {
-      setPermissions(user.abilities);
-    }
-  }, [user]);
+  const { permissions } = useAuth();
 
   return (
     <AuthzContext.Provider value={{ permissions }}>
