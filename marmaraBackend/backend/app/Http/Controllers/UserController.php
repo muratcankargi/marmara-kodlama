@@ -138,7 +138,7 @@ class UserController extends Controller
 
             return response([
                 "status" => false,
-                'message' => "Unauthenticate",
+                'message' => "Unauthenticated",
                 "data" => []
             ], 401);
         }
@@ -208,7 +208,7 @@ class UserController extends Controller
         } else {
             return response([
                 "status" => false,
-                'message' => "Unauthentication",
+                'message' => "Unauthenticated",
                 "data" => []
             ], 401);
         }
@@ -240,7 +240,7 @@ class UserController extends Controller
 
             return response([
                 "status" => false,
-                'message' => "Unauthenticate",
+                'message' => "Unauthenticated",
                 "data"
             ]);
         }

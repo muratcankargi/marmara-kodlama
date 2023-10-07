@@ -26,13 +26,13 @@ Route::post('/login', [UserController::class, 'login']);
 Route::post('/saveUser', [UserController::class, 'saveUser']);
 Route::post('/authenticate', [UserController::class, 'authenticate']);
 
-Route::post('/createDeclaration', [DeclarationController::class, 'createDeclaration']);
+Route::post('/declarations', [DeclarationController::class, 'createDeclaration']);
 Route::get('/declarations', [DeclarationController::class, 'getDeclarations']);
 Route::get('/declarations/{id}', [DeclarationController::class, 'getDeclaration']);
-Route::put('/updateDeclaration/{id}', [DeclarationController::class, 'updateDeclaration']);
-Route::delete('deleteDeclaration/{id}', [DeclarationController::class, 'deleteDeclaration']);
+Route::put('/declarations/{id}', [DeclarationController::class, 'updateDeclaration']);
+Route::delete('declarations/{id}', [DeclarationController::class, 'deleteDeclaration']);
 
-Route::post('/createTag', [TagController::class, 'createTag']);
-Route::get('/getTags', [TagController::class, 'getTags']);
-Route::put('/updateTag/{id}', [TagController::class, 'updateTag']);
-Route::delete('deleteTag/{id}', [TagController::class, 'deleteTag']);
+Route::post('/tags', [TagController::class, 'createTag']);
+Route::get('/tags', [TagController::class, 'getTags']);
+Route::put('/tags/{id}', [TagController::class, 'updateTag']);
+Route::delete('tags/{id}', [TagController::class, 'deleteTag']);

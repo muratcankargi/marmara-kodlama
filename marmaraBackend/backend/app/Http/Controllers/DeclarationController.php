@@ -24,28 +24,25 @@ class DeclarationController extends Controller
 
         if ($validator->fails()) {
             return response([
-
-                'message' => [
-                    'status' => false,
-                    'fails' => $validator->messages()->all()
-                ]]);
+                "status" => false,
+                'message' => $validator->messages()->all(),
+                "data" => []
+            ], 400);
         } else {
             foreach ($request->tags as $tag) {
                 if (!Tag::where('name', $tag)->first()) {
-                    //eğer tag yoksa oluşturulabilir
-                    //Tag::create('name',$tag);
                     return response([
-                        'message' => [
-                            'status' => false,
-                            'tag' => $tag,
-                        ]]);
+                        "status" => false,
+                        'message' => $tag . " not found",
+                        "data" => []
+                    ], 400);
                 }
             }
 
             $UserController = new UserController();
             $result = $UserController->authenticate($request);
 
-            $user = json_decode(json_encode($result), true)['original']['message']['user'];
+            $user = json_decode(json_encode($result), true)['original']['data']['user'];
             if ($user) {
                 Declaration::create(['user_id' => $user['id'],
                     'title' => $request->title,
@@ -57,14 +54,16 @@ class DeclarationController extends Controller
                 ]);
 
                 return response([
-                    'message' => [
-                        'status' => true
-                    ]]);
+                    "status" => true,
+                    'message' => "declaration create successfull",
+                    "data" => []
+                ], 200);
             } else {
                 return response([
-                    'message' => [
-                        'status' => 'notAuthenticated'
-                    ]]);
+                    "status" => false,
+                    'message' => 'notAuthenticated',
+                    "data" => []
+                ], 401);
             }
         }
     }
@@ -105,8 +104,7 @@ class DeclarationController extends Controller
                 'message' => 'declaration found',
                 'data' => $declaration
             ], 200);
-        }
-        else {
+        } else {
             return response([
                 'status' => false,
                 'message' => 'declaration not found',
@@ -129,21 +127,22 @@ class DeclarationController extends Controller
 
             if ($validator->fails()) {
                 return response([
-                    'message' => [
-                        'status' => false,
-                        'fails' => $validator->messages()->all()
-                    ]]);
+                    "status" => false,
+                    'message' => $validator->messages()->all(),
+                    "data" => []
+                ], 400);
             }
 
             $UserController = new UserController();
             $result = $UserController->authenticate($request);
 
-            $user = json_decode(json_encode($result), true)['original']['message']['user'];
+            $user = json_decode(json_encode($result), true)['original']['data']['user'];
             if (!$user) {
                 return response([
-                    'message' => [
-                        'status' => 'notAuthenticated'
-                    ]]);
+                    "status" => false,
+                    'message' => "notAuthenticated",
+                    "data" => []
+                ], 401);
             }
 
             $declaration = Declaration::find($id);
@@ -157,10 +156,10 @@ class DeclarationController extends Controller
                     //eğer tag yoksa oluşturulabilir
                     //Tag::create('name',$tag);
                     return response([
-                        'message' => [
-                            'status' => false,
-                            'tag' => $tag,
-                        ]]);
+                        "status" => false,
+                        'message' => $tag ." not found",
+                        "data" => []
+                    ], 400);
                 }
             }
 
@@ -173,17 +172,16 @@ class DeclarationController extends Controller
             $declaration->save();
 
             return response([
-                'message' => [
-                    'status' => true
-                ]
-            ]);
+                "status" => true,
+                'message' => "declaration update successfull",
+                "data" => []
+            ], 200);
         } catch (\Exception $e) {
             return response([
-                'message' => [
-                    'status' => 'error',
-                    'error_message' => $e->getMessage()
-                ]
-            ]);
+                "status" => false,
+                'message' => $e->getMessage(),
+                "data" => []
+            ], 400);
         }
     }
 
@@ -193,11 +191,18 @@ class DeclarationController extends Controller
             $declaration = Declaration::findOrFail($id);
             $declaration->delete();
 
+            return response([
+                "status" => true,
+                'message' => "declaration deleted",
+                "data" => []
+            ], 200);
             return response(['message' => 'İlan başarıyla silindi.']);
         } catch (\Exception $e) {
             return response([
-                'message' => 'İlan silinemedi.',
-                'error' => $e->getMessage()]);
+                "status" => false,
+                'message' => $e->getMessage(),
+                "data" => []
+            ], 400);
         }
     }
 }

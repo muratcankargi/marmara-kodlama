@@ -17,10 +17,10 @@ class TagController extends Controller
 
         if ($validator->fails()) {
             return response([
-                'message' => [
-                    'status' => false,
-                    'fails' => $validator->messages()->all()
-                ]]);
+                "status" => false,
+                'message' => $validator->messages()->all(),
+                "data" => [],
+            ], 400);
         } else {
             try {
 
@@ -29,15 +29,17 @@ class TagController extends Controller
 
                 if ($tag) {
                     return response([
-                        'message' => [
-                            'status' => true,
-                        ]]);
+                        "status" => true,
+                        'message' => "tag created",
+                        "data" => [],
+                    ], 200);
                 }
             } catch (\Exception $e) {
                 return response([
-                    'message' => [
-                        'status' => $e->getMessage(),
-                    ]]);
+                    "status" => false,
+                    'message' => $e->getMessage(),
+                    "data" => [],
+                ], 400);
             }
         }
     }
@@ -51,13 +53,16 @@ class TagController extends Controller
                 $tag->updated_at = Carbon::parse($tag->updated_at)->format('d/m/Y');
             }
             return response([
-                'message' => $tags,
-            ]);
+                "status" => true,
+                'message' => "tags get success",
+                "data" => $tags,
+            ], 200);
         } catch (\Exception $e) {
             return response([
-                'message' => [
-                    'status' => $e->getMessage(),
-                ]]);
+                "status" => false,
+                'message' => $e->getMessage(),
+                "data" => [],
+            ], 400);
         }
     }
 
@@ -70,48 +75,49 @@ class TagController extends Controller
 
             if ($validator->fails()) {
                 return response([
-                    'message' => [
-                        'status' => false,
-                        'fails' => $validator->messages()->all()
-                    ]]);
+                    "status" => false,
+                    'message' => $validator->messages()->all(),
+                    "data" => [],
+                ], 400);
             }
 
             $UserController = new UserController();
             $result = $UserController->authenticate($request);
 
-            $user = json_decode(json_encode($result), true)['original']['message']['user'];
+            $user = json_decode(json_encode($result), true)['original']['data']['user'];
             if (!$user) {
                 return response([
-                    'message' => [
-                        'status' => 'notAuthenticated'
-                    ]]);
+                    "status" => false,
+                    'message' => "Unauthenticated",
+                    "data" => [],
+                ], 401);
+
             }
 
             $tag = Tag::find($id);
 
             if (!$tag) {
                 return response([
-                    'message' => [
-                        'status' => false,
-                        'fails' => 'noTag'
-                    ]]);
+                    "status" => false,
+                    'message' => "noTag",
+                    "data" => [],
+                ], 400);
             }
 
             $tag->name = $request->name;
             $tag->save();
 
             return response([
-                'message' => [
-                    'status' => true
-                ]
-            ]);
+                "status" => true,
+                'message' => "tag updated",
+                "data" => [],
+            ], 200);
         } catch (\Exception $e) {
             return response([
-                'message' => [
-                    'status' => 'error',
-                    'error_message' => $e->getMessage()
-                ]
-            ]);
+                "status" => false,
+                'message' => $e->getMessage(),
+                "data" => [],
+            ], 400);
         }
     }
 
@@ -121,9 +127,17 @@ class TagController extends Controller
             $tag = Tag::findOrFail($id);
             $tag->delete();
 
-            return response(['message' => 'Etiket başarıyla silindi.']);
+            return response([
+                "status" => true,
+                'message' => "tag deleted",
+                "data" => [],
+            ], 200);
         } catch (\Exception $e) {
-            return response(['message' => 'Etiket silinemedi.']);
+            return response([
+                "status" => false,
+                'message' => $e->getMessage(),
+                "data" => [],
+            ], 400);
         }
     }
 
