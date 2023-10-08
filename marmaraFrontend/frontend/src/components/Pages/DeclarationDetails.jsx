@@ -33,6 +33,7 @@ function DeclarationDetails() {
 
   const { getDeclarationById } = useAuth();
   const [card, setCard] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   // gelen id'ye göre card'ı çekiyoruz
   useEffect(() => {
@@ -40,6 +41,7 @@ function DeclarationDetails() {
       const response = await getDeclarationById(id);
 
       setCard(response);
+      setIsLoading(false);
     };
 
     asyncFunc();
@@ -51,15 +53,28 @@ function DeclarationDetails() {
         <IntroText mainText="İlan Detayları" />
         <HamburgerMenu />
       </div>
-      {card && (
+      {!isLoading ? (
+        card && (
+          <Card
+            isDetails={true}
+            key={uuidv4()}
+            id={card.id}
+            author={card.user}
+            date={card.created_at}
+            title={card.title}
+            description={card.description}
+          />
+        )
+      ) : (
         <Card
           isDetails={true}
           key={uuidv4()}
-          id={card.id}
-          author={card.user}
-          date={card.created_at}
-          title={card.title}
-          description={card.description}
+          id={1}
+          author={""}
+          date={""}
+          title={""}
+          description={""}
+          isLoading={isLoading}
         />
       )}
       {card && <DeclarationTags tags={card.tags} />}

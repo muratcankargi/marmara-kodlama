@@ -74,7 +74,7 @@ function ButtonContainer({ declaration, validation, tags }) {
       );
       if (result) {
         alert("declarationSaved");
-        navigate("/feed");
+        navigate("/anasayfa");
       } else {
         alert("declarationNotSaved");
       }
@@ -96,7 +96,7 @@ function CreateDeclaration() {
   // bu setLocation'lar hamburgermenu'deki nav lardan hangisinin
   // altını çizeceğimizi anlamamız için
   useEffect(() => {
-    setLocation("/createDeclaration");
+    setLocation("/ilanolustur");
   }, []);
 
   const [declaration, setDeclaration] = useState({

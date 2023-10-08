@@ -71,10 +71,10 @@ function ButtonContainer({ userInfo, validation }) {
         });
         if (response) {
           alert("saved");
-          navigate("/feed");
+          navigate("/anasayfa");
         } else {
           alert("notSaved");
-          navigate("/signup");
+          navigate("/kaydol");
         }
       } catch (error) {
         console.log("Error: ", error.message);

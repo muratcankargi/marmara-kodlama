@@ -23,17 +23,17 @@ function App() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
 
-        <Route path="/signin" element={<SignInPage />} />
+        <Route path="/girisyap" element={<SignInPage />} />
 
-        <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/kaydol" element={<SignUpPage />} />
 
         <Route
-          path="/feed"
+          path="/anasayfa"
           element={
-            <ProtectedRoute redirect="/signin">
+            <ProtectedRoute redirect="/girisyap">
               <WithPermission
                 allowedPermissions={["user", "admin"]}
-                redirect="/createprofile"
+                redirect="/profilolustur"
               >
                 <Feed />
               </WithPermission>
@@ -42,12 +42,12 @@ function App() {
         />
 
         <Route
-          path="/createDeclaration"
+          path="/ilanolustur"
           element={
-            <ProtectedRoute redirect="/signin">
+            <ProtectedRoute redirect="/girisyap">
               <WithPermission
                 allowedPermissions={["user", "admin"]}
-                redirect="/createprofile"
+                redirect="/ilanolustur"
               >
                 <CreateDeclaration />
               </WithPermission>
@@ -56,12 +56,12 @@ function App() {
         />
 
         <Route
-          path="/createprofile"
+          path="/profilolustur"
           element={
-            <ProtectedRoute redirect="/signin">
+            <ProtectedRoute redirect="/girisyap">
               <WithPermission
                 allowedPermissions={["almostUser", "admin"]}
-                redirect="/feed"
+                redirect="/anasayfa"
               >
                 <CreateProfilePage />
               </WithPermission>
@@ -70,12 +70,12 @@ function App() {
         />
 
         <Route
-          path="/declarationdetails/:id"
+          path="/ilandetaylari/:id"
           element={
-            <ProtectedRoute redirect="/signin">
+            <ProtectedRoute redirect="/girisyap">
               <WithPermission
                 allowedPermissions={["user", "admin"]}
-                redirect="/feed"
+                redirect="/anasayfa"
               >
                 <DeclarationDetails />
               </WithPermission>

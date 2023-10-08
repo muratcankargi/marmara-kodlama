@@ -9,36 +9,85 @@ import { useLocationContext } from "../Contexts/LocationContext";
 
 // span, dark modda altta çıkan siyah çizgi
 // borderla vermedim çünkü sağdan soldan boşluk olsun istedim
-function CardHeading({ author, date }) {
+function CardHeading({ author, date, isLoading, id }) {
+  let width1, width2;
+
+  switch (id) {
+    case 1:
+      width1 = "w-16";
+      width2 = "w-24";
+      break;
+    case 2:
+      width1 = "w-32";
+      width2 = "w-16";
+      break;
+    case 3:
+      width1 = "w-12";
+      width2 = "w-20";
+      break;
+    case 4:
+      width1 = "w-16";
+      width2 = "w-16";
+      break;
+    default:
+      width1 = "w-24";
+      width2 = "w-16";
+      break;
+  }
+
   return (
     <div className="dark:bg-[#1B2430] relative flex justify-between items-center py-1 px-2 text-sm bg-primary-100 text-neutral">
       <span className="w-[96%] h-[2px] -bottom-1 left-1/2 -translate-x-1/2 rounded-lg dark:bg-[#10141A] bg-none absolute"></span>
-      <div>{author}</div>
-      <div>{date}</div>
+      <div
+        className={`${
+          isLoading &&
+          `${width1} h-4 dark:bg-darkNeutral rounded-sm animate-pulse`
+        }`}
+      >
+        {author}
+      </div>
+      <div
+        className={`${
+          isLoading &&
+          `${width2} h-4 dark:bg-darkNeutral rounded-sm animate-pulse`
+        }`}
+      >
+        {date}
+      </div>
     </div>
   );
 }
 
-function CardImage({ source, isDetails }) {
-  return (
+function CardImage({ source, isDetails, isLoading }) {
+  return !isLoading ? (
     <img
       className={`object-cover rounded-sm pt-3 ${
         isDetails ? "md:h-96 h-56" : "h-56"
-      } `}
+      }`}
       src="/images/cuzdan.jpg"
       alt="Kayıp Eşya"
     />
+  ) : (
+    <div
+      className={`dark:bg-darkNeutral animate-pulse w-full ${
+        isDetails ? "md:h-96 h-56" : "h-56"
+      }`}
+    ></div>
   );
 }
 
-function CardFooter({ id, setIsDeleted }) {
+function CardFooter({ id, setIsDeleted, isDetails = false, isLoading }) {
   const { permissions } = useAuthz();
   const navigate = useNavigate();
   const { setLocation } = useLocationContext();
 
   const handleClick = () => {
-    setLocation("");
-    navigate(`/declarationdetails/${id}`);
+    if (!isDetails) {
+      setLocation("");
+      navigate(`/ilandetaylari/${id}`);
+    } else if (isDetails) {
+      console.log("mesajlaşma başlıyor.");
+    }
   };
 
   return (
@@ -50,9 +99,15 @@ function CardFooter({ id, setIsDeleted }) {
       )}
       <button
         onClick={handleClick}
-        className="text-neutral h-8 flex justify-center items-center  font-bold bg-accent p-2 rounded-sm"
+        className={`text-neutral h-8 flex justify-center items-center  font-bold bg-accent p-2 rounded-sm
+        ${
+          isLoading
+            ? "dark:bg-darkNeutral animate-pulse pointer-events-none"
+            : ""
+        } 
+        `}
       >
-        Ayrıntıları Gör
+        {!isDetails ? "Ayrıntıları Gör" : "İletişime Geç"}
       </button>
     </div>
   );
@@ -100,21 +155,115 @@ function DeleteCard({ id, setIsDeleted }) {
   );
 }
 
-function CardContent({ heading, content }) {
+function CardContent({ heading, content, isLoading, id }) {
+  // Yüklenirken bütün card'lar aynı gözükmesin diye farklı default değerler giriyoruz switch ile
+  let width1, width2, width3, width4;
+
+  switch (id) {
+    case 1:
+      width1 = "w-48";
+      width2 = "w-64";
+      width3 = "w-48";
+      width4 = "w-52";
+      break;
+    case 2:
+      width1 = "w-32";
+      width2 = "w-48";
+      width3 = "w-40";
+      width4 = "w-24";
+      break;
+    case 3:
+      width1 = "w-32";
+      width2 = "w-64";
+      width3 = "w-64";
+      width4 = "w-48";
+      break;
+    case 4:
+      width1 = "w-24";
+      width2 = "w-32";
+      width3 = "w-48";
+      width4 = "w-24";
+      break;
+    default:
+      width1 = "w-48";
+      width2 = "w-64";
+      width3 = "w-48";
+      width4 = "w-52";
+      break;
+  }
+
   return (
     <>
-      <div className="text-xl font-bold dark:text-neutral">{heading}</div>
-      <p className="pt-2 dark:text-neutral">{content}</p>
+      <div
+        className={`text-xl font-bold dark:text-neutral 
+      ${isLoading ? `${width1} h-4 dark:bg-darkNeutral animate-pulse` : ""}`}
+      >
+        {heading}
+      </div>
+      {!isLoading ? (
+        <p className="pt-2 dark:text-neutral">{content}</p>
+      ) : (
+        <>
+          <p
+            className={`pt-2 mt-4 dark:text-neutral ${
+              isLoading
+                ? `${width2} h-4 dark:bg-darkNeutral animate-pulse my-1`
+                : ""
+            }`}
+          >
+            {content}
+          </p>
+          <p
+            className={`pt-2 dark:text-neutral ${
+              isLoading
+                ? `${width3} h-4 dark:bg-darkNeutral animate-pulse my-1`
+                : ""
+            }`}
+          >
+            {content}
+          </p>
+          <p
+            className={`pt-2 dark:text-neutral ${
+              isLoading
+                ? `${width4} h-4 dark:bg-darkNeutral animate-pulse my-1`
+                : ""
+            }`}
+          >
+            {content}
+          </p>
+        </>
+      )}
     </>
   );
 }
 
-function CardBody({ title, description, id, setIsDeleted, isDetails }) {
+function CardBody({
+  title,
+  description,
+  id,
+  setIsDeleted,
+  isDetails,
+  isLoading,
+}) {
   return (
     <div className="bg-white dark:bg-[#1B2430]  shadow-md p-2 py-3 flex flex-col">
-      <CardContent heading={title} content={description} />
-      <CardImage source="./images/cuzdan.jpg" isDetails={isDetails} />
-      <CardFooter id={id} setIsDeleted={setIsDeleted} />
+      <CardContent
+        heading={title}
+        content={description}
+        isLoading={isLoading}
+        id={id}
+      />
+      <CardImage
+        source="./images/cuzdan.jpg"
+        isDetails={isDetails}
+        isLoading={isLoading}
+      />
+      <CardFooter
+        id={id}
+        setIsDeleted={setIsDeleted}
+        isDetails={isDetails}
+        isLoading={isLoading}
+      />
     </div>
   );
 }
@@ -126,7 +275,8 @@ export function Card({
   date,
   title,
   description,
-  id,
+  id = 1,
+  isLoading,
   isDetails = false,
 }) {
   const [isDeleted, setIsDeleted] = useState(false);
@@ -165,8 +315,14 @@ export function Card({
 
   return (
     <div className={`pb-5 px-3 ${isDetails ? "pt-16" : ""}`}>
-      <CardHeading author={convertedName} date={date} />
+      <CardHeading
+        isLoading={isLoading}
+        author={convertedName}
+        date={date}
+        id={id}
+      />
       <CardBody
+        isLoading={isLoading}
         isDetails={isDetails}
         title={title}
         description={description}
@@ -181,6 +337,7 @@ export function Card({
 function Cards() {
   const [cards, setCards] = useState([]);
   const { getDeclaration } = useAuth();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const getDeclarations = async () => {
@@ -188,6 +345,7 @@ function Cards() {
         const response = await getDeclaration();
 
         setCards(response);
+        setIsLoading(false);
       } catch (error) {
         console.log("Error: ", error.message);
       }
@@ -196,20 +354,41 @@ function Cards() {
     getDeclarations();
   }, []);
 
+  // farklı card id'lerine göre farklı style'lar veriliyor
+  const loadingCards = [1, 2, 3, 4];
+
   return (
     <div className="w-full pt-5 md:grid md:grid-cols-3 ">
-      {cards.map((card) => {
-        return (
-          <Card
-            key={uuidv4()}
-            id={card.id}
-            author={card.user}
-            date={card.created_at}
-            title={card.title}
-            description={card.description}
-          />
-        );
-      })}
+      {!isLoading ? (
+        cards.map((card) => {
+          return (
+            <Card
+              key={uuidv4()}
+              id={card.id}
+              author={card.user}
+              date={card.created_at}
+              title={card.title}
+              description={card.description}
+            />
+          );
+        })
+      ) : (
+        <>
+          {loadingCards.map((id) => {
+            return (
+              <Card
+                key={uuidv4()}
+                id={id}
+                author={""}
+                date={""}
+                title={""}
+                description={""}
+                isLoading={isLoading}
+              />
+            );
+          })}
+        </>
+      )}
     </div>
   );
 }

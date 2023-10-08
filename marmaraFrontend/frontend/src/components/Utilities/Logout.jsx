@@ -16,7 +16,7 @@ function Logout() {
     setIsActive(false);
     if (logout()) {
       alert("logout");
-      navigate("/signin");
+      navigate("/girisyap");
     } else {
       alert("notLogout");
     }

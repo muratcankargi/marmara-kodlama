@@ -14,7 +14,7 @@ import ThemeSwitcher from "../Utilities/ThemeSwitcher";
 function CustomLinkContainer() {
   return (
     <div className="flex w-full justify-between items-center mt-6">
-      <CustomLink to="/signup" text="Kayıt Ol" />
+      <CustomLink to="/kaydol" text="Kayıt Ol" />
       <CustomLink text="Şifremi Unuttum" />
     </div>
   );
@@ -63,7 +63,7 @@ function ButtonContainer({ userInfo, validation }) {
         // loginden token gelmişse kaydediyoruz ve yönlendiriyoruz
         alert("authenticated");
         localStorage.setItem("auth", token);
-        navigate("/feed");
+        navigate("/anasayfa");
       } else {
         alert("notAuthenticated");
       }

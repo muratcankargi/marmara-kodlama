@@ -13,11 +13,11 @@ function HamburgerMenuNavigation() {
   const links = [
     {
       title: "Ana Sayfa",
-      link: "/feed",
+      link: "/anasayfa",
     },
     {
       title: "İlan Oluştur",
-      link: "/createDeclaration",
+      link: "/ilanolustur",
     },
   ];
 

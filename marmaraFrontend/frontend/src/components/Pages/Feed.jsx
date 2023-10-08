@@ -72,7 +72,7 @@ function Feed() {
   const { setLocation } = useLocationContext();
 
   useEffect(() => {
-    setLocation("/feed");
+    setLocation("/anasayfa");
   }, []);
 
   return (
