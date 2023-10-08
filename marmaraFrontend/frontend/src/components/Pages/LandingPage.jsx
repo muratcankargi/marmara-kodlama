@@ -58,7 +58,7 @@ function Buttons() {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate("/signin");
+    navigate("/girisyap");
   };
 
   return (

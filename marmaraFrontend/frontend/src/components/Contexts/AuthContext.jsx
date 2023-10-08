@@ -1,30 +1,32 @@
 // AuthContext.js
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState } from "react";
 import axios from "axios";
 
 const AuthContext = createContext();
+const URL = "http://localhost:8000/api";
 
+// Auth diyor ama basitçe bütün api'leri topladığımız yer
 export const AuthProvider = ({ children }) => {
   // Manage user authentication state here, including login, logout, and user information.
   const [user, setUser] = useState(null);
+  const [permissions, setPermissions] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   // Implement the authenticate function
   const authenticate = async () => {
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/authenticate",
-        {
-          token: localStorage.getItem("auth"),
-        }
-      );
+      const response = await axios.post(`${URL}/authenticate`, {
+        token: localStorage.getItem("auth"),
+      });
 
       // If authentication is successful, set the user state with user data
-      const userData = response.data.message;
+      const userData = response.data.data.user;
+      const userPermissions = response.data.data.abilities;
 
       setUser(userData);
+      setPermissions(userPermissions);
 
-      return response.data.message;
+      return response.data.status;
     } catch (error) {
       console.log("Authentication Error: ", error.message);
       // If authentication fails, set the user state to null
@@ -40,15 +42,14 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       // Böyle bir kullanıcı varsa
-      const response = await axios.post("http://localhost:8000/api/login", {
+      const response = await axios.post(`${URL}/login`, {
         email: email,
         password: password,
       });
 
-      // serverdan gene bütün bilgiler gelmeli
-      setUser({ abilities: "user" });
+      setPermissions({ abilities: "user" });
 
-      return response.data.message;
+      return response.data.data.token;
     } catch (error) {
       console.log("Error: ", error.message);
     }
@@ -75,17 +76,14 @@ export const AuthProvider = ({ children }) => {
     // Burada bir token döndürülecek serverdan
     try {
       // Sign upda girilen bilgilere sahip öğrenci var mı diye bakılıyor
-      const response = await axios.post("http://localhost:8000/api/isStudent", {
+      const response = await axios.post(`${URL}/isStudent`, {
         TCKimlikNo: personalId,
         BabaAdi: fatherName,
         DogumTarihi: birthDate,
       });
 
-      // bilgileri döndürmeli
-      console.log(response.data.message);
-
       // token
-      return response.data.message;
+      return response.data.data.token;
     } catch (error) {
       console.log("Error: ", error.message);
     }
@@ -95,14 +93,12 @@ export const AuthProvider = ({ children }) => {
   // Tokenin yetkileri güncellenecek (serverda)
   const saveUser = async (userInfo) => {
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/saveUser",
-        userInfo
-      );
+      const response = await axios.post(`${URL}/saveUser`, userInfo);
 
-      setUser(response.data.message);
+      setUser(response.data.data.user);
+      setPermissions(response.data.data.abilities);
 
-      return response.data.message;
+      return response.data.status;
     } catch (error) {
       console.log("Error: ", error.message);
     }
@@ -110,20 +106,27 @@ export const AuthProvider = ({ children }) => {
 
   const createDeclaration = async (title, description, tagsArray) => {
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/createDeclaration",
-        {
-          title: title,
-          description: description,
-          token: localStorage.getItem("auth"),
-          tags: tagsArray,
-          visibility: true,
-          image_source: "",
-          type: "lost",
-        }
-      );
+      const response = await axios.post(`${URL}/declarations`, {
+        title: title,
+        description: description,
+        token: localStorage.getItem("auth"),
+        tags: tagsArray,
+        visibility: true,
+        image_source: "",
+        type: "lost",
+      });
 
-      return response.data.message;
+      return response.data.status;
+    } catch (error) {
+      console.log("Error: ", error.message);
+    }
+  };
+
+  const getDeclaration = async () => {
+    try {
+      const response = await axios.get(`${URL}/declarations`);
+
+      return response.data.data;
     } catch (error) {
       console.log("Error: ", error.message);
     }
@@ -131,12 +134,12 @@ export const AuthProvider = ({ children }) => {
 
   const getTagsList = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/api/getTags");
+      const response = await axios.get(`${URL}/tags`);
 
       // Gelen response'u istediğimiz şekle çevirip o şekilde döndürüyoruz
       const newArray = [];
 
-      response.data.message.forEach((item) => {
+      response.data.data.forEach((item) => {
         const newObject = {};
         newObject.text = item.name;
         newObject.selected = false;
@@ -149,10 +152,22 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // details için tek id ile card alabileceğimiz api
+  const getDeclarationById = async (id) => {
+    try {
+      const response = await axios.get(`${URL}/declarations/${id}`);
+
+      return response.data.data;
+    } catch (error) {
+      console.log("Error: ", error.message);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
         user,
+        permissions,
         login,
         logout,
         isLoading,
@@ -161,6 +176,8 @@ export const AuthProvider = ({ children }) => {
         saveUser,
         createDeclaration,
         getTagsList,
+        getDeclaration,
+        getDeclarationById,
       }}
     >
       {children}

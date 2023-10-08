@@ -6,6 +6,7 @@ import CreateProfilePage from "./Pages/CreateProfilePage";
 import SignUpPage from "./Pages/SignUpPage";
 import ProgressBar from "./ProgressBar/ProgressBar";
 import ProtectedRoute from "./RouteRelated/ProtectedRoute";
+import DeclarationDetails from "./Pages/DeclarationDetails";
 import Feed from "./Pages/Feed";
 import CreateDeclaration from "./Pages/CreateDeclaration";
 import WithPermission from "./RouteRelated/WithPermission";
@@ -22,17 +23,17 @@ function App() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
 
-        <Route path="/signin" element={<SignInPage />} />
+        <Route path="/girisyap" element={<SignInPage />} />
 
-        <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/kaydol" element={<SignUpPage />} />
 
         <Route
-          path="/feed"
+          path="/anasayfa"
           element={
-            <ProtectedRoute redirect="/signin">
+            <ProtectedRoute redirect="/girisyap">
               <WithPermission
                 allowedPermissions={["user", "admin"]}
-                redirect="/createprofile"
+                redirect="/profilolustur"
               >
                 <Feed />
               </WithPermission>
@@ -41,12 +42,12 @@ function App() {
         />
 
         <Route
-          path="/createDeclaration"
+          path="/ilanolustur"
           element={
-            <ProtectedRoute redirect="/signin">
+            <ProtectedRoute redirect="/girisyap">
               <WithPermission
                 allowedPermissions={["user", "admin"]}
-                redirect="/createprofile"
+                redirect="/ilanolustur"
               >
                 <CreateDeclaration />
               </WithPermission>
@@ -55,14 +56,28 @@ function App() {
         />
 
         <Route
-          path="/createprofile"
+          path="/profilolustur"
           element={
-            <ProtectedRoute redirect="/signin">
+            <ProtectedRoute redirect="/girisyap">
               <WithPermission
                 allowedPermissions={["almostUser", "admin"]}
-                redirect="/feed"
+                redirect="/anasayfa"
               >
                 <CreateProfilePage />
+              </WithPermission>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/ilandetaylari/:id"
+          element={
+            <ProtectedRoute redirect="/girisyap">
+              <WithPermission
+                allowedPermissions={["user", "admin"]}
+                redirect="/anasayfa"
+              >
+                <DeclarationDetails />
               </WithPermission>
             </ProtectedRoute>
           }

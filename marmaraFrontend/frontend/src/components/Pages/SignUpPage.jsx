@@ -50,7 +50,7 @@ function Inputs({ setUserInfo, invalid }) {
 function CustomLinkContainer() {
   return (
     <div className="flex w-full justify-between items-center mt-6">
-      <CustomLink to="/signin" text="Giriş Yap" />
+      <CustomLink to="/girisyap" text="Giriş Yap" />
       <CustomLink text="Bu bilgileri neden istiyoruz?" />
     </div>
   );
@@ -78,12 +78,12 @@ function ButtonContainer({ userInfo, validation }) {
         if (response === "alreadySaved") {
           // tamama bastıktan sonra yönlendir.
           alert("alreadySaved");
-          navigate("/signin");
+          navigate("/girisyap");
           return;
         }
         localStorage.setItem("auth", response);
         alert("authenticated");
-        navigate("/createprofile");
+        navigate("/profilolustur");
       } else {
         alert("notAuthenticated");
       }

@@ -60,7 +60,7 @@ function ButtonContainer({ userInfo, validation }) {
   };
 
   const { saveUser } = useAuth();
-  // Bi yerlere bi çıkış yap butonu koymak lazım aslında
+
   const handleSave = async () => {
     if (checkInputs()) {
       try {
@@ -71,10 +71,10 @@ function ButtonContainer({ userInfo, validation }) {
         });
         if (response) {
           alert("saved");
-          navigate("/feed");
+          navigate("/anasayfa");
         } else {
           alert("notSaved");
-          navigate("/signup");
+          navigate("/kaydol");
         }
       } catch (error) {
         console.log("Error: ", error.message);

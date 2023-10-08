@@ -4,6 +4,10 @@ import LoadingState from "../Utilities/LoadingState";
 import { useAuthz } from "../Contexts/AuthzContext";
 
 const WithPermission = ({ children, allowedPermissions, redirect }) => {
+  const dbPermissions = ["user", "almostUser", "admin"];
+  // bunlar kullanabileceğimiz permissionlar bunlardan farklı bi şey varsa direkt signin'e yönlendirilmeli
+  // ToDo: burası db'den çekilebilir
+
   const { permissions } = useAuthz();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -19,10 +23,14 @@ const WithPermission = ({ children, allowedPermissions, redirect }) => {
 
   // app.jsx de array olarak belirlediğimiz allowedPermissions u burada kullanıyoruz
   // yani hangi permissonlar bu sayfayı görebilir
-  return allowedPermissions.includes(permissions) ? (
-    children
+  return dbPermissions.includes(permissions) ? (
+    allowedPermissions.includes(permissions) ? (
+      children
+    ) : (
+      <Navigate to={redirect} />
+    )
   ) : (
-    <Navigate to={redirect} />
+    <Navigate to="/signin" />
   );
 };
 
