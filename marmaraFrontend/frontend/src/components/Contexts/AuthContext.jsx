@@ -133,8 +133,12 @@ export const AuthProvider = ({ children }) => {
   };
 
   const getTagsList = async () => {
+    const config = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("auth")}` },
+    };
+
     try {
-      const response = await axios.get(`${URL}/tags`);
+      const response = await axios.get(`${URL}/tags`, config);
 
       // Gelen response'u istediğimiz şekle çevirip o şekilde döndürüyoruz
       const newArray = [];
