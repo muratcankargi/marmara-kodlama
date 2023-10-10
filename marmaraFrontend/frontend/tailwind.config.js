@@ -27,11 +27,16 @@ module.exports = {
           "0%": { left: "-1rem" },
           "100%": { left: "12rem" },
         },
+        showFilters: {
+          "0%": { height: "0rem" },
+          "100%": { height: "70%" },
+        },
       },
 
       animation: {
         shake: "shake 0.2s ease-in-out 0s 2",
         buttonHover: "buttonHover 0.75s ease-in-out infinite",
+        showFilters: "showFilters 0.5s forwards",
       },
     },
   },

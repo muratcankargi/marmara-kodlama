@@ -41,7 +41,7 @@ function CardHeading({ author, date, isLoading, id }) {
       <div
         className={`${
           isLoading &&
-          `${width1} h-4 dark:bg-darkNeutral rounded-sm animate-pulse`
+          `${width1} h-4 dark:bg-darkNeutral bg-primary-200 rounded-sm animate-pulse`
         }`}
       >
         {author}
@@ -49,7 +49,7 @@ function CardHeading({ author, date, isLoading, id }) {
       <div
         className={`${
           isLoading &&
-          `${width2} h-4 dark:bg-darkNeutral rounded-sm animate-pulse`
+          `${width2} h-4 dark:bg-darkNeutral bg-primary-200 rounded-sm animate-pulse`
         }`}
       >
         {date}
@@ -69,7 +69,7 @@ function CardImage({ source, isDetails, isLoading }) {
     />
   ) : (
     <div
-      className={`dark:bg-darkNeutral animate-pulse w-full ${
+      className={`dark:bg-darkNeutral bg-gray-300 animate-pulse w-full ${
         isDetails ? "md:h-96 h-56" : "h-56"
       }`}
     ></div>
@@ -196,7 +196,11 @@ function CardContent({ heading, content, isLoading, id }) {
     <>
       <div
         className={`text-xl font-bold dark:text-neutral 
-      ${isLoading ? `${width1} h-4 dark:bg-darkNeutral animate-pulse` : ""}`}
+      ${
+        isLoading
+          ? `${width1} h-4 dark:bg-darkNeutral bg-gray-300 animate-pulse`
+          : ""
+      }`}
       >
         {heading}
       </div>
@@ -207,7 +211,7 @@ function CardContent({ heading, content, isLoading, id }) {
           <p
             className={`pt-2 mt-4 dark:text-neutral ${
               isLoading
-                ? `${width2} h-4 dark:bg-darkNeutral animate-pulse my-1`
+                ? `${width2} h-4 dark:bg-darkNeutral bg-gray-300 animate-pulse my-1`
                 : ""
             }`}
           >
@@ -216,7 +220,7 @@ function CardContent({ heading, content, isLoading, id }) {
           <p
             className={`pt-2 dark:text-neutral ${
               isLoading
-                ? `${width3} h-4 dark:bg-darkNeutral animate-pulse my-1`
+                ? `${width3} h-4 dark:bg-darkNeutral bg-gray-300 animate-pulse my-1`
                 : ""
             }`}
           >
@@ -225,7 +229,7 @@ function CardContent({ heading, content, isLoading, id }) {
           <p
             className={`pt-2 dark:text-neutral ${
               isLoading
-                ? `${width4} h-4 dark:bg-darkNeutral animate-pulse my-1`
+                ? `${width4} h-4 dark:bg-darkNeutral bg-gray-300 animate-pulse my-1`
                 : ""
             }`}
           >

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useAuth } from "../Contexts/AuthContext";
+import { useAllFilters } from "../Contexts/AllFilters";
 
 function TagsHeader() {
   return (
@@ -97,9 +98,16 @@ function TagsContent({ getTags, setTags, tags }) {
   );
 }
 
-function ShowAllFilters() {
+function ShowAllFilters({ isActive, setIsActive }) {
+  const handleClick = () => {
+    setIsActive((prevValue) => {
+      return !prevValue;
+    });
+  };
+
   return (
     <button
+      onClick={handleClick}
       className="whitespace-nowrap mr-5 py-1 px-3  relative
       bg-gradient-to-r from-purple-500 to-pink-500 hover:bg-gradient-to-l 
       rounded-sm font-semibold  ease-in-out  text-neutral
@@ -111,10 +119,16 @@ function ShowAllFilters() {
   );
 }
 
-function TagsContentContainer({ getTags, setTags, tags }) {
+function TagsContentContainer({
+  getTags,
+  setTags,
+  tags,
+  isActive,
+  setIsActive,
+}) {
   return (
     <div className="overflow-x-auto relative flex">
-      <ShowAllFilters />
+      <ShowAllFilters isActive={isActive} setIsActive={setIsActive} />
       <TagsContent getTags={getTags} setTags={setTags} tags={tags} />
     </div>
   );
@@ -124,6 +138,7 @@ function TagsContentContainer({ getTags, setTags, tags }) {
 // daha mantıklı olabilir gibi çok item olursa hoş durmayacak
 function Tags({ getTags }) {
   const [tags, setTags] = useState(null);
+  const { isActive, setIsActive } = useAllFilters();
 
   // Main componenti sadeleştirmek için useEffect'leri custom hooklara ayırıyorum
   useGetTags(tags, setTags, getTags);
@@ -131,7 +146,13 @@ function Tags({ getTags }) {
   return (
     <div className="px-3  pt-3">
       <TagsHeader />
-      <TagsContentContainer tags={tags} getTags={getTags} setTags={setTags} />
+      <TagsContentContainer
+        tags={tags}
+        getTags={getTags}
+        setTags={setTags}
+        isActive={isActive}
+        setIsActive={setIsActive}
+      />
     </div>
   );
 }

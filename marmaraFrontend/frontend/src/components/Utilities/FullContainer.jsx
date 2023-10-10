@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useHamburgerMenu } from "../Contexts/HamburgerMenuContext";
+import { useAllFilters } from "../Contexts/AllFilters";
+import disableScroll from "disable-scroll";
 
 // centeredcontainer in bir başka versiyonu
 function FullContainer({ children, paddingTop = "" }) {
@@ -8,6 +10,13 @@ function FullContainer({ children, paddingTop = "" }) {
   // kullanıcının nerede kaldığını alabiliriz öncesinde veya
   // başka bi çözüm üretebiliriz
   const { isActive } = useHamburgerMenu();
+  const { isActive: filtersIsActive } = useAllFilters();
+
+  if (filtersIsActive || isActive) {
+    disableScroll.on();
+  } else {
+    disableScroll.off();
+  }
 
   // menu transition ile geldiği için feed'de yeterince card yokken
   // alt tarafta bi beyazlık oluşuyor onu engellemek için isActive'i
@@ -15,9 +24,7 @@ function FullContainer({ children, paddingTop = "" }) {
   // bu menü açıkken scroll yapamama olayını başka şekillerde çözmemiz lazım
   return (
     <div
-      className={`${paddingTop} ${
-        isActive ? "h-screen overflow-y-hidden" : "min-h-screen"
-      } bg-neutral dark:bg-darkNeutral `}
+      className={`${paddingTop} min-h-screen bg-neutral dark:bg-darkNeutral `}
     >
       <div>{children}</div>
     </div>

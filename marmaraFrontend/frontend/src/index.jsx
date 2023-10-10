@@ -9,6 +9,7 @@ import { AuthzProvider } from "./components/Contexts/AuthzContext";
 import { ThemeProvider } from "./components/Contexts/ThemeContext";
 import { LocationProvider } from "./components/Contexts/LocationContext";
 import { HamburgerMenuProvider } from "./components/Contexts/HamburgerMenuContext";
+import { AllFiltersProvider } from "./components/Contexts/AllFilters";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -19,7 +20,9 @@ root.render(
           <BrowserRouter>
             <LocationProvider>
               <HamburgerMenuProvider>
-                <App />
+                <AllFiltersProvider>
+                  <App />
+                </AllFiltersProvider>
               </HamburgerMenuProvider>
             </LocationProvider>
           </BrowserRouter>
