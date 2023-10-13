@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('email')->unique()->nullable();
             $table->string('password')->nullable();
             $table->string('student_number')->nullable();
+            $table->rememberToken();
             $table->timestamps();
         });
     }

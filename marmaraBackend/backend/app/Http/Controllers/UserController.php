@@ -2,103 +2,86 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\LoginRequest;
-use App\Models\PersonalAccessToken;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
 
     public function isStudent(Request $request)
     {
-        $data = ($request->all());
-
         $validator = Validator::make($request->all(), [
             'TCKimlikNo' => 'required',
             'BabaAdi' => 'required|string',
-            'DogumTarihi' => 'required'
-        ]);
-        $formatControl = preg_match('/^\d{4}-\d{2}-\d{2}$/', $request->DogumTarihi);
-
-        if ($validator->fails() || !$formatControl) {
-            $error = $validator->messages()->all();
-            return response([
-                "status" => false,
-                "message" => $error,
-                "data" => []
-            ]);
-        }
-        $personalId = $data['TCKimlikNo'];
-        $fatherName = $data['BabaAdi'];
-        $birthDate = $data['DogumTarihi'];
-
-
-        if ($personalId != "" && $fatherName != "" && $formatControl) {
-            try {
-                $response = $this->doCurl(json_encode($data), 'POST');
-
-
-                if ($response->OgrenciNo) {
-
-                    $userControl = User::where(['student_number' => $response->OgrenciNo])->first();
-
-                    if ($userControl) {
-                        return response([
-                            "status" => false,
-                            'message' => "alreadySaved",
-                            "data" => [],
-                        ]);
+            'DogumTarihi' => [
+                'required',
+                function ($attribute, $value, $fail) {
+                    $formatControl = preg_match('/^\d{4}-\d{2}-\d{2}$/', $value);
+                    if ($formatControl == 0) {
+                        $fail('Birth date format is incorrect.');
                     }
+                },]
+        ]);
 
-                    $user = User::create([
-                        'name' => $response->Ad,
-                        'surname' => $response->Soyad,
-                        'student_number' => $response->OgrenciNo,
-                    ]);
+        if ($validator->fails()) {
+            return response([
+                'status' => false,
+                'message' => $validator->messages()->all(),
+                'data' => []
+            ], 400);
+        }
+        try {
+            $data = ($request->all());
 
-                    $token = md5(time() . rand(0, 999999));
+            $response = $this->doCurl(json_encode($data), 'POST');
+            if ($response->OgrenciNo) {
 
-                    PersonalAccessToken::create([
-                        'user_id' => $user->getAttributes()['id'],
-                        'token' => $token,
-                        'abilities' => 'almostUser',
-                    ]);
+                $userControl = User::where(['student_number' => $response->OgrenciNo])->first();
 
+                if ($userControl) {
                     return response([
                         "status" => true,
-                        'message' => "Student registration successful.",
-                        "data" => [
-                            "token" => $token
-                        ]
-                    ], 200);
-
-                } else {
-
-                    return response([
-                        "status" => false,
-                        "message" => "Student not found",
-                        "data" => []
-                    ], 400);
-
+                        "message" => 'alreadySaved',
+                        "data" => [],
+                    ], 202);
                 }
-            } catch (\Exception $e) {
+
+                $token = Str::random(10);
+                $user = new User();
+                $user->name = $response->Ad;
+                $user->surname = $response->Soyad;
+                $user->student_number = $response->OgrenciNo;
+                $user->remember_token = $token;
+                $user->save();
+
+                return response([
+                    "status" => true,
+                    "message" => "The user has been successfully created.",
+                    "data" => [
+                        "user" => $user,
+                        "token" => $token
+                    ],
+                ], 200);
+
+            } else {
                 return response([
                     "status" => false,
-                    "message" => $e->getMessage(),
+                    "message" => "No student with this information was found",
                     "data" => []
-                ], 400);
+                ], 406);
+
             }
-        } else {
+        } catch (\Exception $e) {
             return response([
                 "status" => false,
-                'message' => "format wrong",
+                "message" => $e->getMessage(),
                 "data" => []
             ], 400);
         }
-
     }
 
     public function doCurl($data, $request)
@@ -125,125 +108,126 @@ class UserController extends Controller
         return $response;
     }
 
+    public function saveUser(Request $request)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|max:55|unique:users',
+            'password' => 'required'
+        ]);
+        if ($validator->fails()) {
+            return response([
+                "status" => false,
+                'message' => $validator->errors()->all(),
+                "data" => []
+            ], 400);
+        }
+
+        $request->password = bcrypt($request->password);
+        $userControl = User::where('remember_token', $request->token)->first();
+        if ($userControl) {
+            $userControl->update(['email' => $request->email,
+                "password" => $request->password
+            ]);
+            $user = Auth::user();
+            $accessToken = $user->createToken('accessToken')->accessToken;
+            return response([
+                "status" => true,
+                "message" => "User information has been successfully updated",
+                "data" => [
+                    'token' => $accessToken,
+                    'user' => $user,
+                    'abilities' => 'user',
+                ],
+            ], 200);
+        } else {
+            return response([
+                "status" => false,
+                "message" => "User not found",
+                "data" => [],
+            ], 400);
+        }
+
+    }
+
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
 
-        Validator::make($credentials, [
-            'email' => 'required|email|exists:users,email',
+        $validator = Validator::make($credentials, [
+            'email' => 'required|email',
             'password' => 'required',
         ]);
 
-        if (!Auth::attempt($credentials)) {
-
-            return response([
-                "status" => false,
-                'message' => "Unauthenticated",
-                "data" => []
-            ], 401);
-        }
-        /** @var User $user */
-        $user = Auth::user();
-        $userId = $user->getAttributes()['id'];
-        $token = md5(time() . rand(0, 999999));
-
-        $userRecord = PersonalAccessToken::where(['user_id' => $userId])->first();
-
-        if ($userRecord) {
-            PersonalAccessToken::where(['user_id' => $userId])->update(['token' => $token]);
-        }
-
-
-        return response([
-            "status" => true,
-            "message" => "User login has been completed successfully.",
-            'data' => [
-                "token" => $token
-            ]]);
-    }
-
-    public function saveUser(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/',
-        ]);
-
         if ($validator->fails()) {
-            $error = $validator->messages()->all();
-            return response([
-                'status' => false,
-                "message" => $error,
-                'data' => []
-            ]);
-        }
-
-        $data = $request->all();
-
-        $hasToken = PersonalAccessToken::where(['token' => $data['token']])->first();
-
-        if ($hasToken) {
-            User::where(['id' => $hasToken->user_id])->update([
-                'email' => $data['email'],
-                'password' => bcrypt($data['password'])
-            ]);
-
-            PersonalAccessToken::where(['user_id' => $hasToken->user_id])->update([
-                'abilities' => 'user'
-            ]);
-
-            $user = User::where(['id' => $hasToken->user_id])->first();
-
-            return response([
-                "status" => true,
-                "message" => "User registration successful.",
-                'data' => [
-                    'user' => $user,
-                    'abilities' => 'user',
-                    'token' => $hasToken->token
-                ],
-
-            ]);
-
-        } else {
             return response([
                 "status" => false,
-                'message' => "Unauthenticated",
+                'message' => $validator->errors()->all(),
                 "data" => []
-            ], 401);
+            ], 400);
         }
 
+        try {
+            if (Auth::attempt($credentials)) {
+                $user = Auth::user();
+                $accessToken = $user->createToken('accessToken')->accessToken;
 
+                return response([
+                    "status" => true,
+                    "message" => "giriş başarılı",
+                    "data" => [
+                        "token" => $accessToken,
+                        "user" => $user
+                    ],
+                ], 200);
+            } else {
+                return response([
+                    "status" => false,
+                    "message" => "unauthorized",
+                    "data" => [],
+                ], 401);
+            }
+
+        } catch (\Exception $e) {
+            return response([
+                "status" => false,
+                "message" => $e->getMessage(),
+                "data" => [],
+            ], 404);
+        }
     }
+
 
     public function authenticate(Request $request)
     {
         $token = $request->all()['token'];
-        $tokenControl = PersonalAccessToken::where(['token' => $token])->first();
+        try {
+            $tokenControl = PersonalAccessToken::where(['token' => $token])->first();
 
+            if ($tokenControl) {
+                $tokenControl['counter'] += 1;
+                PersonalAccessToken::where(['token' => $token])->update(['counter' => $tokenControl['counter']]);
 
-        if ($tokenControl) {
-            $tokenControl['counter'] += 1;
-            PersonalAccessToken::where(['token' => $token])->update(['counter' => $tokenControl['counter']]);
-
-            $user = User::where(['id' => $tokenControl['id']])->first();
+                $user = User::where(['id' => $tokenControl['id']])->first();
+                return response([
+                    "status" => true,
+                    "message" => "Authentication  process is successful.",
+                    "data" => ['user' => $user,
+                        'abilities' => $tokenControl['abilities'],
+                        'token' => $tokenControl['token'],
+                        'counter' => $tokenControl['counter'],]
+                ], 200);
+            } else {
+                throw new \Exception('Token not found');
+            }
+        } catch (\Exception $e) {
             return response([
-                "status" => true,
-                "message" => "User authentication successful.",
-                'data' => [
-                    'user' => $user,
-                    'abilities' => $tokenControl['abilities'],
-                    'token' => $tokenControl['token'],
-                    'counter' => $tokenControl['counter'],]
-            ]);
-        } else {
-
-            return response([
-                "status" => false,
-                'message' => "Unauthenticated",
-                "data"
-            ]);
+                'status' => false,
+                'message' => $e->getMessage(),
+                'data' => []
+            ], 401);
         }
+
     }
 
 }
