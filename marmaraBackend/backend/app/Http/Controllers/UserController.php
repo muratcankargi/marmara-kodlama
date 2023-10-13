@@ -124,18 +124,15 @@ class UserController extends Controller
         }
 
         $request->password = bcrypt($request->password);
-        $userControl = User::where('remember_token', $request->token)->first();
-        if ($userControl) {
-            $userControl->update(['email' => $request->email,
+        $user = User::where('remember_token', $request->token)->first();
+        if ($user) {
+            $user->update(['email' => $request->email,
                 "password" => $request->password
             ]);
-            $user = Auth::user();
-            $accessToken = $user->createToken('accessToken')->accessToken;
             return response([
                 "status" => true,
                 "message" => "User information has been successfully updated",
                 "data" => [
-                    'token' => $accessToken,
                     'user' => $user,
                     'abilities' => 'user',
                 ],
