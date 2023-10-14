@@ -48,6 +48,7 @@ function Inputs({ setUserInfo, invalid }) {
 function ButtonContainer({ userInfo, validation }) {
   const navigate = useNavigate();
   const { email, password } = userInfo;
+  const [isWaiting, setIsWaiting] = useState(false);
 
   const { login } = useAuth();
 
@@ -72,7 +73,11 @@ function ButtonContainer({ userInfo, validation }) {
 
   return (
     <div className="absolute bottom-12 left-0 right-0  w-full flex justify-center items-center ">
-      <Button onClickFunction={handleClick} text="Giriş Yap" />
+      <Button
+        isWaiting={isWaiting}
+        onClickFunction={handleClick}
+        text="Giriş Yap"
+      />
     </div>
   );
 }

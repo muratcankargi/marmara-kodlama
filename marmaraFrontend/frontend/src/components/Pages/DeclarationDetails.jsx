@@ -16,7 +16,10 @@ function DeclarationTags({ tags }) {
       <div className="flex flex-wrap gap-3">
         {tags.map((tag) => {
           return (
-            <div className="bg-black py-1 px-3 w-fit whitespace-nowrap rounded-sm font-semibold transition-all ease-in-out  text-neutral">
+            <div
+              key={uuidv4()}
+              className="bg-black py-1 px-3 w-fit whitespace-nowrap rounded-sm font-semibold transition-all ease-in-out  text-neutral"
+            >
               {tag}
             </div>
           );

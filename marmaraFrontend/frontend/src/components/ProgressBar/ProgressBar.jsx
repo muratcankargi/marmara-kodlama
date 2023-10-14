@@ -20,14 +20,14 @@ function ProgressBar({ pathname }) {
           circles: ["1", "2", "3"],
         });
         break;
-      case "/signin":
-      case "/signup":
+      case "/girisyap":
+      case "/kaydol":
         setProgressBarStyles({
           width: "w-48",
           circles: ["✓", "2", "3"],
         });
         break;
-      case "/createprofile":
+      case "/profilolustur":
         setProgressBarStyles({
           width: "w-64",
           circles: ["✓", "✓", "3"],
@@ -38,7 +38,7 @@ function ProgressBar({ pathname }) {
     }
   }, [pathname]);
 
-  const progressBarPaths = ["/", "/signin", "/signup", "/createprofile"];
+  const progressBarPaths = ["/", "/girisyap", "/kaydol", "/profilolustur"];
 
   return progressBarPaths.includes(pathname) ? (
     <div className="absolute w-full pt-7 flex justify-center">
