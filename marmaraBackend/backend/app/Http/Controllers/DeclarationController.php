@@ -7,6 +7,7 @@ use App\Models\Tag;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class DeclarationController extends Controller
@@ -39,12 +40,7 @@ class DeclarationController extends Controller
                 }
             }
 
-            $UserController = new UserController();
-            $result = $UserController->authenticate($request);
-
-            $user = json_decode(json_encode($result), true)['original']['data']['user'];
-            if ($user) {
-                Declaration::create(['user_id' => $user['id'],
+                Declaration::create(['user_id' => Auth::user()->id,
                     'title' => $request->title,
                     'description' => $request->description,
                     'tags' => json_encode($request->tags),
@@ -58,13 +54,6 @@ class DeclarationController extends Controller
                     'message' => "declaration create successfull",
                     "data" => []
                 ], 200);
-            } else {
-                return response([
-                    "status" => false,
-                    'message' => 'notAuthenticated',
-                    "data" => []
-                ], 401);
-            }
         }
     }
 

@@ -81,19 +81,6 @@ class TagController extends Controller
                 ], 400);
             }
 
-            $UserController = new UserController();
-            $result = $UserController->authenticate($request);
-
-            $user = json_decode(json_encode($result), true)['original']['data']['user'];
-            if (!$user) {
-                return response([
-                    "status" => false,
-                    'message' => "Unauthenticated",
-                    "data" => [],
-                ], 401);
-
-            }
-
             $tag = Tag::find($id);
 
             if (!$tag) {
@@ -110,7 +97,7 @@ class TagController extends Controller
             return response([
                 "status" => true,
                 'message' => "tag updated",
-                "data" => [],
+                "data" => $tag,
             ], 200);
         } catch (\Exception $e) {
             return response([
