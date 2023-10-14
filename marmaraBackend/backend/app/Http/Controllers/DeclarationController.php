@@ -88,7 +88,7 @@ class DeclarationController extends Controller
 
     public function getDeclaration($id)
     {
-        $declaration = Declaration::where('id', $id)->first();
+        $declaration = json_decode(Declaration::where('id', $id)->first());
 
 
         if ($declaration) {
