@@ -44,7 +44,7 @@ class DeclarationController extends Controller
 
             $user = json_decode(json_encode($result), true)['original']['data']['user'];
             if ($user) {
-                Declaration::create(['user_id' => $user['id'],
+                $declaration = Declaration::create(['user_id' => $user['id'],
                     'title' => $request->title,
                     'description' => $request->description,
                     'tags' => json_encode($request->tags),
@@ -56,7 +56,7 @@ class DeclarationController extends Controller
                 return response([
                     "status" => true,
                     'message' => "declaration create successfull",
-                    "data" => []
+                    "data" => $declaration
                 ], 200);
             } else {
                 return response([
@@ -157,7 +157,7 @@ class DeclarationController extends Controller
                     //Tag::create('name',$tag);
                     return response([
                         "status" => false,
-                        'message' => $tag ." not found",
+                        'message' => $tag . " not found",
                         "data" => []
                     ], 400);
                 }

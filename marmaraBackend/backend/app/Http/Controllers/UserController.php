@@ -218,7 +218,8 @@ class UserController extends Controller
 
     public function authenticate(Request $request)
     {
-        $token = $request->all()['token'];
+        $token = $request->bearerToken();
+
         $tokenControl = PersonalAccessToken::where(['token' => $token])->first();
 
 
@@ -241,7 +242,7 @@ class UserController extends Controller
             return response([
                 "status" => false,
                 'message' => "Unauthenticated",
-                "data"
+                "data" => [],
             ]);
         }
     }

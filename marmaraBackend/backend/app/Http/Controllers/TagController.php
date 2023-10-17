@@ -31,7 +31,7 @@ class TagController extends Controller
                     return response([
                         "status" => true,
                         'message' => "tag created",
-                        "data" => [],
+                        "data" => $tag,
                     ], 200);
                 }
             } catch (\Exception $e) {
@@ -66,6 +66,37 @@ class TagController extends Controller
         }
     }
 
+    public function getTag($id)
+    {
+        try {
+            $tag = json_decode(Tag::find($id));
+
+            if ($tag) {
+                $tag->created_at = Carbon::parse($tag->created_at)->format('d/m/Y');
+                $tag->updated_at = Carbon::parse($tag->updated_at)->format('d/m/Y');
+
+                return response([
+                    "status" => true,
+                    'message' => "tag get success",
+                    "data" => $tag,
+                ], 200);
+            } else {
+                return response([
+                    "status" => false,
+                    'message' => "tag not found",
+                    "data" => [],
+                ], 400);
+            }
+
+        } catch (\Exception $e) {
+            return response([
+                "status" => false,
+                'message' => $e->getMessage(),
+                "data" => [],
+            ], 400);
+        }
+    }
+
     public function updateTag(Request $request, $id)
     {
         try {
@@ -79,19 +110,6 @@ class TagController extends Controller
                     'message' => $validator->messages()->all(),
                     "data" => [],
                 ], 400);
-            }
-
-            $UserController = new UserController();
-            $result = $UserController->authenticate($request);
-
-            $user = json_decode(json_encode($result), true)['original']['data']['user'];
-            if (!$user) {
-                return response([
-                    "status" => false,
-                    'message' => "Unauthenticated",
-                    "data" => [],
-                ], 401);
-
             }
 
             $tag = Tag::find($id);
@@ -112,6 +130,7 @@ class TagController extends Controller
                 'message' => "tag updated",
                 "data" => [],
             ], 200);
+
         } catch (\Exception $e) {
             return response([
                 "status" => false,
