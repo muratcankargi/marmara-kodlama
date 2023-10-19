@@ -45,6 +45,14 @@ Route::middleware('authentication')->group(function () {
     Route::put('/tags/{id}', [TagController::class, 'updateTag']);
     Route::delete('tags/{id}', [TagController::class, 'deleteTag']);
 
+    Route::post('/filter/date',[DeclarationController::class, 'sortedByDate']); //sort olucak
+    Route::post('/filter/tag',[DeclarationController::class, 'sortedByTag']); // birden fazla tag
+    Route::post('/filter/word',[DeclarationController::class, 'sortedByWord']); //search algorithm
+    Route::post('/filter/dateBetween',[DeclarationController::class, 'sortedByWordBetween']);
+
+    //son günlük haftalık aylık filtreleme
+    //infility scroll
+
 });
 
 
