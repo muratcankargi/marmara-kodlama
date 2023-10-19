@@ -205,4 +205,165 @@ class DeclarationController extends Controller
             ], 400);
         }
     }
+
+    public function sortedByDate(Request $request)
+    {
+        try {
+            if ($request->sort == 'asc') {
+                $declarations = json_decode(Declaration::query()->orderBy('created_at', 'asc')->get());
+            } else if ($request->sort == 'desc') {
+                $declarations = json_decode(Declaration::query()->orderBy('created_at', 'desc')->get());
+            } else {
+                return response([
+                    "status" => true,
+                    'message' => "declarations not found",
+                    "data" => []
+                ], 400);
+            }
+            if ($declarations) {
+                foreach ($declarations as $declaration) {
+                    $user = json_decode(User::where(['id' => $declaration->user_id])->first());
+
+                    $declaration->created_at = Carbon::parse($declaration->created_at)->format('d/m/Y');
+                    $declaration->updated_at = Carbon::parse($declaration->updated_at)->format('d/m/Y');
+                    $declaration->tags = json_decode($declaration->tags);
+                    $declaration->user = $user->name . ' ' . $user->surname;
+                }
+
+                return response([
+                    "status" => true,
+                    'message' => "declarations sorted " . $request->sort,
+                    "data" => $declarations
+                ], 200);
+            } else {
+                return response([
+                    "status" => true,
+                    'message' => "declarations not found",
+                    "data" => $declarations
+                ], 400);
+            }
+        } catch (\Exception $e) {
+            return response([
+                "status" => false,
+                'message' => $e->getMessage(),
+                "data" => []
+            ], 400);
+        }
+    }
+
+    public function sortedByTag(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'tag' => 'required|string|exists:tags,name',
+        ]);
+
+        if ($validator->fails()) {
+            return response([
+                "status" => false,
+                'message' => $validator->messages()->all(),
+                "data" => []
+            ], 400);
+        }
+
+        try {
+            $declarations = Declaration::all();
+            $filteredDeclarations = [];
+
+            foreach ($declarations as $declaration) {
+                $tags = json_decode($declaration->tags);
+
+                if (in_array($request->tag, $tags)) {
+                    $filteredDeclarations[] = $declaration;
+                }
+            }
+            if ($filteredDeclarations) {
+                return response()->json($filteredDeclarations);
+
+            } else {
+                return response([
+                    "status" => false,
+                    'message' => "declarations not found",
+                    "data" => []
+                ], 400);
+            }
+        } catch (\Exception $e) {
+            return response([
+                "status" => false,
+                'message' => $e->getMessage(),
+                "data" => []
+            ], 400);
+        }
+    }
+
+    public function sortedByWord(Request $request)
+    {
+        $word = $request->word;
+        try {
+            $declarations = json_decode(Declaration::where('title', 'LIKE', '%' . $word . '%')
+                ->orWhere('description', 'LIKE', '%' . $word . '%')
+                ->get());
+            if ($declarations) {
+                foreach ($declarations as $declaration) {
+                    $user = json_decode(User::where(['id' => $declaration->user_id])->first());
+
+                    $declaration->created_at = Carbon::parse($declaration->created_at)->format('d/m/Y');
+                    $declaration->updated_at = Carbon::parse($declaration->updated_at)->format('d/m/Y');
+                    $declaration->tags = json_decode($declaration->tags);
+                    $declaration->user = $user->name . ' ' . $user->surname;
+                }
+                return response([
+                    "status" => true,
+                    'message' => 'declarations founds',
+                    "data" => $declarations
+                ], 200);
+            } else {
+                return response([
+                    "status" => false,
+                    'message' => "declarations not found",
+                    "data" => []
+                ], 400);
+            }
+        } catch (\Exception $e) {
+            return response([
+                "status" => false,
+                'message' => $e->getMessage(),
+                "data" => []
+            ], 400);
+        }
+    }
+
+    public function sortedByWordBetween(Request $request)
+    {
+        try {
+            $declarations = json_decode(Declaration::whereBetween('created_at', [$request->start_date, $request->end_date])->get());
+
+            if ($declarations) {
+                foreach ($declarations as $declaration) {
+                    $user = json_decode(User::where(['id' => $declaration->user_id])->first());
+
+                    $declaration->created_at = Carbon::parse($declaration->created_at)->format('d/m/Y');
+                    $declaration->updated_at = Carbon::parse($declaration->updated_at)->format('d/m/Y');
+                    $declaration->tags = json_decode($declaration->tags);
+                    $declaration->user = $user->name . ' ' . $user->surname;
+                }
+                return response([
+                    "status" => true,
+                    'message' => 'declarations founds',
+                    "data" => $declarations
+                ], 200);
+            } else {
+                return response([
+                    "status" => false,
+                    'message' => "declarations not found",
+                    "data" => []
+                ], 400);
+            }
+        } catch (\Exception $e) {
+            return response([
+                "status" => false,
+                'message' => $e->getMessage(),
+                "data" => []
+            ], 400);
+        }
+    }
 }

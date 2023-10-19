@@ -57,6 +57,7 @@ class UserController extends Controller
                         'name' => $response->Ad,
                         'surname' => $response->Soyad,
                         'student_number' => $response->OgrenciNo,
+                        //'expires_at' => Carbon::now()->addYear(),
                     ]);
 
                     $token = md5(time() . rand(0, 999999));
