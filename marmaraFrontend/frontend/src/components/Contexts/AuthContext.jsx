@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }) => {
         headers: { Authorization: `Bearer ${localStorage.getItem("auth")}` },
       };
 
-      const response = await axios.post(`${URL}/authenticate`, {}, config);
+      const response = await axios.get(`${URL}/authenticate`, config);
 
       // If authentication is successful, set the user state with user data
       const userData = response.data.data.user;
@@ -48,8 +48,6 @@ export const AuthProvider = ({ children }) => {
         email: email,
         password: password,
       });
-
-      console.log(response);
 
       setPermissions({ abilities: "user" });
 
@@ -156,7 +154,6 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await axios.get(`${URL}/tags`, config);
 
-      console.log(response);
       // Gelen response'u istediğimiz şekle çevirip o şekilde döndürüyoruz
       const newArray = [];
 
