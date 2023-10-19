@@ -15,9 +15,11 @@ export const AuthProvider = ({ children }) => {
   // Implement the authenticate function
   const authenticate = async () => {
     try {
-      const response = await axios.post(`${URL}/authenticate`, {
-        token: localStorage.getItem("auth"),
-      });
+      const config = {
+        headers: { Authorization: `Bearer ${localStorage.getItem("auth")}` },
+      };
+
+      const response = await axios.post(`${URL}/authenticate`, {}, config);
 
       // If authentication is successful, set the user state with user data
       const userData = response.data.data.user;
@@ -46,6 +48,8 @@ export const AuthProvider = ({ children }) => {
         email: email,
         password: password,
       });
+
+      console.log(response);
 
       setPermissions({ abilities: "user" });
 
@@ -106,15 +110,23 @@ export const AuthProvider = ({ children }) => {
 
   const createDeclaration = async (title, description, tagsArray) => {
     try {
-      const response = await axios.post(`${URL}/declarations`, {
-        title: title,
-        description: description,
-        token: localStorage.getItem("auth"),
-        tags: tagsArray,
-        visibility: true,
-        image_source: "",
-        type: "lost",
-      });
+      const config = {
+        headers: { Authorization: `Bearer ${localStorage.getItem("auth")}` },
+      };
+
+      const response = await axios.post(
+        `${URL}/declarations`,
+        {
+          title: title,
+          description: description,
+          token: localStorage.getItem("auth"),
+          tags: tagsArray,
+          visibility: true,
+          image_source: "",
+          type: "lost",
+        },
+        config
+      );
 
       return response.data.status;
     } catch (error) {
@@ -124,7 +136,11 @@ export const AuthProvider = ({ children }) => {
 
   const getDeclaration = async () => {
     try {
-      const response = await axios.get(`${URL}/declarations`);
+      const config = {
+        headers: { Authorization: `Bearer ${localStorage.getItem("auth")}` },
+      };
+
+      const response = await axios.get(`${URL}/declarations`, config);
 
       return response.data.data;
     } catch (error) {
@@ -140,6 +156,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await axios.get(`${URL}/tags`, config);
 
+      console.log(response);
       // Gelen response'u istediğimiz şekle çevirip o şekilde döndürüyoruz
       const newArray = [];
 
@@ -159,7 +176,11 @@ export const AuthProvider = ({ children }) => {
   // details için tek id ile card alabileceğimiz api
   const getDeclarationById = async (id) => {
     try {
-      const response = await axios.get(`${URL}/declarations/${id}`);
+      const config = {
+        headers: { Authorization: `Bearer ${localStorage.getItem("auth")}` },
+      };
+
+      const response = await axios.get(`${URL}/declarations/${id}`, config);
 
       return response.data.data;
     } catch (error) {

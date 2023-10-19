@@ -60,6 +60,7 @@ function ButtonContainer({ userInfo, validation }) {
   const handleClick = async () => {
     if (checkInputs()) {
       const token = await login(email, password);
+      console.log(token);
       if (token) {
         // loginden token gelmişse kaydediyoruz ve yönlendiriyoruz
         alert("authenticated");
