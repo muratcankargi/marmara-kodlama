@@ -178,39 +178,57 @@ class UserController extends Controller
             ]);
         }
 
-        $data = $request->all();
+        try {
+            $token = $request->bearerToken();
+            $data = $request->all();
 
-        $hasToken = PersonalAccessToken::where(['token' => $data['token']])->first();
+            $hasToken = PersonalAccessToken::where(['token' => $token])->first();
 
-        if ($hasToken) {
-            User::where(['id' => $hasToken->user_id])->update([
-                'email' => $data['email'],
-                'password' => bcrypt($data['password'])
-            ]);
+            if ($hasToken) {
+                $user = User::where(['id' => $hasToken->user_id])->first();
+                if ($user->password == null && $user->email == null) {
+                    User::where(['id' => $hasToken->user_id])->update([
+                        'email' => $data['email'],
+                        'password' => bcrypt($data['password'])
+                    ]);
 
-            PersonalAccessToken::where(['user_id' => $hasToken->user_id])->update([
-                'abilities' => 'user'
-            ]);
+                    PersonalAccessToken::where(['user_id' => $hasToken->user_id])->update([
+                        'abilities' => 'user'
+                    ]);
 
-            $user = User::where(['id' => $hasToken->user_id])->first();
+                    $user = User::where(['id' => $hasToken->user_id])->first();
 
-            return response([
-                "status" => true,
-                "message" => "User registration successful.",
-                'data' => [
-                    'user' => $user,
-                    'abilities' => 'user',
-                    'token' => $hasToken->token
-                ],
+                    return response([
+                        "status" => true,
+                        "message" => "User registration successful.",
+                        'data' => [
+                            'user' => $user,
+                            'abilities' => 'user',
+                            'token' => $hasToken->token
+                        ],
+                    ]);
+                }else{
+                    return response([
+                        "status" => false,
+                        'message' => "alreadySaved",
+                        "data" => [],
+                    ]);
+                }
 
-            ]);
 
-        } else {
+            } else {
+                return response([
+                    "status" => false,
+                    'message' => "Unauthenticated",
+                    "data" => []
+                ], 401);
+            }
+        } catch (\Exception $e) {
             return response([
                 "status" => false,
-                'message' => "Unauthenticated",
+                'message' => $e->getMessage(),
                 "data" => []
-            ], 401);
+            ], 400);
         }
 
 
