@@ -28,11 +28,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //bu api'lerden hangileri middleware'in içine alınacak?
 Route::post('/isStudent', [UserController::class, 'isStudent']);
 Route::post('/login', [UserController::class, 'login']);
-Route::post('/saveUser', [UserController::class, 'saveUser']);
-Route::post('/authenticate', [UserController::class, 'authenticate']);
 
 
 Route::middleware('authentication')->group(function () {
+
+    Route::post('/saveUser', [UserController::class, 'saveUser']);
+    Route::get('/authenticate', [UserController::class, 'authenticate']);
+
     Route::post('/declarations', [DeclarationController::class, 'createDeclaration']);
     Route::get('/declarations', [DeclarationController::class, 'getDeclarations']);
     Route::get('/declarations/{id}', [DeclarationController::class, 'getDeclaration']);

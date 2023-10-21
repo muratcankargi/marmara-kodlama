@@ -133,18 +133,6 @@ class DeclarationController extends Controller
                 ], 400);
             }
 
-            $UserController = new UserController();
-            $result = $UserController->authenticate($request);
-
-            $user = json_decode(json_encode($result), true)['original']['data']['user'];
-            if (!$user) {
-                return response([
-                    "status" => false,
-                    'message' => "notAuthenticated",
-                    "data" => []
-                ], 401);
-            }
-
             $declaration = Declaration::find($id);
 
             if (!$declaration) {
