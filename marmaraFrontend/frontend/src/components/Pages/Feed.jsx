@@ -6,6 +6,7 @@ import { useWindowScrollPosition } from "../CustomHooks/useWindowScrollPosition"
 import FullContainer from "../Utilities/FullContainer";
 import { useLocationContext } from "../Contexts/LocationContext";
 import { useAllFilters } from "../Contexts/AllFilters";
+import AllFiltersContainer from "../AllFilters/AllFiltersContainer";
 
 function FeedHeading({ text }) {
   return (
@@ -63,40 +64,6 @@ function FeedNavbar() {
         </div>
       </div>
     </div>
-  );
-}
-
-function AllFiltersContainer({ isActive, setIsActive }) {
-  const handleClick = () => {
-    setIsActive(false);
-  };
-
-  return (
-    isActive && (
-      <>
-        <div className="w-full h-full fixed z-[999999] bottom-0 opacity-25 bg-black"></div>
-        <div
-          className={`${
-            isActive ? "animate-showFilters" : ""
-          } w-full transition-all fixed z-[99999999] bottom-0 dark:bg-darkNeutral bg-neutral rounded-tl-3xl rounded-tr-3xl border dark:border-darkPrimary `}
-        >
-          <div className="flex flex-col items-center">
-            <div className="pt-8 w-full grid grid-cols-3 px-6">
-              <div></div>
-              <h2 className=" dark:text-neutral text-center text-black text-xl whitespace-nowrap">
-                Tüm Filtreler
-              </h2>
-              <button
-                onClick={handleClick}
-                className="justify-self-end  before:block before:w-7 before:h-1 before:rounded-md before:bg-black dark:before:bg-neutral
-          after:my-1 after:block after:w-7 after:h-1 after:rounded-md after:bg-black dark:after:bg-neutral
-          before:rotate-45 after:-rotate-45 before:translate-y-2 "
-              />
-            </div>
-          </div>
-        </div>
-      </>
-    )
   );
 }
 

@@ -13,6 +13,7 @@ module.exports = {
         },
         darkNeutral: "#10141A",
         darkPrimary: "#1B2430",
+        picked: "#186F65",
       },
       keyframes: {
         shake: {
