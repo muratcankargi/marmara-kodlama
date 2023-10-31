@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useAuth } from "../Contexts/AuthContext";
 import { useAllFilters } from "../Contexts/AllFilters";
+import { useSearchParams } from "react-router-dom";
 
 function TagsHeader() {
   return (

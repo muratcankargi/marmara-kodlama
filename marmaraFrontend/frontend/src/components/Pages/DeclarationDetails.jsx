@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../Contexts/AuthContext";
-import CenteredContainer from "../Utilities/CenteredContainer";
+import FullContainer from "../Utilities/FullContainer";
 import HamburgerMenu from "../Utilities/HamburgerMenu";
 import IntroText from "../Utilities/IntroText";
 import { Card } from "../Utilities/Cards";
@@ -51,41 +51,43 @@ function DeclarationDetails() {
   }, []);
 
   return (
-    <CenteredContainer paddingTop="pt-12">
-      <div className="flex w-full justify-between items-center">
+    <FullContainer paddingTop="pt-12">
+      <div className="flex w-full justify-between items-center px-6 md:max-w-[50%] md:mx-auto">
         <IntroText mainText="İlan Detayları" />
         <HamburgerMenu />
       </div>
-      {!isLoading ? (
-        card && (
+      <div className="md:max-w-[50%] md:mx-auto px-3">
+        {!isLoading ? (
+          card && (
+            <Card
+              isDetails={true}
+              key={uuidv4()}
+              id={card.id}
+              author={card.user}
+              date={card.created_at}
+              title={card.title}
+              description={card.description}
+            />
+          )
+        ) : (
           <Card
             isDetails={true}
             key={uuidv4()}
-            id={card.id}
-            author={card.user}
-            date={card.created_at}
-            title={card.title}
-            description={card.description}
+            id={1}
+            author={""}
+            date={""}
+            title={""}
+            description={""}
+            isLoading={isLoading}
           />
-        )
-      ) : (
-        <Card
-          isDetails={true}
-          key={uuidv4()}
-          id={1}
-          author={""}
-          date={""}
-          title={""}
-          description={""}
-          isLoading={isLoading}
-        />
-      )}
-      {card && <DeclarationTags tags={card.tags} />}
+        )}
+        {card && <DeclarationTags tags={card.tags} />}
+      </div>
       {/* Card'ın tag'leri gözükücek, ayrıntıları gör gözükmeyecek ve iletişime geç tarzı bir  button
       olacak
       Card'ı sil, düzenle buttonları olacak
       */}
-    </CenteredContainer>
+    </FullContainer>
   );
 }
 

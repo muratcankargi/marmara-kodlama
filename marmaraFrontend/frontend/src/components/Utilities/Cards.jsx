@@ -338,10 +338,13 @@ export function Card({
 }
 
 // Bu componentler farklı sayfalara ayrılacak
-function Cards() {
+function Cards({ tags }) {
   const [cards, setCards] = useState([]);
   const { getDeclaration } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
+
+  // Seçili tags'lere göre getDeclaration'a param geçilicek
+  console.log(tags);
 
   useEffect(() => {
     const getDeclarations = async () => {

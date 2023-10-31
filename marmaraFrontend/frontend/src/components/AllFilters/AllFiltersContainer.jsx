@@ -2,6 +2,8 @@ import Date from "./Date";
 import Sort from "./Sort";
 import QuickPick from "./QuickPick";
 import Button from "../Utilities/Button";
+import { useSearchParams } from "react-router-dom";
+import disableScroll from "disable-scroll";
 
 function CloseButton({ setIsActive }) {
   const handleClick = () => {
@@ -51,9 +53,19 @@ function Header({ setIsActive }) {
 }
 
 function Apply() {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const sort = searchParams.get("sort");
+  const quickSort = searchParams.get("quickSort");
+  // burada date de olacak
+
+  const handleClick = () => {
+    console.log(sort, quickSort);
+  };
+
   return (
     <div className="w-full flex justify-center mt-16">
-      <Button text="Uygula" />
+      <Button onClickFunction={handleClick} text="Uygula" />
     </div>
   );
 }
@@ -65,7 +77,7 @@ export default function AllFiltersContainer({ isActive, setIsActive }) {
         <div className="w-full h-full fixed z-[999999] bottom-0 opacity-25 bg-black"></div>
         <Container isActive={isActive}>
           <Header setIsActive={setIsActive} />
-          <div className="px-8 mt-8 md:w-96 md:mx-auto flex flex-col gap-8">
+          <div className="px-8 mt-8 sm:w-96 sm:mx-auto flex flex-col gap-8">
             <QuickPick />
             <Sort />
             <Date />

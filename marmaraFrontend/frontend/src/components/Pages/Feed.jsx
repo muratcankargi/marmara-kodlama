@@ -46,7 +46,7 @@ function FeedNavbar() {
   // görüntüsel olarak dengelemek içinde üstten boşluk bırakıyoruz margin top ile
 
   // grid ile centered container gibi gözükmesini sağlıyoruz hamburgermenu
-  // aynı yerde olsun diyeuseLocation
+  // aynı yerde olsun diye useLocation
   return (
     <div
       className={`w-full flex justify-center static h-14  transition-[top]
@@ -67,8 +67,6 @@ function FeedNavbar() {
   );
 }
 
-// Bu sayfadaki bir şey overflow x yaratıyor
-// Onu çözmemiz lazım bulamadım
 function Feed() {
   const [tags, setTags] = useState([]);
   const { setLocation } = useLocationContext();
@@ -83,7 +81,7 @@ function Feed() {
       <AllFiltersContainer isActive={isActive} setIsActive={setIsActive} />
       <FeedNavbar />
       <Tags getTags={setTags} />
-      <Cards />
+      <Cards tags={tags} />
     </FullContainer>
   );
 }
