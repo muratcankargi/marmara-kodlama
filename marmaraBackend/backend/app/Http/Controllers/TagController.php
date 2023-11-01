@@ -149,7 +149,7 @@ class TagController extends Controller
             return response([
                 "status" => true,
                 'message' => "tag deleted",
-                "data" => [],
+                "data" => $tag,
             ], 200);
         } catch (\Exception $e) {
             return response([

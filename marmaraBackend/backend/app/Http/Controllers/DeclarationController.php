@@ -133,6 +133,18 @@ class DeclarationController extends Controller
                 ], 400);
             }
 
+            $UserController = new UserController();
+            $result = $UserController->authenticate($request);
+
+            $user = json_decode(json_encode($result), true)['original']['data']['user'];
+            if (!$user) {
+                return response([
+                    "status" => false,
+                    'message' => "notAuthenticated",
+                    "data" => []
+                ], 401);
+            }
+
             $declaration = Declaration::find($id);
 
             if (!$declaration) {
@@ -182,9 +194,36 @@ class DeclarationController extends Controller
             return response([
                 "status" => true,
                 'message' => "declaration deleted",
-                "data" => []
+                "data" => $declaration
             ], 200);
-            return response(['message' => 'İlan başarıyla silindi.']);
+        } catch (\Exception $e) {
+            return response([
+                "status" => false,
+                'message' => $e->getMessage(),
+                "data" => []
+            ], 400);
+        }
+    }
+
+    public function changeDeclarationVisibility($id)
+    {
+        try {
+            $declaration = Declaration::where('id', $id)->update([
+                'visibility' => false,
+            ]);
+            if ($declaration) {
+                return response([
+                    "status" => true,
+                    'message' => "declaration deleted",
+                    "data" => []
+                ], 200);
+            }else{
+                return response([
+                    "status" => true,
+                    'message' => "declaration not found",
+                    "data" => []
+                ], 200);
+            }
         } catch (\Exception $e) {
             return response([
                 "status" => false,
@@ -241,17 +280,7 @@ class DeclarationController extends Controller
 
     public function sortedByTag(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'tag' => 'required|string|exists:tags,name',
-        ]);
-
-        if ($validator->fails()) {
-            return response([
-                "status" => false,
-                'message' => $validator->messages()->all(),
-                "data" => []
-            ], 400);
-        }
+        $data = json_decode($request->tag);
 
         try {
             $declarations = Declaration::all();
@@ -259,18 +288,21 @@ class DeclarationController extends Controller
 
             foreach ($declarations as $declaration) {
                 $tags = json_decode($declaration->tags);
-
-                if (in_array($request->tag, $tags)) {
+                $result = array_intersect($data, $tags);
+                if (count($result) == count($data)) {
                     $filteredDeclarations[] = $declaration;
                 }
             }
             if ($filteredDeclarations) {
-                return response()->json($filteredDeclarations);
-
+                return response([
+                    "status" => true,
+                    'message' => "declarations founds",
+                    "data" => $filteredDeclarations
+                ], 200);
             } else {
                 return response([
                     "status" => false,
-                    'message' => "declarations not found",
+                    'message' => "no declaration",
                     "data" => []
                 ], 400);
             }
@@ -320,7 +352,7 @@ class DeclarationController extends Controller
         }
     }
 
-    public function sortedByWordBetween(Request $request)
+    public function sortedByDateBetween(Request $request)
     {
         try {
             $declarations = json_decode(Declaration::whereBetween('created_at', [$request->start_date, $request->end_date])->get());
@@ -353,5 +385,29 @@ class DeclarationController extends Controller
                 "data" => []
             ], 400);
         }
+    }
+
+    public function sharedLastDay(Request $request)
+    {
+        $request->start_date = Carbon::now()->subDay()->format('Y-m-d');
+        $request->end_date = Carbon::now()->addDay()->format('Y-m-d');
+
+        return $this->sortedByDateBetween($request);
+    }
+
+    public function sharedLastWeek(Request $request)
+    {
+        $request->start_date = Carbon::now()->subWeek()->format('Y-m-d');
+        $request->end_date = Carbon::now()->addDay()->format('Y-m-d');
+
+        return $this->sortedByDateBetween($request);
+    }
+
+    public function sharedLastMonth(Request $request)
+    {
+        $request->start_date = Carbon::now()->subMonth()->format('Y-m-d');
+        $request->end_date = Carbon::now()->addDay()->format('Y-m-d');
+
+        return $this->sortedByDateBetween($request);
     }
 }

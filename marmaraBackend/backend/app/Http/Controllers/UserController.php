@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LoginRequest;
 use App\Models\PersonalAccessToken;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -57,7 +58,6 @@ class UserController extends Controller
                         'name' => $response->Ad,
                         'surname' => $response->Soyad,
                         'student_number' => $response->OgrenciNo,
-                        //'expires_at' => Carbon::now()->addYear(),
                     ]);
 
                     $token = md5(time() . rand(0, 999999));
@@ -151,7 +151,10 @@ class UserController extends Controller
         $userRecord = PersonalAccessToken::where(['user_id' => $userId])->first();
 
         if ($userRecord) {
-            PersonalAccessToken::where(['user_id' => $userId])->update(['token' => $token]);
+            PersonalAccessToken::where(['user_id' => $userId])->update([
+                'token' => $token,
+                'expires_at' => Carbon::now()->addMonths(3)
+            ]);
         }
 
 
@@ -179,58 +182,33 @@ class UserController extends Controller
             ]);
         }
 
-        try {
-            $token = $request->bearerToken();
-            $data = $request->all();
+        $token = $request->bearerToken();
+        $data = $request->all();
 
-            $hasToken = PersonalAccessToken::where(['token' => $token])->first();
+        $hasToken = PersonalAccessToken::where(['token' => $token])->first();
 
-            if ($hasToken) {
-                $user = User::where(['id' => $hasToken->user_id])->first();
-                if ($user->password == null && $user->email == null) {
-                    User::where(['id' => $hasToken->user_id])->update([
-                        'email' => $data['email'],
-                        'password' => bcrypt($data['password'])
-                    ]);
+        User::where(['id' => $hasToken->user_id])->update([
+            'email' => $data['email'],
+            'password' => bcrypt($data['password'])
+        ]);
 
-                    PersonalAccessToken::where(['user_id' => $hasToken->user_id])->update([
-                        'abilities' => 'user'
-                    ]);
+        PersonalAccessToken::where(['user_id' => $hasToken->user_id])->update([
+            'abilities' => 'user',
+            'expires_at' => Carbon::now()->addMonths(3)
+        ]);
 
-                    $user = User::where(['id' => $hasToken->user_id])->first();
+        $user = User::where(['id' => $hasToken->user_id])->first();
 
-                    return response([
-                        "status" => true,
-                        "message" => "User registration successful.",
-                        'data' => [
-                            'user' => $user,
-                            'abilities' => 'user',
-                            'token' => $hasToken->token
-                        ],
-                    ]);
-                }else{
-                    return response([
-                        "status" => false,
-                        'message' => "alreadySaved",
-                        "data" => [],
-                    ]);
-                }
+        return response([
+            "status" => true,
+            "message" => "User registration successful.",
+            'data' => [
+                'user' => $user,
+                'abilities' => 'user',
+                'token' => $hasToken->token
+            ],
 
-
-            } else {
-                return response([
-                    "status" => false,
-                    'message' => "Unauthenticated",
-                    "data" => []
-                ], 401);
-            }
-        } catch (\Exception $e) {
-            return response([
-                "status" => false,
-                'message' => $e->getMessage(),
-                "data" => []
-            ], 400);
-        }
+        ]);
 
 
     }
@@ -247,22 +225,31 @@ class UserController extends Controller
             PersonalAccessToken::where(['token' => $token])->update(['counter' => $tokenControl['counter']]);
 
             $user = User::where(['id' => $tokenControl['id']])->first();
-            return response([
-                "status" => true,
-                "message" => "User authentication successful.",
-                'data' => [
-                    'user' => $user,
-                    'abilities' => $tokenControl['abilities'],
-                    'token' => $tokenControl['token'],
-                    'counter' => $tokenControl['counter'],]
-            ]);
+            if($tokenControl->expires_at > Carbon::now()){
+                return response([
+                    "status" => true,
+                    "message" => "User authentication successful.",
+                    'data' => [
+                        'user' => $user,
+                        'abilities' => $tokenControl['abilities'],
+                        'token' => $tokenControl['token'],
+                        'counter' => $tokenControl['counter'],]
+                ], 200);
+            }else{
+                return response([
+                    "status" => false,
+                    "message" => "The user has expired",
+                    'data' => []
+                ], 400);
+            }
+
         } else {
 
             return response([
                 "status" => false,
                 'message' => "Unauthenticated",
                 "data" => [],
-            ]);
+            ], 401);
         }
     }
 
