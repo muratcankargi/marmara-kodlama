@@ -84,6 +84,8 @@ export const AuthProvider = ({ children }) => {
         DogumTarihi: birthDate,
       });
 
+      console.log(response);
+
       // token
       return response.data.data.token;
     } catch (error) {
@@ -95,7 +97,11 @@ export const AuthProvider = ({ children }) => {
   // Tokenin yetkileri güncellenecek (serverda)
   const saveUser = async (userInfo) => {
     try {
-      const response = await axios.post(`${URL}/saveUser`, userInfo);
+      const config = {
+        headers: { Authorization: `Bearer ${localStorage.getItem("auth")}` },
+      };
+
+      const response = await axios.post(`${URL}/saveUser`, userInfo, config);
 
       setUser(response.data.data.user);
       setPermissions(response.data.data.abilities);
@@ -139,6 +145,23 @@ export const AuthProvider = ({ children }) => {
       };
 
       const response = await axios.get(`${URL}/declarations`, config);
+
+      return response.data.data;
+    } catch (error) {
+      console.log("Error: ", error.message);
+    }
+  };
+
+  const getQuickSort = async (option) => {
+    try {
+      const config = {
+        headers: { Authorization: `Bearer ${localStorage.getItem("auth")}` },
+      };
+
+      let response;
+      if (option === "lastDay") {
+        response = await axios.get(`${URL}/filter/lastDay`, config);
+      }
 
       return response.data.data;
     } catch (error) {
@@ -200,6 +223,7 @@ export const AuthProvider = ({ children }) => {
         getTagsList,
         getDeclaration,
         getDeclarationById,
+        getQuickSort,
       }}
     >
       {children}

@@ -6,6 +6,7 @@ import { useAuth } from "../Contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Image from "./Image";
 import { useLocationContext } from "../Contexts/LocationContext";
+import { useSearchParams } from "react-router-dom";
 
 // span, dark modda altta çıkan siyah çizgi
 // borderla vermedim çünkü sağdan soldan boşluk olsun istedim
@@ -340,8 +341,11 @@ export function Card({
 // Bu componentler farklı sayfalara ayrılacak
 function Cards({ tags }) {
   const [cards, setCards] = useState([]);
-  const { getDeclaration } = useAuth();
+  const { getDeclaration, getQuickSort } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const query = searchParams.get("quickSort");
 
   // Seçili tags'lere göre getDeclaration'a param geçilicek
   console.log(tags);
@@ -349,7 +353,12 @@ function Cards({ tags }) {
   useEffect(() => {
     const getDeclarations = async () => {
       try {
-        const response = await getDeclaration();
+        let response;
+        if (query === "lastDay") {
+          response = await getQuickSort("lastDay");
+        } else {
+          response = await getDeclaration();
+        }
 
         setCards(response);
         setIsLoading(false);
@@ -359,7 +368,7 @@ function Cards({ tags }) {
     };
 
     getDeclarations();
-  }, []);
+  }, [query]);
 
   // farklı card id'lerine göre farklı style'lar veriliyor
   const loadingCards = [1, 2, 3, 4];
