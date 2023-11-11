@@ -26,9 +26,10 @@ Route::post('/isStudent', [UserController::class, 'isStudent']);
 Route::post('/login', [UserController::class, 'login']);
 Route::post('/saveUser', [UserController::class, 'saveUser']);
 
+Route::get('/authenticate', [UserController::class, 'authenticate']); //expires_at uzatılacak
+
 Route::middleware('authentication')->group(function () {
 
-    Route::get('/authenticate', [UserController::class, 'authenticate']); //expires_at uzatılacak
 
     Route::post('/declarations', [DeclarationController::class, 'createDeclaration']);
     Route::get('/declarations', [DeclarationController::class, 'getDeclarations']);
