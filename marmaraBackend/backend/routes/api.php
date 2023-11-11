@@ -47,6 +47,7 @@ Route::middleware('authentication')->group(function () {
     Route::get('/filter/lastDay',[DeclarationController::class, 'sharedLastDay']);
     Route::get('/filter/lastWeek',[DeclarationController::class, 'sharedLastWeek']);
     Route::get('/filter/lastMonth',[DeclarationController::class, 'sharedLastMonth']);
+    Route::post('/filter',[DeclarationController::class, 'filter']);
 
     Route::middleware('admin')->group(function () {
         Route::delete('/declarations/{id}', [DeclarationController::class, 'deleteDeclaration']);

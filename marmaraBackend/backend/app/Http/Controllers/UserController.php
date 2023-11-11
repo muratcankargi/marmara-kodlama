@@ -225,7 +225,7 @@ class UserController extends Controller
             PersonalAccessToken::where(['token' => $token])->update(['counter' => $tokenControl['counter']]);
 
             $user = User::where(['id' => $tokenControl['id']])->first();
-            if($tokenControl->expires_at > Carbon::now()){
+           // if($tokenControl->expires_at > Carbon::now()){
                 return response([
                     "status" => true,
                     "message" => "User authentication successful.",
@@ -235,13 +235,13 @@ class UserController extends Controller
                         'token' => $tokenControl['token'],
                         'counter' => $tokenControl['counter'],]
                 ], 200);
-            }else{
+           /* }else{
                 return response([
                     "status" => false,
                     "message" => "The user has expired",
                     'data' => []
                 ], 400);
-            }
+            }*/
 
         } else {
 
