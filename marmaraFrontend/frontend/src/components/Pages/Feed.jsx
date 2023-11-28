@@ -7,6 +7,8 @@ import FullContainer from "../Utilities/FullContainer";
 import { useLocationContext } from "../Contexts/LocationContext";
 import { useAllFilters } from "../Contexts/AllFilters";
 import AllFiltersContainer from "../AllFilters/AllFiltersContainer";
+import Image from "../Utilities/Image";
+import { useSearchParams } from "react-router-dom";
 
 function FeedHeading({ text }) {
   return (
@@ -67,6 +69,49 @@ function FeedNavbar() {
   );
 }
 
+function ClearFilters() {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const isFilterApplied = searchParams.get("isApply");
+
+  const handleClick = () => {
+    // Create a new URLSearchParams object
+    const newSearchParams = new URLSearchParams(searchParams);
+
+    // Delete all parameters
+    for (const param of searchParams.entries()) {
+      newSearchParams.delete(param[0]);
+    }
+
+    // Update the state with the new parameters
+    setSearchParams(newSearchParams);
+  };
+
+  return (
+    isFilterApplied && (
+      <div
+        className="px-3 pt-3 text-neutral
+  "
+      >
+        <button
+          onClick={handleClick}
+          className="bg-accent relative  p-1 rounded-sm px-2"
+        >
+          <div className="flex gap-1 items-center">
+            {/* <Image
+          className=" w-4 aspect-square  h-4"
+          imageName="trash.png"
+          darkImageName="trash.png"
+          alt="filtreleri temizle"
+        /> */}
+            <div className="font-semibold ">Filtreleri Temizle</div>
+          </div>
+        </button>
+      </div>
+    )
+  );
+}
+
 function Feed() {
   const [tags, setTags] = useState([]);
   const { setLocation } = useLocationContext();
@@ -81,6 +126,7 @@ function Feed() {
       <AllFiltersContainer isActive={isActive} setIsActive={setIsActive} />
       <FeedNavbar />
       <Tags getTags={setTags} />
+      <ClearFilters />
       <Cards tags={tags} />
     </FullContainer>
   );

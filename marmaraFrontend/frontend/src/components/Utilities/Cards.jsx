@@ -338,6 +338,27 @@ export function Card({
   );
 }
 
+const oldsFirst = (cards) => {
+  // Convert date strings to a format that can be compared
+  const sortedArray = cards.sort((a, b) => {
+    const dateA = new Date(a.created_at.split("/").reverse().join("-"));
+    const dateB = new Date(b.created_at.split("/").reverse().join("-"));
+    return dateA - dateB;
+  });
+
+  return sortedArray;
+};
+
+const newsFirst = (cards) => {
+  const sortedArray = cards.sort((a, b) => {
+    const dateA = new Date(b.created_at.split("/").reverse().join("-"));
+    const dateB = new Date(a.created_at.split("/").reverse().join("-"));
+    return dateA - dateB;
+  });
+
+  return sortedArray;
+};
+
 // Bu componentler farklı sayfalara ayrılacak
 function Cards({ tags }) {
   const [cards, setCards] = useState([]);
@@ -346,17 +367,23 @@ function Cards({ tags }) {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const quickSort = searchParams.get("quickSort");
-  const isApply = searchParams.get("isApply")
-  
+  const sort = searchParams.get("sort");
+  const isApply = searchParams.get("isApply");
+
   useEffect(() => {
     let response;
     const getDeclarations = async () => {
       try {
-          if (!!quickSort && isApply) {
-            response = await getQuickSort(quickSort);
-          }
-        else {
+        if (!!quickSort && isApply) {
+          response = await getQuickSort(quickSort);
+        } else {
           response = await getDeclaration();
+        }
+
+        if (sort === "oldsFirst" && isApply) {
+          response = oldsFirst(response);
+        } else if (sort === "newsFirst" && isApply) {
+          response = newsFirst(response);
         }
 
         setCards(response);
@@ -367,13 +394,13 @@ function Cards({ tags }) {
     };
 
     getDeclarations();
-  }, [quickSort, isApply]);
+  }, [quickSort, sort, isApply]);
 
   // farklı card id'lerine göre farklı style'lar veriliyor
   const loadingCards = [1, 2, 3, 4];
 
   return (
-    <div className="w-full pt-5 md:grid md:grid-cols-3 ">
+    <div className="w-full pt-3 md:grid md:grid-cols-3 ">
       {!isLoading ? (
         cards.map((card) => {
           return (

@@ -3,14 +3,24 @@ import SubHeading from "./SubHeading";
 import { v4 as uuidv4 } from "uuid";
 
 function Button({ text, name, searchParams, setSearchParams }) {
-  const handleClick = () => {
-    setSearchParams((prevValue) => {
-      prevValue.set("sort", name);
-      return prevValue;
-    });
-  };
-
   const param = searchParams.get("sort");
+
+  const handleClick = () => {
+    // Zaten seçilmiş, o yüzden style ını silip sort u kaldırıyoruz
+    if (param === name) {
+      setSearchParams((prevValue) => {
+        prevValue.set("sort", "");
+        prevValue.set("isApply", "");
+        return prevValue;
+      });
+    } else {
+      setSearchParams((prevValue) => {
+        prevValue.set("sort", name);
+        prevValue.set("isApply", "");
+        return prevValue;
+      });
+    }
+  };
 
   return (
     <button
