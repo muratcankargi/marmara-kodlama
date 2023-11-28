@@ -84,8 +84,6 @@ export const AuthProvider = ({ children }) => {
         DogumTarihi: birthDate,
       });
 
-      console.log(response);
-
       // token
       return response.data.data.token;
     } catch (error) {
@@ -161,6 +159,14 @@ export const AuthProvider = ({ children }) => {
       let response;
       if (option === "lastDay") {
         response = await axios.get(`${URL}/filter/lastDay`, config);
+      }
+
+      if(option === "lastWeek"){
+        response = await axios.get(`${URL}/filter/lastWeek`, config);
+      }
+
+      if(option === "lastMonth"){
+        response = await axios.get(`${URL}/filter/lastMonth`, config);
       }
 
       return response.data.data;

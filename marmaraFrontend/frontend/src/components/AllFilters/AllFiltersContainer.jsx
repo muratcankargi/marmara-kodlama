@@ -52,7 +52,7 @@ function Header({ setIsActive }) {
   );
 }
 
-function Apply() {
+function Apply({setIsActive}) {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const sort = searchParams.get("sort");
@@ -60,7 +60,17 @@ function Apply() {
   // burada date de olacak
 
   const handleClick = () => {
-    console.log(sort, quickSort);
+
+    setSearchParams((prevValue) => {
+      if(!!quickSort || !!sort){
+        prevValue.set("isApply", "1");
+      }
+      else{
+        prevValue.set("isApply", "");
+      }
+      return prevValue;
+    });
+    setIsActive(false);
   };
 
   return (
@@ -71,6 +81,8 @@ function Apply() {
 }
 
 export default function AllFiltersContainer({ isActive, setIsActive }) {
+
+
   return (
     isActive && (
       <>
@@ -82,7 +94,7 @@ export default function AllFiltersContainer({ isActive, setIsActive }) {
             <Sort />
             <Date />
           </div>
-          <Apply />
+          <Apply setIsActive={setIsActive}/>
         </Container>
       </>
     )

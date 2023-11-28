@@ -345,18 +345,17 @@ function Cards({ tags }) {
   const [isLoading, setIsLoading] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const query = searchParams.get("quickSort");
-
-  // Seçili tags'lere göre getDeclaration'a param geçilicek
-  console.log(tags);
-
+  const quickSort = searchParams.get("quickSort");
+  const isApply = searchParams.get("isApply")
+  
   useEffect(() => {
+    let response;
     const getDeclarations = async () => {
       try {
-        let response;
-        if (query === "lastDay") {
-          response = await getQuickSort("lastDay");
-        } else {
+          if (!!quickSort && isApply) {
+            response = await getQuickSort(quickSort);
+          }
+        else {
           response = await getDeclaration();
         }
 
@@ -368,7 +367,7 @@ function Cards({ tags }) {
     };
 
     getDeclarations();
-  }, [query]);
+  }, [quickSort, isApply]);
 
   // farklı card id'lerine göre farklı style'lar veriliyor
   const loadingCards = [1, 2, 3, 4];

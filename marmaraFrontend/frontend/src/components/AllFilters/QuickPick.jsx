@@ -3,20 +3,34 @@ import { useSearchParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 
 export function Option({ text, searchParams, setSearchParams, name }) {
-  const handleClick = () => {
-    setSearchParams((prevValue) => {
-      prevValue.set("quickSort", name);
-      return prevValue;
-    });
-  };
+
 
   const param = searchParams.get("quickSort");
+
+  const handleClick = () => {
+    // Zaten seçilmiş, o yüzden style ını silip sort u kaldırıyoruz
+    if(param === name){
+      setSearchParams((prevValue) => {
+        prevValue.set("quickSort", "");
+        prevValue.set("isApply", "");
+        return prevValue;
+      });
+    }
+    else{
+      setSearchParams((prevValue) => {
+        prevValue.set("quickSort", name);
+        prevValue.set("isApply", "");
+        return prevValue;
+      });
+      
+    }
+  };
 
   return (
     <button
       onClick={handleClick}
       className={`${
-        name === param ? "bg-picked" : "bg-darkPrimary  "
+        name === param ? "bg-picked" : "bg-darkPrimary"
       } py-2 px-4 rounded-sm relative text-neutral`}
     >
       {text}
