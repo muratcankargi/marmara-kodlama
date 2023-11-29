@@ -20,35 +20,15 @@ before:rotate-45 after:-rotate-45 before:translate-y-2 "
   );
 }
 
-function Heading() {
-  return (
-    <h2 className="font-bold dark:text-neutral text-center text-black text-xl whitespace-nowrap">
-      Tüm Filtreler
-    </h2>
-  );
-}
-
 function Container({ isActive, children }) {
   return (
     <div
       className={`${
-        isActive ? "animate-showFilters" : ""
-      } w-full transition-all fixed z-[99999999] bottom-0 dark:bg-darkNeutral bg-neutral
-       rounded-tl-3xl rounded-tr-3xl border dark:border-darkPrimary`}
+        isActive ? "grid-rows-[1fr] border my-4 " : " grid-rows-[0fr]"
+      }  
+       rounded-sm  mx-3 grid  sm:w-fit transition-all dark:border-darkPrimary relative`}
     >
       {children}
-    </div>
-  );
-}
-
-function Header({ setIsActive }) {
-  return (
-    <div className="flex flex-col items-center">
-      <div className="pt-8 w-full grid grid-cols-3 px-6">
-        <div></div>
-        <Heading />
-        <CloseButton setIsActive={setIsActive} />
-      </div>
     </div>
   );
 }
@@ -82,19 +62,23 @@ function Apply({ setIsActive }) {
 
 export default function AllFiltersContainer({ isActive, setIsActive }) {
   return (
-    isActive && (
-      <>
-        <div className="w-full h-full fixed z-[999999] bottom-0 opacity-25 bg-black"></div>
-        <Container isActive={isActive}>
-          <Header setIsActive={setIsActive} />
-          <div className="px-8 mt-8 sm:w-96 sm:mx-auto flex flex-col gap-8">
+    <>
+      {/* <div className="w-full h-full fixed z-[999999] bottom-0 opacity-25 bg-black"></div> */}
+      <Container isActive={isActive}>
+        <div className="overflow-hidden">
+          <div className="absolute sm:-top-2 -top-1 -right-1 sm:-right-2">
+            {isActive && <CloseButton setIsActive={setIsActive} />}
+          </div>
+          <div
+            className="px-8 py-4  flex flex-col sm:flex-row   
+           gap-8 sm:gap-24"
+          >
             <QuickPick />
             <Sort />
             <Date />
           </div>
-          <Apply setIsActive={setIsActive} />
-        </Container>
-      </>
-    )
+        </div>
+      </Container>
+    </>
   );
 }

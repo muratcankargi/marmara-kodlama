@@ -9,9 +9,8 @@ function CenteredContainer({ children, paddingTop = "pt-40" }) {
   // hambrugermenu active ise sağdaki scroll u kaldırıyoruz yoksa
   // kapatma butonu yerinden oynuyor
   const { isActive } = useHamburgerMenu();
-  const { isActive: filtersIsActive } = useAllFilters();
 
-  if (filtersIsActive || isActive) {
+  if (isActive) {
     disableScroll.on();
   } else {
     disableScroll.off();

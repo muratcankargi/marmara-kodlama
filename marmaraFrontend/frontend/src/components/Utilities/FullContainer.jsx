@@ -10,9 +10,8 @@ function FullContainer({ children, paddingTop = "" }) {
   // kullanıcının nerede kaldığını alabiliriz öncesinde veya
   // başka bi çözüm üretebiliriz
   const { isActive } = useHamburgerMenu();
-  const { isActive: filtersIsActive } = useAllFilters();
 
-  if (filtersIsActive || isActive) {
+  if (isActive) {
     disableScroll.on();
   } else {
     disableScroll.off();
