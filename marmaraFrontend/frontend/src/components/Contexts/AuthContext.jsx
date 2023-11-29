@@ -161,13 +161,34 @@ export const AuthProvider = ({ children }) => {
         response = await axios.get(`${URL}/filter/lastDay`, config);
       }
 
-      if(option === "lastWeek"){
+      if (option === "lastWeek") {
         response = await axios.get(`${URL}/filter/lastWeek`, config);
       }
 
-      if(option === "lastMonth"){
+      if (option === "lastMonth") {
         response = await axios.get(`${URL}/filter/lastMonth`, config);
       }
+
+      return response.data.data;
+    } catch (error) {
+      console.log("Error: ", error.message);
+    }
+  };
+
+  const getDateBetween = async (from, to) => {
+    try {
+      const config = {
+        headers: { Authorization: `Bearer ${localStorage.getItem("auth")}` },
+      };
+
+      const response = await axios.post(
+        `${URL}/filter/dateBetween`,
+        {
+          start_date: from,
+          end_date: to,
+        },
+        config
+      );
 
       return response.data.data;
     } catch (error) {
@@ -230,6 +251,7 @@ export const AuthProvider = ({ children }) => {
         getDeclaration,
         getDeclarationById,
         getQuickSort,
+        getDateBetween,
       }}
     >
       {children}

@@ -33,7 +33,8 @@ function Container({ isActive, children }) {
     <div
       className={`${
         isActive ? "animate-showFilters" : ""
-      } w-full transition-all fixed z-[99999999] bottom-0 dark:bg-darkNeutral bg-neutral rounded-tl-3xl rounded-tr-3xl border dark:border-darkPrimary `}
+      } w-full transition-all fixed z-[99999999] bottom-0 dark:bg-darkNeutral bg-neutral
+       rounded-tl-3xl rounded-tr-3xl border dark:border-darkPrimary`}
     >
       {children}
     </div>
@@ -52,20 +53,19 @@ function Header({ setIsActive }) {
   );
 }
 
-function Apply({setIsActive}) {
+function Apply({ setIsActive }) {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const sort = searchParams.get("sort");
   const quickSort = searchParams.get("quickSort");
+  const date = { from: searchParams.get("from"), to: searchParams.get("to") };
   // burada date de olacak
 
   const handleClick = () => {
-
     setSearchParams((prevValue) => {
-      if(!!quickSort || !!sort){
+      if (!!quickSort || !!sort || !!date) {
         prevValue.set("isApply", "1");
-      }
-      else{
+      } else {
         prevValue.set("isApply", "");
       }
       return prevValue;
@@ -81,8 +81,6 @@ function Apply({setIsActive}) {
 }
 
 export default function AllFiltersContainer({ isActive, setIsActive }) {
-
-
   return (
     isActive && (
       <>
@@ -94,7 +92,7 @@ export default function AllFiltersContainer({ isActive, setIsActive }) {
             <Sort />
             <Date />
           </div>
-          <Apply setIsActive={setIsActive}/>
+          <Apply setIsActive={setIsActive} />
         </Container>
       </>
     )
