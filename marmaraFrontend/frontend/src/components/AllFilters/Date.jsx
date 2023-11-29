@@ -32,7 +32,7 @@ function DatePicker({ id }) {
       className=""
     >
       <div
-        className="flex bg-darkPrimary w-36
+        className="flex bg-darkPrimary w-full
        py-2 pr-5 items-center gap-2 rounded-sm"
       >
         <Image
@@ -63,7 +63,7 @@ export default function Date() {
   return (
     <div>
       <SubHeading text="Tarih" />
-      <div className="flex justify-between ">
+      <div className="flex justify-between flex-col gap-3 ">
         <DatePicker id="from" />
         <DatePicker id="to" />
       </div>

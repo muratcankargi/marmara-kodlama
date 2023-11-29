@@ -3,26 +3,22 @@ import { useSearchParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 
 export function Option({ text, searchParams, setSearchParams, name }) {
-
-
   const param = searchParams.get("quickSort");
 
   const handleClick = () => {
     // Zaten seçilmiş, o yüzden style ını silip sort u kaldırıyoruz
-    if(param === name){
+    if (param === name) {
       setSearchParams((prevValue) => {
         prevValue.set("quickSort", "");
         prevValue.set("isApply", "");
         return prevValue;
       });
-    }
-    else{
+    } else {
       setSearchParams((prevValue) => {
         prevValue.set("quickSort", name);
         prevValue.set("isApply", "");
         return prevValue;
       });
-      
     }
   };
 
@@ -59,7 +55,7 @@ export default function QuickPick() {
   return (
     <div>
       <SubHeading text="Hızlı Seçim" />
-      <div className="flex justify-between">
+      <div className="flex justify-between flex-col gap-3">
         {options.map((option) => {
           return (
             <Option

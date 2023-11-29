@@ -29,8 +29,8 @@ module.exports = {
           "100%": { left: "12rem" },
         },
         showFilters: {
-          "0%": { height: "0rem" },
-          "100%": { height: "70%" },
+          "0%": { height: "0%" },
+          "100%": { height: "90%" },
         },
       },
 

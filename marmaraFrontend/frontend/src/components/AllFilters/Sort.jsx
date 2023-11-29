@@ -53,7 +53,7 @@ export default function Sort() {
   return (
     <div>
       <SubHeading text="Sıralama" />
-      <div className="flex justify-between">
+      <div className="flex justify-between flex-col gap-3">
         {options.map((option) => {
           return (
             <Button

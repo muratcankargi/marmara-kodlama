@@ -123,9 +123,9 @@ function Feed() {
 
   return (
     <FullContainer paddingTop="pt-12">
-      <AllFiltersContainer isActive={isActive} setIsActive={setIsActive} />
       <FeedNavbar />
       <Tags getTags={setTags} />
+      <AllFiltersContainer isActive={isActive} setIsActive={setIsActive} />
       <ClearFilters />
       <Cards tags={tags} />
     </FullContainer>
