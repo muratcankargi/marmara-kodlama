@@ -362,13 +362,14 @@ const newsFirst = (cards) => {
 // Bu componentler farklı sayfalara ayrılacak
 function Cards({ tags }) {
   const [cards, setCards] = useState([]);
-  const { getDeclaration, getQuickSort } = useAuth();
+  const { getDeclaration, getQuickSort, getDateBetween } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const quickSort = searchParams.get("quickSort");
   const sort = searchParams.get("sort");
   const isApply = searchParams.get("isApply");
+  const date = { from: searchParams.get("from"), to: searchParams.get("to") };
 
   useEffect(() => {
     let response;
@@ -376,6 +377,8 @@ function Cards({ tags }) {
       try {
         if (!!quickSort && isApply) {
           response = await getQuickSort(quickSort);
+        } else if (!!date && isApply) {
+          response = await getDateBetween(date.from, date.to);
         } else {
           response = await getDeclaration();
         }
@@ -402,18 +405,24 @@ function Cards({ tags }) {
   return (
     <div className="w-full pt-3 md:grid md:grid-cols-3 ">
       {!isLoading ? (
-        cards.map((card) => {
-          return (
-            <Card
-              key={uuidv4()}
-              id={card.id}
-              author={card.user}
-              date={card.created_at}
-              title={card.title}
-              description={card.description}
-            />
-          );
-        })
+        cards ? (
+          cards.map((card) => {
+            return (
+              <Card
+                key={uuidv4()}
+                id={card.id}
+                author={card.user}
+                date={card.created_at}
+                title={card.title}
+                description={card.description}
+              />
+            );
+          })
+        ) : (
+          <div className="px-3 mx-auto w-56 pt-12 text-lg font-bold">
+            Hiç ilan bulunamadı.
+          </div>
+        )
       ) : (
         <>
           {loadingCards.map((id) => {

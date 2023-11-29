@@ -1,5 +1,7 @@
 import { useSearchParams } from "react-router-dom";
 import SubHeading from "./SubHeading";
+import Image from "../Utilities/Image";
+import { useRef, useState } from "react";
 
 function DatePicker({ id }) {
   const [searchParams, setSearchParams] = useSearchParams({
@@ -7,40 +9,63 @@ function DatePicker({ id }) {
     to: "",
   });
 
-  return (
-    <input
-      onClick={(e) => {
-        setSearchParams((prevValue) => {
-          prevValue.set(id, e.target.value);
-          return prevValue;
-        });
-      }}
-      id={id}
-      type="date"
-      className="outline-0 border border-darkPrimary dark:border-0 dark:bg-darkPrimary py-2 px-1 rounded-sm "
-    />
-  );
-}
+  const ref = useRef(0);
 
-function DatePickerContainer({ text, id }) {
+  const [value, setValue] = useState(null);
+
+  const onDatePicked = () => {
+    setValue(ref.current.value);
+    setSearchParams((prevValue) => {
+      id === "from"
+        ? prevValue.set("from", ref.current.value)
+        : prevValue.set("to", ref.current.value);
+      prevValue.set("isApply", "");
+      return prevValue;
+    });
+  };
+
   return (
-    <div>
-      <DatePicker id={id} />
-      <label htmlFor={id} className="text-sm  dark:text-neutral">
-        {text}
-      </label>
+    <div
+      onClick={() => {
+        ref.current.showPicker();
+      }}
+      className=""
+    >
+      <div
+        className="flex bg-darkPrimary w-36
+       py-2 pr-5 items-center gap-2 rounded-sm"
+      >
+        <Image
+          className="ml-2 mr-1 w-5 h-5"
+          imageName={"calendarDark.png"}
+          darkImageName={"calendarDark.png"}
+          alt="Tarih"
+        />
+        <input
+          type="text"
+          value={value}
+          defaultValue={id === "from" ? "Başlangıç" : "Bitiş"}
+          readOnly
+          className="outline-0 w-full bg-darkPrimary text-neutral cursor-pointer"
+        />
+      </div>
+      <input
+        type="date"
+        ref={ref}
+        onChange={onDatePicked}
+        class="w-0 h-0 absolute opacity-0"
+      />
     </div>
   );
 }
 
-// Bu şuanda çalışmıyor.
 export default function Date() {
   return (
     <div>
       <SubHeading text="Tarih" />
       <div className="flex justify-between ">
-        <DatePickerContainer id="from" text="Başlangıç" />
-        <DatePickerContainer id="to" text="Bitiş" />
+        <DatePicker id="from" />
+        <DatePicker id="to" />
       </div>
     </div>
   );
