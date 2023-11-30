@@ -31,9 +31,9 @@ function HamburgerMenuNavigation() {
 
   return links.map((link) => {
     return (
-      <button
+      <li
         key={uuidv4()}
-        className={`dark:text-neutral font-bold 
+        className={`dark:text-neutral cursor-pointer list-none font-bold 
         ${
           link.link === active
             ? "underline underline-offset-4 decoration-2"
@@ -45,7 +45,7 @@ function HamburgerMenuNavigation() {
         }}
       >
         {link.title}
-      </button>
+      </li>
     );
   });
 }

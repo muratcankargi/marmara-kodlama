@@ -3,7 +3,6 @@ import Sort from "./Sort";
 import QuickPick from "./QuickPick";
 import Button from "../Utilities/Button";
 import { useSearchParams } from "react-router-dom";
-import disableScroll from "disable-scroll";
 
 function CloseButton({ setIsActive }) {
   const handleClick = () => {

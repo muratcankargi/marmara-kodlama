@@ -196,7 +196,7 @@ function CardContent({ heading, content, isLoading, id }) {
   return (
     <>
       <div
-        className={`text-xl font-bold dark:text-neutral 
+        className={`text-xl font-bold dark:text-neutral
       ${
         isLoading
           ? `${width1} h-4 dark:bg-darkNeutral bg-gray-300 animate-pulse`

@@ -11,6 +11,8 @@ import HamburgerMenu from "../Utilities/HamburgerMenu";
 import AddPicture from "../Utilities/AddPicture";
 import Tags from "../Utilities/Tags";
 import { useLocationContext } from "../Contexts/LocationContext";
+import Navbar from "../Utilities/Navbar";
+import FullContainer from "../Utilities/FullContainer";
 
 function Inputs({ setDeclaration, invalid }) {
   return (
@@ -109,22 +111,21 @@ function CreateDeclaration() {
   const { invalid, validation } = useValidate();
 
   return (
-    <CenteredContainer paddingTop="pt-12">
-      <div className="flex w-full justify-between items-center">
-        <IntroText mainText="İlan Oluştur" />
-        <HamburgerMenu />
+    <FullContainer paddingTop="pt-12">
+      <Navbar text="İlan Oluştur" />
+      <div className="w-3/4 mx-auto sm:w-1/2">
+        <div className="pt-12">
+          <AddPicture />
+        </div>
+        <Inputs setDeclaration={setDeclaration} invalid={invalid} />
+        <Tags getTags={setTags} />
+        <ButtonContainer
+          declaration={declaration}
+          validation={validation}
+          tags={tags}
+        />
       </div>
-      <div className="pt-12">
-        <AddPicture />
-      </div>
-      <Inputs setDeclaration={setDeclaration} invalid={invalid} />
-      <Tags getTags={setTags} />
-      <ButtonContainer
-        declaration={declaration}
-        validation={validation}
-        tags={tags}
-      />
-    </CenteredContainer>
+    </FullContainer>
   );
 }
 
