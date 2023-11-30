@@ -1,7 +1,7 @@
 import React from "react";
 
 function Button(props) {
-  const { text, onClickFunction, isWaiting } = props;
+  const { text, onClickFunction } = props;
 
   const handleClick = () => {
     if (onClickFunction) {
@@ -11,11 +11,9 @@ function Button(props) {
 
   return (
     <button
-      disabled={isWaiting}
       onClick={handleClick}
-      className={`${
-        isWaiting ? "bg-gray-700 pointer-events-none" : "bg-accent"
-      } cursor-pointer w-32 py-2  rounded-full text-white font-bold tracking-wide text-center`}
+      className={`cursor-pointer  
+       py-2 rounded-full px-3 text-white font-bold tracking-wide bg-accent text-center`}
     >
       {text}
     </button>

@@ -71,6 +71,7 @@ function ButtonContainer({ userInfo, validation }) {
   };
   const { signup } = useAuth();
 
+  // TODO: alreadySaved çalışmıyor geri dönüş değerlerinde sorunlar var.
   const handleSignUp = async () => {
     if (checkInputs()) {
       const response = await signup(personalId, fatherName, birthDate);
@@ -90,9 +91,14 @@ function ButtonContainer({ userInfo, validation }) {
     }
   };
 
+  return <Button onClickFunction={handleSignUp} text="Kayıt Ol" />;
+}
+
+function FooterContainer({ userInfo, validation }) {
   return (
-    <div className="absolute bottom-12 left-0 right-0 w-full flex justify-center items-center ">
-      <Button onClickFunction={handleSignUp} text="Kayıt Ol" />
+    <div className="grid grid-cols-3 mt-24 sm:mt-48">
+      <ThemeSwitcher />
+      <ButtonContainer userInfo={userInfo} validation={validation} />
     </div>
   );
 }
@@ -107,14 +113,11 @@ function SignUpPage() {
   const { invalid, validation } = useValidate();
 
   return (
-    <CenteredContainer paddingTop="pt-32">
+    <CenteredContainer paddingTop="pt-24">
       <IntroText mainText="Hoş geldiniz" fadedText="Marmara kayıp eşya ağı" />
       <Inputs setUserInfo={setUserInfo} invalid={invalid} />
       <CustomLinkContainer />
-      <div className="absolute bottom-12 z-50">
-        <ThemeSwitcher />
-      </div>
-      <ButtonContainer userInfo={userInfo} validation={validation} />
+      <FooterContainer userInfo={userInfo} validation={validation} />
     </CenteredContainer>
   );
 }
