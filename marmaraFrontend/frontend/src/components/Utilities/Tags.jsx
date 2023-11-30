@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useAuth } from "../Contexts/AuthContext";
-import { useAllFilters } from "../Contexts/AllFilters";
-import { useSearchParams } from "react-router-dom";
 
 function TagsHeader() {
   return (
@@ -137,9 +135,8 @@ function TagsContentContainer({
 
 // Tags kısmını hamburger menü ye eklesek
 // daha mantıklı olabilir gibi çok item olursa hoş durmayacak
-function Tags({ getTags }) {
+function Tags({ getTags, isActive, setIsActive }) {
   const [tags, setTags] = useState(null);
-  const { isActive, setIsActive } = useAllFilters();
 
   // Main componenti sadeleştirmek için useEffect'leri custom hooklara ayırıyorum
   useGetTags(tags, setTags, getTags);

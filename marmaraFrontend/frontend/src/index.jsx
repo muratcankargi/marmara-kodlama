@@ -8,8 +8,6 @@ import { AuthProvider } from "./components/Contexts/AuthContext";
 import { AuthzProvider } from "./components/Contexts/AuthzContext";
 import { ThemeProvider } from "./components/Contexts/ThemeContext";
 import { LocationProvider } from "./components/Contexts/LocationContext";
-import { HamburgerMenuProvider } from "./components/Contexts/HamburgerMenuContext";
-import { AllFiltersProvider } from "./components/Contexts/AllFilters";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -19,11 +17,7 @@ root.render(
         <ThemeProvider>
           <BrowserRouter>
             <LocationProvider>
-              <HamburgerMenuProvider>
-                <AllFiltersProvider>
-                  <App />
-                </AllFiltersProvider>
-              </HamburgerMenuProvider>
+              <App />
             </LocationProvider>
           </BrowserRouter>
         </ThemeProvider>

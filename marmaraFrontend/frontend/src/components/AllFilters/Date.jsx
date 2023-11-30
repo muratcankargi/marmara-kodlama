@@ -43,8 +43,8 @@ function DatePicker({ id }) {
         />
         <input
           type="text"
-          value={value}
-          defaultValue={id === "from" ? "Başlangıç" : "Bitiş"}
+          value={value || ""}
+          placeholder={id === "from" ? "Başlangıç" : "Bitiş"}
           readOnly
           className="outline-0 w-full bg-darkPrimary text-neutral cursor-pointer"
         />
@@ -53,7 +53,7 @@ function DatePicker({ id }) {
         type="date"
         ref={ref}
         onChange={onDatePicked}
-        class="w-0 h-0 absolute opacity-0"
+        className="w-0 h-0 absolute opacity-0"
       />
     </div>
   );
