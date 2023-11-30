@@ -82,9 +82,14 @@ function ButtonContainer({ userInfo, validation }) {
     }
   };
 
+  return <Button onClickFunction={handleSave} text="Kaydet" />;
+}
+
+function FooterContainer({ userInfo, validation }) {
   return (
-    <div className="absolute bottom-16 left-0 right-0 w-full flex justify-center items-center ">
-      <Button onClickFunction={handleSave} text="Kaydet" />
+    <div className="grid grid-cols-3 mt-20 sm:mt-48">
+      <ThemeSwitcher />
+      <ButtonContainer userInfo={userInfo} validation={validation} />
     </div>
   );
 }
@@ -102,13 +107,10 @@ function CreateProfilePage() {
   // Bu sayfa sadece almostUser yetkisine sahip kullanıcılara
   // Gösterilecek
   return (
-    <CenteredContainer>
+    <CenteredContainer paddingTop="pt-24">
       <AddPicture />
       <Inputs setUserInfo={setUserInfo} invalid={invalid} />
-      <div className="absolute bottom-16 z-50">
-        <ThemeSwitcher />
-      </div>
-      <ButtonContainer userInfo={userInfo} validation={validation} />
+      <FooterContainer userInfo={userInfo} validation={validation} />
     </CenteredContainer>
   );
 }

@@ -3,8 +3,6 @@ import { useHamburgerMenu } from "../Contexts/HamburgerMenuContext";
 import { useAllFilters } from "../Contexts/AllFilters";
 import disableScroll from "disable-scroll";
 
-// Hem signInPage hem de SignUpPage de kullanıldığı için oluşturdum
-// büyük ihtimal createProfile de de benzer bi şey kullanılacak
 function CenteredContainer({ children, paddingTop = "pt-40" }) {
   // hambrugermenu active ise sağdaki scroll u kaldırıyoruz yoksa
   // kapatma butonu yerinden oynuyor
@@ -21,7 +19,7 @@ function CenteredContainer({ children, paddingTop = "pt-40" }) {
       className={`min-h-screen flex justify-center ${paddingTop} bg-neutral 
     dark:bg-darkNeutral transition-colors duration-300`}
     >
-      <div className="w-3/4">{children}</div>
+      <div className="w-3/4 sm:w-1/2 h-full">{children}</div>
     </div>
   );
 }

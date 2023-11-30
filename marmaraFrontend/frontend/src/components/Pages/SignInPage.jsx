@@ -47,8 +47,8 @@ function Inputs({ setUserInfo, invalid }) {
 
 function ButtonContainer({ userInfo, validation }) {
   const navigate = useNavigate();
+
   const { email, password } = userInfo;
-  const [isWaiting, setIsWaiting] = useState(false);
 
   const { login } = useAuth();
 
@@ -60,7 +60,6 @@ function ButtonContainer({ userInfo, validation }) {
   const handleClick = async () => {
     if (checkInputs()) {
       const token = await login(email, password);
-      console.log(token);
       if (token) {
         // loginden token gelmişse kaydediyoruz ve yönlendiriyoruz
         alert("authenticated");
@@ -72,13 +71,14 @@ function ButtonContainer({ userInfo, validation }) {
     }
   };
 
+  return <Button onClickFunction={handleClick} text="Giriş Yap" />;
+}
+
+function FooterContainer({ userInfo, validation }) {
   return (
-    <div className="absolute bottom-12 left-0 right-0  w-full flex justify-center items-center ">
-      <Button
-        isWaiting={isWaiting}
-        onClickFunction={handleClick}
-        text="Giriş Yap"
-      />
+    <div className="grid grid-cols-3 mt-24 sm:mt-48">
+      <ThemeSwitcher />
+      <ButtonContainer userInfo={userInfo} validation={validation} />
     </div>
   );
 }
@@ -92,17 +92,14 @@ function SignInPage() {
   const { invalid, validation } = useValidate();
 
   return (
-    <CenteredContainer paddingTop="pt-32">
+    <CenteredContainer paddingTop="pt-36 ">
       <IntroText
         mainText="Tekrar hoş geldiniz"
         fadedText="Marmara kayıp eşya ağı"
       />
       <Inputs setUserInfo={setUserInfo} invalid={invalid} />
       <CustomLinkContainer />
-      <div className="absolute bottom-12 z-50">
-        <ThemeSwitcher />
-      </div>
-      <ButtonContainer userInfo={userInfo} validation={validation} />
+      <FooterContainer userInfo={userInfo} validation={validation} />
     </CenteredContainer>
   );
 }

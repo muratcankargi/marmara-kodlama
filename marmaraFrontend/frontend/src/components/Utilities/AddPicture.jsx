@@ -3,7 +3,10 @@ import { alert } from "./alert";
 
 function AddPictureLogo() {
   return (
-    <div className="w-24 h-24 rounded-full border bg-primary-100 flex  items-center justify-center ">
+    <div
+      className="w-24 h-24 rounded-full border bg-primary-100
+     flex  items-center justify-center "
+    >
       <img
         src="/images/camera.png"
         className="w-12 h-12 mx-auto"

@@ -27,17 +27,13 @@ export function QuestionMarkContent({ styles, triggerMessageBox }) {
   );
 }
 
-function QuestionMark({ triggerMessageBox }) {
+export function QuestionMark({ triggerMessageBox }) {
   return (
-    <div>
-      <button
-        onClick={triggerMessageBox}
-        className="w-6 h-6 text-white font-extrabold text-3xl"
-      >
-        <img src="/images/questionMark.png" alt="Question mark" />
-      </button>
-    </div>
+    <button
+      onClick={triggerMessageBox}
+      className="w-6 h-6 text-white font-extrabold text-3xl"
+    >
+      <img src="/images/questionMark.png" alt="Question mark" />
+    </button>
   );
 }
-
-export default QuestionMark;
