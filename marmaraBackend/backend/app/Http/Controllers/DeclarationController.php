@@ -7,6 +7,7 @@ use App\Models\Tag;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class DeclarationController extends Controller
@@ -217,7 +218,7 @@ class DeclarationController extends Controller
                     'message' => "declaration deleted",
                     "data" => []
                 ], 200);
-            }else{
+            } else {
                 return response([
                     "status" => true,
                     'message' => "declaration not found",
@@ -409,5 +410,64 @@ class DeclarationController extends Controller
         $request->end_date = Carbon::now()->addDay()->format('Y-m-d');
 
         return $this->sortedByDateBetween($request);
+    }
+
+    public function filter(Request $request)
+    {
+        $quickSort = $request->quicksort;
+        $sort = $request->sort;
+        //asc:eskiden yeniye
+        //desc:yeniden eskiye
+        $startDate = $request->startdate;
+        $endDate = $request->endDate;
+
+        try {
+
+
+            if ($sort != "") {
+                if ($quickSort != "") {
+                    $declarations = DB::select("SELECT * FROM declarations
+                    WHERE DATE(created_at)
+                    BETWEEN CURDATE() - INTERVAL 1 $quickSort AND CURDATE()
+                    ORDER BY created_at $sort");
+
+                } else if ($startDate != "" && $endDate != "") {
+                    $declarations = Declaration::whereBetween('created_at', [$startDate, $endDate])
+                        ->orderBy('created_at', $sort)
+                        ->get();
+                } else {
+                    $declarations = json_decode(Declaration::query()->orderBy('created_at', $sort)->get());
+                }
+
+            } else if ($startDate != "" && $endDate != "") {
+                $declarations = Declaration::whereBetween('created_at', [$startDate, $endDate])->get();
+            } else if ($quickSort != "") {
+                $declarations = DB::select("SELECT * FROM declarations
+                    WHERE DATE(created_at)
+                    BETWEEN CURDATE() - INTERVAL 1 $quickSort AND CURDATE()");
+            }
+            foreach ($declarations as $declaration) {
+                $user = json_decode(User::where(['id' => $declaration->user_id])->first());
+
+                $declaration->created_at = Carbon::parse($declaration->created_at)->format('d/m/Y');
+                $declaration->updated_at = Carbon::parse($declaration->updated_at)->format('d/m/Y');
+                $declaration->tags = json_decode($declaration->tags);
+                $declaration->user = $user->name . ' ' . $user->surname;
+            }
+
+            return response([
+                "status" => true,
+                'message' => "declarations founds",
+                "data" => $declarations,
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response([
+                "status" => false,
+                'message' => $e->getMessage(),
+                "data" => []
+            ], 400);
+        }
+
     }
 }
