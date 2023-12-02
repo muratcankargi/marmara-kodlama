@@ -71,7 +71,8 @@ class DeclarationController extends Controller
 
     public function getDeclarations()
     {
-        $declarations = json_decode(Declaration::all());
+        $declarations = DB::select("SELECT * FROM declarations");
+
         foreach ($declarations as $declaration) {
             $user = json_decode(User::where(['id' => $declaration->user_id])->first());
 
@@ -436,8 +437,8 @@ class DeclarationController extends Controller
                         ->orderBy('created_at', $sort)
                         ->get());
                 } else {
-                    $declarations = json_decode(Declaration::query()->orderBy('created_at', $sort)->get());
-                }
+                    $declarations = DB::select("SELECT * FROM declarations
+                    ORDER BY created_at $sort");                }
 
             } else if ($startDate != "" && $endDate != "") {
                 $declarations = json_decode(Declaration::whereBetween('created_at', [$startDate, $endDate])->get());
