@@ -3,24 +3,17 @@ import SubHeading from "./SubHeading";
 import Image from "../Utilities/Image";
 import { useRef, useState } from "react";
 
-function DatePicker({ id }) {
-  const [searchParams, setSearchParams] = useSearchParams({
-    from: "",
-    to: "",
-  });
-
+function DatePicker({ id, filters, setFilters }) {
   const ref = useRef(0);
 
-  const [value, setValue] = useState(null);
+  const currentDate = id === "from" ? filters.startDate : filters.endDate;
 
   const onDatePicked = () => {
-    setValue(ref.current.value);
-    setSearchParams((prevValue) => {
-      id === "from"
-        ? prevValue.set("from", ref.current.value)
-        : prevValue.set("to", ref.current.value);
-      prevValue.set("isApply", "");
-      return prevValue;
+    const pickedDate = ref.current.value;
+    setFilters((prevValues) => {
+      return id === "from"
+        ? { ...prevValues, quickSort: "", startDate: pickedDate }
+        : { ...prevValues, quickSort: "", endDate: pickedDate };
     });
   };
 
@@ -29,7 +22,6 @@ function DatePicker({ id }) {
       onClick={() => {
         ref.current.showPicker();
       }}
-      className=""
     >
       <div
         className="flex bg-darkPrimary w-full
@@ -43,7 +35,7 @@ function DatePicker({ id }) {
         />
         <input
           type="text"
-          value={value || ""}
+          value={currentDate || ""}
           placeholder={id === "from" ? "Başlangıç" : "Bitiş"}
           readOnly
           className="outline-0 w-full bg-darkPrimary text-neutral cursor-pointer"
@@ -59,13 +51,13 @@ function DatePicker({ id }) {
   );
 }
 
-export default function Date() {
+export default function Date({ filters, setFilters }) {
   return (
     <div>
       <SubHeading text="Tarih" />
       <div className="flex justify-between flex-col gap-3 ">
-        <DatePicker id="from" />
-        <DatePicker id="to" />
+        <DatePicker id="from" filters={filters} setFilters={setFilters} />
+        <DatePicker id="to" filters={filters} setFilters={setFilters} />
       </div>
     </div>
   );

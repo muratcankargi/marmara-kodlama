@@ -2,35 +2,28 @@ import { useSearchParams } from "react-router-dom";
 import SubHeading from "./SubHeading";
 import { v4 as uuidv4 } from "uuid";
 
-function Button({ text, name, searchParams, setSearchParams }) {
-  const param = searchParams.get("sort");
+function Button({ text, name, filters, setFilters }) {
+  const currentFilter = filters.sort;
 
   const handleClick = () => {
-    // Zaten seçilmiş, o yüzden style ını silip sort u kaldırıyoruz
-    if (param === name) {
-      setSearchParams((prevValue) => {
-        prevValue.set("sort", "");
-        prevValue.set("isApply", "");
-        return prevValue;
-      });
-    } else {
-      setSearchParams((prevValue) => {
-        prevValue.set("sort", name);
-        prevValue.set("isApply", "");
-        return prevValue;
-      });
-    }
+    setFilters((prevValues) => {
+      // Remove filter if it's already selected when clicked
+      if (currentFilter === name) {
+        return { ...prevValues, sort: "" };
+      }
+      return { ...prevValues, sort: name };
+    });
   };
 
   return (
     <button
       onClick={handleClick}
       className={`${
-        name === param ? "bg-picked" : "bg-darkPrimary"
+        name === currentFilter ? "bg-picked" : "bg-darkPrimary"
       } text-neutral py-2 px-5 rounded-sm relative `}
     >
       {text}
-      {name === param && (
+      {name === currentFilter && (
         <img
           className="w-5 h-5 absolute -top-2 -right-2"
           src="/images/picked.png"
@@ -40,14 +33,10 @@ function Button({ text, name, searchParams, setSearchParams }) {
   );
 }
 //
-export default function Sort() {
-  const [searchParams, setSearchParams] = useSearchParams({
-    sort: "",
-  });
-
+export default function Sort({ filters, setFilters }) {
   const options = [
-    { name: "newsFirst", text: "Yeniden Eskiye" },
-    { name: "oldsFirst", text: "Eskiden Yeniye" },
+    { name: "desc", text: "Yeniden Eskiye" },
+    { name: "asc", text: "Eskiden Yeniye" },
   ];
 
   return (
@@ -60,8 +49,8 @@ export default function Sort() {
               key={uuidv4()}
               name={option.name}
               text={option.text}
-              searchParams={searchParams}
-              setSearchParams={setSearchParams}
+              filters={filters}
+              setFilters={setFilters}
             />
           );
         })}

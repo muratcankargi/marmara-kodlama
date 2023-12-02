@@ -360,33 +360,31 @@ const newsFirst = (cards) => {
 };
 
 // Bu componentler farklı sayfalara ayrılacak
-function Cards({ tags }) {
+function Cards({ tags, filters, setFilters }) {
   const [cards, setCards] = useState([]);
-  const { getDeclaration, getQuickSort, getDateBetween } = useAuth();
+  const { getDeclaration, getFilteredCards } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
-  const [searchParams, setSearchParams] = useSearchParams();
 
-  const quickSort = searchParams.get("quickSort");
-  const sort = searchParams.get("sort");
-  const isApply = searchParams.get("isApply");
-  const date = { from: searchParams.get("from"), to: searchParams.get("to") };
+  const isAnyFilterIsSelected = () => {
+    const keys = Object.keys(filters);
+    let isSelected = false;
+    keys.forEach((key) => {
+      if (filters[key] !== "") {
+        isSelected = true;
+      }
+    });
+
+    return isSelected;
+  };
 
   useEffect(() => {
     let response;
     const getDeclarations = async () => {
       try {
-        if (!!quickSort && isApply) {
-          response = await getQuickSort(quickSort);
-        } else if (!!date && isApply) {
-          response = await getDateBetween(date.from, date.to);
+        if (isAnyFilterIsSelected()) {
+          response = await getFilteredCards(filters);
         } else {
           response = await getDeclaration();
-        }
-
-        if (sort === "oldsFirst" && isApply) {
-          response = oldsFirst(response);
-        } else if (sort === "newsFirst" && isApply) {
-          response = newsFirst(response);
         }
 
         setCards(response);
@@ -397,7 +395,9 @@ function Cards({ tags }) {
     };
 
     getDeclarations();
-  }, [quickSort, sort, isApply]);
+  }, [filters]);
+
+  console.log(cards);
 
   // farklı card id'lerine göre farklı style'lar veriliyor
   const loadingCards = [1, 2, 3, 4];

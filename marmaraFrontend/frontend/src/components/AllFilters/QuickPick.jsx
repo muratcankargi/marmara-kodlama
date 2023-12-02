@@ -2,35 +2,28 @@ import SubHeading from "./SubHeading";
 import { useSearchParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 
-export function Option({ text, searchParams, setSearchParams, name }) {
-  const param = searchParams.get("quickSort");
+export function Option({ text, name, filters, setFilters }) {
+  const currentFilter = filters.quickSort;
 
   const handleClick = () => {
-    // Zaten seçilmiş, o yüzden style ını silip sort u kaldırıyoruz
-    if (param === name) {
-      setSearchParams((prevValue) => {
-        prevValue.set("quickSort", "");
-        prevValue.set("isApply", "");
-        return prevValue;
-      });
-    } else {
-      setSearchParams((prevValue) => {
-        prevValue.set("quickSort", name);
-        prevValue.set("isApply", "");
-        return prevValue;
-      });
-    }
+    setFilters((prevValues) => {
+      // Remove filter if it's already selected when clicked
+      if (currentFilter === name) {
+        return { ...prevValues, startDate: "", endDate: "", quickSort: "" };
+      }
+      return { ...prevValues, startDate: "", endDate: "", quickSort: name };
+    });
   };
 
   return (
     <button
       onClick={handleClick}
       className={`${
-        name === param ? "bg-picked" : "bg-darkPrimary"
+        name === currentFilter ? "bg-picked" : "bg-darkPrimary"
       } py-2 px-4 rounded-sm relative text-neutral`}
     >
       {text}
-      {name === param && (
+      {name === currentFilter && (
         <img
           className="w-5 h-5 absolute -top-2 -right-2"
           src="/images/picked.png"
@@ -40,16 +33,11 @@ export function Option({ text, searchParams, setSearchParams, name }) {
   );
 }
 
-export default function QuickPick() {
-  // Default is lastMonth
-  const [searchParams, setSearchParams] = useSearchParams({
-    quickSort: "",
-  });
-
+export default function QuickPick({ filters, setFilters }) {
   const options = [
-    { name: "lastMonth", text: "Son 1 Ay" },
-    { name: "lastWeek", text: "Son 1 Hafta" },
-    { name: "lastDay", text: "Bugün" },
+    { name: "month", text: "Son 1 Ay" },
+    { name: "week", text: "Son 1 Hafta" },
+    { name: "day", text: "Bugün" },
   ];
 
   return (
@@ -60,8 +48,8 @@ export default function QuickPick() {
           return (
             <Option
               key={uuidv4()}
-              searchParams={searchParams}
-              setSearchParams={setSearchParams}
+              filters={filters}
+              setFilters={setFilters}
               name={option.name}
               text={option.text}
             />
