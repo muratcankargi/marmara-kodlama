@@ -414,11 +414,11 @@ class DeclarationController extends Controller
 
     public function filter(Request $request)
     {
-        $quickSort = $request->quicksort;
+        $quickSort = $request->quickSort;
         $sort = $request->sort;
         //asc:eskiden yeniye
         //desc:yeniden eskiye
-        $startDate = $request->startdate;
+        $startDate = $request->startDate;
         $endDate = $request->endDate;
 
         try {
@@ -432,20 +432,22 @@ class DeclarationController extends Controller
                     ORDER BY created_at $sort");
 
                 } else if ($startDate != "" && $endDate != "") {
-                    $declarations = Declaration::whereBetween('created_at', [$startDate, $endDate])
+                    $declarations = json_decode(Declaration::whereBetween('created_at', [$startDate, $endDate])
                         ->orderBy('created_at', $sort)
-                        ->get();
+                        ->get());
                 } else {
                     $declarations = json_decode(Declaration::query()->orderBy('created_at', $sort)->get());
                 }
 
             } else if ($startDate != "" && $endDate != "") {
-                $declarations = Declaration::whereBetween('created_at', [$startDate, $endDate])->get();
+                $declarations = json_decode(Declaration::whereBetween('created_at', [$startDate, $endDate])->get());
             } else if ($quickSort != "") {
+
                 $declarations = DB::select("SELECT * FROM declarations
                     WHERE DATE(created_at)
                     BETWEEN CURDATE() - INTERVAL 1 $quickSort AND CURDATE()");
             }
+
             foreach ($declarations as $declaration) {
                 $user = json_decode(User::where(['id' => $declaration->user_id])->first());
 
@@ -453,8 +455,8 @@ class DeclarationController extends Controller
                 $declaration->updated_at = Carbon::parse($declaration->updated_at)->format('d/m/Y');
                 $declaration->tags = json_decode($declaration->tags);
                 $declaration->user = $user->name . ' ' . $user->surname;
-            }
 
+            }
             return response([
                 "status" => true,
                 'message' => "declarations founds",
