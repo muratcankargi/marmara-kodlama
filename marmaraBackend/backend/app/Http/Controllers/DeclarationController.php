@@ -433,15 +433,17 @@ class DeclarationController extends Controller
                     ORDER BY created_at $sort");
 
                 } else if ($startDate != "" && $endDate != "") {
-                    $declarations = json_decode(Declaration::whereBetween('created_at', [$startDate, $endDate])
-                        ->orderBy('created_at', $sort)
-                        ->get());
+                    $declarations = DB::select("SELECT * FROM declarations
+                 WHERE created_at BETWEEN $startDate AND $endDate
+                 ORDER BY created_at $sort");
                 } else {
                     $declarations = DB::select("SELECT * FROM declarations
-                    ORDER BY created_at $sort");                }
+                    ORDER BY created_at $sort");
+                }
 
             } else if ($startDate != "" && $endDate != "") {
-                $declarations = json_decode(Declaration::whereBetween('created_at', [$startDate, $endDate])->get());
+                $declarations = DB::select("SELECT * FROM declarations
+                 WHERE created_at BETWEEN $startDate AND $endDate");
             } else if ($quickSort != "") {
 
                 $declarations = DB::select("SELECT * FROM declarations
