@@ -434,8 +434,8 @@ class DeclarationController extends Controller
 
                 } else if ($startDate != "" && $endDate != "") {
                     $declarations = DB::select("SELECT * FROM declarations
-                 WHERE created_at BETWEEN $startDate AND $endDate
-                 ORDER BY created_at $sort");
+                 WHERE created_at BETWEEN ? AND ?
+                 ORDER BY created_at $sort",[$startDate,$endDate]);
                 } else {
                     $declarations = DB::select("SELECT * FROM declarations
                     ORDER BY created_at $sort");
@@ -443,7 +443,7 @@ class DeclarationController extends Controller
 
             } else if ($startDate != "" && $endDate != "") {
                 $declarations = DB::select("SELECT * FROM declarations
-                 WHERE created_at BETWEEN $startDate AND $endDate");
+                 WHERE created_at BETWEEN ? AND ?",[$startDate,$endDate]);
             } else if ($quickSort != "") {
 
                 $declarations = DB::select("SELECT * FROM declarations
