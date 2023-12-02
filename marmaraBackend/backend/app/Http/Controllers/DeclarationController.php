@@ -7,6 +7,7 @@ use App\Models\Tag;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class DeclarationController extends Controller
@@ -133,6 +134,18 @@ class DeclarationController extends Controller
                 ], 400);
             }
 
+            $UserController = new UserController();
+            $result = $UserController->authenticate($request);
+
+            $user = json_decode(json_encode($result), true)['original']['data']['user'];
+            if (!$user) {
+                return response([
+                    "status" => false,
+                    'message' => "notAuthenticated",
+                    "data" => []
+                ], 401);
+            }
+
             $declaration = Declaration::find($id);
 
             if (!$declaration) {
@@ -182,9 +195,8 @@ class DeclarationController extends Controller
             return response([
                 "status" => true,
                 'message' => "declaration deleted",
-                "data" => []
+                "data" => $declaration
             ], 200);
-            return response(['message' => 'İlan başarıyla silindi.']);
         } catch (\Exception $e) {
             return response([
                 "status" => false,
@@ -192,5 +204,270 @@ class DeclarationController extends Controller
                 "data" => []
             ], 400);
         }
+    }
+
+    public function changeDeclarationVisibility($id)
+    {
+        try {
+            $declaration = Declaration::where('id', $id)->update([
+                'visibility' => false,
+            ]);
+            if ($declaration) {
+                return response([
+                    "status" => true,
+                    'message' => "declaration deleted",
+                    "data" => []
+                ], 200);
+            } else {
+                return response([
+                    "status" => true,
+                    'message' => "declaration not found",
+                    "data" => []
+                ], 200);
+            }
+        } catch (\Exception $e) {
+            return response([
+                "status" => false,
+                'message' => $e->getMessage(),
+                "data" => []
+            ], 400);
+        }
+    }
+
+    public function sortedByDate(Request $request)
+    {
+        try {
+            if ($request->sort == 'asc') {
+                $declarations = json_decode(Declaration::query()->orderBy('created_at', 'asc')->get());
+            } else if ($request->sort == 'desc') {
+                $declarations = json_decode(Declaration::query()->orderBy('created_at', 'desc')->get());
+            } else {
+                return response([
+                    "status" => true,
+                    'message' => "declarations not found",
+                    "data" => []
+                ], 400);
+            }
+            if ($declarations) {
+                foreach ($declarations as $declaration) {
+                    $user = json_decode(User::where(['id' => $declaration->user_id])->first());
+
+                    $declaration->created_at = Carbon::parse($declaration->created_at)->format('d/m/Y');
+                    $declaration->updated_at = Carbon::parse($declaration->updated_at)->format('d/m/Y');
+                    $declaration->tags = json_decode($declaration->tags);
+                    $declaration->user = $user->name . ' ' . $user->surname;
+                }
+
+                return response([
+                    "status" => true,
+                    'message' => "declarations sorted " . $request->sort,
+                    "data" => $declarations
+                ], 200);
+            } else {
+                return response([
+                    "status" => true,
+                    'message' => "declarations not found",
+                    "data" => $declarations
+                ], 400);
+            }
+        } catch (\Exception $e) {
+            return response([
+                "status" => false,
+                'message' => $e->getMessage(),
+                "data" => []
+            ], 400);
+        }
+    }
+
+    public function sortedByTag(Request $request)
+    {
+        $data = json_decode($request->tag);
+
+        try {
+            $declarations = Declaration::all();
+            $filteredDeclarations = [];
+
+            foreach ($declarations as $declaration) {
+                $tags = json_decode($declaration->tags);
+                $result = array_intersect($data, $tags);
+                if (count($result) == count($data)) {
+                    $filteredDeclarations[] = $declaration;
+                }
+            }
+            if ($filteredDeclarations) {
+                return response([
+                    "status" => true,
+                    'message' => "declarations founds",
+                    "data" => $filteredDeclarations
+                ], 200);
+            } else {
+                return response([
+                    "status" => false,
+                    'message' => "no declaration",
+                    "data" => []
+                ], 400);
+            }
+        } catch (\Exception $e) {
+            return response([
+                "status" => false,
+                'message' => $e->getMessage(),
+                "data" => []
+            ], 400);
+        }
+    }
+
+    public function sortedByWord(Request $request)
+    {
+        $word = $request->word;
+        try {
+            $declarations = json_decode(Declaration::where('title', 'LIKE', '%' . $word . '%')
+                ->orWhere('description', 'LIKE', '%' . $word . '%')
+                ->get());
+            if ($declarations) {
+                foreach ($declarations as $declaration) {
+                    $user = json_decode(User::where(['id' => $declaration->user_id])->first());
+
+                    $declaration->created_at = Carbon::parse($declaration->created_at)->format('d/m/Y');
+                    $declaration->updated_at = Carbon::parse($declaration->updated_at)->format('d/m/Y');
+                    $declaration->tags = json_decode($declaration->tags);
+                    $declaration->user = $user->name . ' ' . $user->surname;
+                }
+                return response([
+                    "status" => true,
+                    'message' => 'declarations founds',
+                    "data" => $declarations
+                ], 200);
+            } else {
+                return response([
+                    "status" => false,
+                    'message' => "declarations not found",
+                    "data" => []
+                ], 400);
+            }
+        } catch (\Exception $e) {
+            return response([
+                "status" => false,
+                'message' => $e->getMessage(),
+                "data" => []
+            ], 400);
+        }
+    }
+
+    public function sortedByDateBetween(Request $request)
+    {
+        try {
+            $declarations = json_decode(Declaration::whereBetween('created_at', [$request->start_date, $request->end_date])->get());
+
+            if ($declarations) {
+                foreach ($declarations as $declaration) {
+                    $user = json_decode(User::where(['id' => $declaration->user_id])->first());
+
+                    $declaration->created_at = Carbon::parse($declaration->created_at)->format('d/m/Y');
+                    $declaration->updated_at = Carbon::parse($declaration->updated_at)->format('d/m/Y');
+                    $declaration->tags = json_decode($declaration->tags);
+                    $declaration->user = $user->name . ' ' . $user->surname;
+                }
+                return response([
+                    "status" => true,
+                    'message' => 'declarations founds',
+                    "data" => $declarations
+                ], 200);
+            } else {
+                return response([
+                    "status" => false,
+                    'message' => "declarations not found",
+                    "data" => []
+                ], 400);
+            }
+        } catch (\Exception $e) {
+            return response([
+                "status" => false,
+                'message' => $e->getMessage(),
+                "data" => []
+            ], 400);
+        }
+    }
+
+    public function sharedLastDay(Request $request)
+    {
+        $request->start_date = Carbon::now()->subDay()->format('Y-m-d');
+        $request->end_date = Carbon::now()->addDay()->format('Y-m-d');
+
+        return $this->sortedByDateBetween($request);
+    }
+
+    public function sharedLastWeek(Request $request)
+    {
+        $request->start_date = Carbon::now()->subWeek()->format('Y-m-d');
+        $request->end_date = Carbon::now()->addDay()->format('Y-m-d');
+
+        return $this->sortedByDateBetween($request);
+    }
+
+    public function sharedLastMonth(Request $request)
+    {
+        $request->start_date = Carbon::now()->subMonth()->format('Y-m-d');
+        $request->end_date = Carbon::now()->addDay()->format('Y-m-d');
+
+        return $this->sortedByDateBetween($request);
+    }
+
+    public function filter(Request $request)
+    {
+        $quickSort = $request->quicksort;
+        $sort = $request->sort;
+        //asc:eskiden yeniye
+        //desc:yeniden eskiye
+        $startDate = $request->startdate;
+        $endDate = $request->endDate;
+
+        try {
+
+
+            if ($sort != "") {
+                if ($quickSort != "") {
+                    $declarations = DB::select("SELECT * FROM declarations
+                    WHERE DATE(created_at)
+                    BETWEEN CURDATE() - INTERVAL 1 $quickSort AND CURDATE()
+                    ORDER BY created_at $sort");
+
+                } else if ($startDate != "" && $endDate != "") {
+                    $declarations = Declaration::whereBetween('created_at', [$startDate, $endDate])
+                        ->orderBy('created_at', $sort)
+                        ->get();
+                } else {
+                    $declarations = json_decode(Declaration::query()->orderBy('created_at', $sort)->get());
+                }
+
+            } else if ($startDate != "" && $endDate != "") {
+                $declarations = Declaration::whereBetween('created_at', [$startDate, $endDate])->get();
+            } else if ($quickSort != "") {
+                $declarations = DB::select("SELECT * FROM declarations
+                    WHERE DATE(created_at)
+                    BETWEEN CURDATE() - INTERVAL 1 $quickSort AND CURDATE()");
+            }
+            foreach ($declarations as $declaration) {
+                $user = json_decode(User::where(['id' => $declaration->user_id])->first());
+
+                $declaration->created_at = Carbon::parse($declaration->created_at)->format('d/m/Y');
+                $declaration->updated_at = Carbon::parse($declaration->updated_at)->format('d/m/Y');
+                $declaration->tags = json_decode($declaration->tags);
+                $declaration->user = $user->name . ' ' . $user->surname;
+            }
+
+            return response([
+                "status" => true,
+                'message' => "declarations founds",
+                "data" => $declarations,
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response([
+                "status" => false,
+                'message' => $e->getMessage(),
+                "data" => []
+            ], 400);
+        }
+
     }
 }
