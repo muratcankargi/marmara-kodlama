@@ -55,6 +55,12 @@ function Feed() {
   const [tags, setTags] = useState([]);
   const { setLocation } = useLocationContext();
   const [isActive, setIsActive] = useState(null);
+  const [filters, setFilters] = useState({
+    sort: "",
+    quickSort: "",
+    startDate: "",
+    endDate: "",
+  });
 
   useEffect(() => {
     setLocation("/anasayfa");
@@ -64,9 +70,13 @@ function Feed() {
     <FullContainer paddingTop="pt-12">
       <Navbar text="İlanlar" />
       <Tags getTags={setTags} isActive={isActive} setIsActive={setIsActive} />
-      <AllFiltersContainer isActive={isActive} setIsActive={setIsActive} />
-      <ClearFilters />
-      <Cards tags={tags} />
+      <AllFiltersContainer
+        setFilters={setFilters}
+        filters={filters}
+        isActive={isActive}
+        setIsActive={setIsActive}
+      />
+      <Cards tags={tags} filters={filters} />
     </FullContainer>
   );
 }

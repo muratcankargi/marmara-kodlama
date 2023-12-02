@@ -150,45 +150,14 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const getQuickSort = async (option) => {
+  const getFilteredCards = async (filters) => {
     try {
       const config = {
         headers: { Authorization: `Bearer ${localStorage.getItem("auth")}` },
       };
+      console.log(filters);
 
-      let response;
-      if (option === "lastDay") {
-        response = await axios.get(`${URL}/filter/lastDay`, config);
-      }
-
-      if (option === "lastWeek") {
-        response = await axios.get(`${URL}/filter/lastWeek`, config);
-      }
-
-      if (option === "lastMonth") {
-        response = await axios.get(`${URL}/filter/lastMonth`, config);
-      }
-
-      return response.data.data;
-    } catch (error) {
-      console.log("Error: ", error.message);
-    }
-  };
-
-  const getDateBetween = async (from, to) => {
-    try {
-      const config = {
-        headers: { Authorization: `Bearer ${localStorage.getItem("auth")}` },
-      };
-
-      const response = await axios.post(
-        `${URL}/filter/dateBetween`,
-        {
-          start_date: from,
-          end_date: to,
-        },
-        config
-      );
+      const response = await axios.post(`${URL}/filter`, filters, config);
 
       return response.data.data;
     } catch (error) {
@@ -250,8 +219,7 @@ export const AuthProvider = ({ children }) => {
         getTagsList,
         getDeclaration,
         getDeclarationById,
-        getQuickSort,
-        getDateBetween,
+        getFilteredCards,
       }}
     >
       {children}
