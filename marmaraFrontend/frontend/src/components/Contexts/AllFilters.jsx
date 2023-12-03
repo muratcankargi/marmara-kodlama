@@ -1,17 +1,21 @@
 import { createContext, useContext, useState } from "react";
 
-const AllFiltersContext = createContext();
+const FiltersContext = createContext();
 
-export const AllFiltersProvider = ({ children }) => {
-  // hambrugermenu active ise sağdaki scroll u kaldırıyoruz yoksa
-  // kapatma butonu yerinden oynuyor
-  const [isActive, setIsActive] = useState(false);
+export const FiltersProvider = ({ children }) => {
+  const [filters, setFilters] = useState({
+    sort: "",
+    quickSort: "",
+    startDate: "",
+    endDate: "",
+    tags: [],
+  });
 
   return (
-    <AllFiltersContext.Provider value={{ isActive, setIsActive }}>
+    <FiltersContext.Provider value={{ filters, setFilters }}>
       {children}
-    </AllFiltersContext.Provider>
+    </FiltersContext.Provider>
   );
 };
 
-export const useAllFilters = () => useContext(AllFiltersContext);
+export const useFilters = () => useContext(FiltersContext);

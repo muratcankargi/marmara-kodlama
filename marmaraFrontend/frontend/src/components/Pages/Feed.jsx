@@ -1,82 +1,47 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Tags from "../Utilities/Tags";
 import Cards from "../Utilities/Cards";
 import FullContainer from "../Utilities/FullContainer";
-import { useLocationContext } from "../Contexts/LocationContext";
 import AllFiltersContainer from "../AllFilters/AllFiltersContainer";
-import { useSearchParams } from "react-router-dom";
 import Navbar from "../Utilities/Navbar";
+import { useFilters } from "../Contexts/AllFilters";
 
 function ClearFilters() {
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const isFilterApplied = searchParams.get("isApply");
-
-  const handleClick = () => {
-    // Create a new URLSearchParams object
-    const newSearchParams = new URLSearchParams(searchParams);
-
-    // Delete all parameters
-    for (const param of searchParams.entries()) {
-      newSearchParams.delete(param[0]);
-    }
-
-    // Update the state with the new parameters
-    setSearchParams(newSearchParams);
-  };
-
   return (
-    isFilterApplied && (
-      <div
-        className="px-3 pt-3 text-neutral
+    <div
+      className="px-3 pt-3 text-neutral
   "
-      >
-        <button
-          onClick={handleClick}
-          className="bg-accent relative  p-1 rounded-sm px-2"
-        >
-          <div className="flex gap-1 items-center">
-            {/* <Image
-          className=" w-4 aspect-square  h-4"
-          imageName="trash.png"
-          darkImageName="trash.png"
-          alt="filtreleri temizle"
-        /> */}
-            <div className="font-semibold ">Filtreleri Temizle</div>
-          </div>
-        </button>
-      </div>
-    )
+    >
+      <button className="bg-accent relative  p-1 rounded-sm px-2">
+        <div className="flex gap-1 items-center">
+          <div className="font-semibold ">Filtreleri Temizle</div>
+        </div>
+      </button>
+    </div>
   );
 }
 
 // TODO: Input olayını hallet, cards ve tags i hallet
 function Feed() {
-  const [tags, setTags] = useState([]);
-  const { setLocation } = useLocationContext();
-  const [isActive, setIsActive] = useState(null);
-  const [filters, setFilters] = useState({
-    sort: "",
-    quickSort: "",
-    startDate: "",
-    endDate: "",
-  });
+  const [showAllFilters, setShowAllFilters] = useState(null);
 
-  useEffect(() => {
-    setLocation("/anasayfa");
-  }, []);
+  const { filters, setFilters } = useFilters();
 
   return (
     <FullContainer paddingTop="pt-12">
       <Navbar text="İlanlar" />
-      <Tags getTags={setTags} isActive={isActive} setIsActive={setIsActive} />
+      <Tags
+        setFilters={setFilters}
+        filters={filters}
+        setShowAllFilters={setShowAllFilters}
+      />
       <AllFiltersContainer
         setFilters={setFilters}
         filters={filters}
-        isActive={isActive}
-        setIsActive={setIsActive}
+        showAllFilters={showAllFilters}
+        setShowAllFilters={setShowAllFilters}
       />
-      <Cards tags={tags} filters={filters} />
+      <Cards filters={filters} />
     </FullContainer>
   );
 }

@@ -155,7 +155,6 @@ export const AuthProvider = ({ children }) => {
       const config = {
         headers: { Authorization: `Bearer ${localStorage.getItem("auth")}` },
       };
-      console.log(filters);
 
       const response = await axios.post(`${URL}/filter`, filters, config);
 
@@ -179,7 +178,7 @@ export const AuthProvider = ({ children }) => {
       response.data.data.forEach((item) => {
         const newObject = {};
         newObject.text = item.name;
-        newObject.selected = false;
+        // newObject.selected = false;
         newArray.push(newObject);
       });
 

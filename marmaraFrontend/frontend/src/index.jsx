@@ -7,7 +7,7 @@ import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "./components/Contexts/AuthContext";
 import { AuthzProvider } from "./components/Contexts/AuthzContext";
 import { ThemeProvider } from "./components/Contexts/ThemeContext";
-import { LocationProvider } from "./components/Contexts/LocationContext";
+import { FiltersProvider } from "./components/Contexts/AllFilters";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -16,9 +16,9 @@ root.render(
       <AuthzProvider>
         <ThemeProvider>
           <BrowserRouter>
-            <LocationProvider>
+            <FiltersProvider>
               <App />
-            </LocationProvider>
+            </FiltersProvider>
           </BrowserRouter>
         </ThemeProvider>
       </AuthzProvider>

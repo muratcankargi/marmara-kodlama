@@ -5,8 +5,6 @@ import { useAuthz } from "../Contexts/AuthzContext";
 import { useAuth } from "../Contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Image from "./Image";
-import { useLocationContext } from "../Contexts/LocationContext";
-import { useSearchParams } from "react-router-dom";
 
 // span, dark modda altta çıkan siyah çizgi
 // borderla vermedim çünkü sağdan soldan boşluk olsun istedim
@@ -59,7 +57,7 @@ function CardHeading({ author, date, isLoading, id }) {
   );
 }
 
-function CardImage({ source, isDetails, isLoading }) {
+function CardImage({ isDetails, isLoading }) {
   return !isLoading ? (
     <img
       className={`object-cover rounded-sm pt-3 ${
@@ -80,11 +78,9 @@ function CardImage({ source, isDetails, isLoading }) {
 function CardFooter({ id, setIsDeleted, isDetails = false, isLoading }) {
   const { permissions } = useAuthz();
   const navigate = useNavigate();
-  const { setLocation } = useLocationContext();
 
   const handleClick = () => {
     if (!isDetails) {
-      setLocation("");
       navigate(`/ilandetaylari/${id}`);
     } else if (isDetails) {
       console.log("mesajlaşma başlıyor.");
@@ -360,7 +356,7 @@ const newsFirst = (cards) => {
 };
 
 // Bu componentler farklı sayfalara ayrılacak
-function Cards({ tags, filters, setFilters }) {
+function Cards({ filters }) {
   const [cards, setCards] = useState([]);
   const { getDeclaration, getFilteredCards } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
@@ -396,8 +392,6 @@ function Cards({ tags, filters, setFilters }) {
 
     getDeclarations();
   }, [filters]);
-
-  console.log(cards);
 
   // farklı card id'lerine göre farklı style'lar veriliyor
   const loadingCards = [1, 2, 3, 4];

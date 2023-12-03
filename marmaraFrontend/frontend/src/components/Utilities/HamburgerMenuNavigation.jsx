@@ -1,14 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
-import { useLocationContext } from "../Contexts/LocationContext";
 
 function HamburgerMenuNavigation() {
-  // hamburgermenu deki yönlendirmeler burdan kontrol edilecek
-  const { location } = useLocationContext();
-
-  // active -> hangi page de olduğumuz
-  const [active, setActive] = useState();
+  const active = window.location.pathname;
 
   const links = [
     {
@@ -20,12 +15,6 @@ function HamburgerMenuNavigation() {
       link: "/ilanolustur",
     },
   ];
-
-  // locationContext'ten gelen location değiştiğinde yeni
-  // active page'i ayarlıyoruz
-  useEffect(() => {
-    setActive(location);
-  }, [location]);
 
   const navigate = useNavigate();
 
