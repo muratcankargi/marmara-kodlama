@@ -2,17 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { alert } from "../Utilities/alert";
 import Input from "../Utilities/Input";
-import IntroText from "../Utilities/IntroText";
 import Button from "../Utilities/Button";
-import CenteredContainer from "../Utilities/CenteredContainer";
 import { useValidate } from "../CustomHooks/useValidate";
 import { useAuth } from "../Contexts/AuthContext";
-import HamburgerMenu from "../Utilities/HamburgerMenu";
 import AddPicture from "../Utilities/AddPicture";
 import Tags from "../Utilities/Tags";
-import { useLocationContext } from "../Contexts/LocationContext";
 import Navbar from "../Utilities/Navbar";
 import FullContainer from "../Utilities/FullContainer";
+import { useFilters } from "../Contexts/AllFilters";
 
 function Inputs({ setDeclaration, invalid }) {
   return (
@@ -39,11 +36,17 @@ function Inputs({ setDeclaration, invalid }) {
   );
 }
 
-function ButtonContainer({ declaration, validation, tags }) {
+const clearFilters = (setFilters) => {
+  setFilters((prevValues) => {
+    return { ...prevValues, tags: [] };
+  });
+};
+
+function ButtonContainer({ filters, setFilters, declaration, validation }) {
   const navigate = useNavigate();
   const { title, description, image_source, visibility } = declaration;
   const { createDeclaration } = useAuth();
-  const tagsArray = [];
+  const tagsArray = filters.tags;
 
   const checkInputs = () => {
     const {
@@ -59,13 +62,6 @@ function ButtonContainer({ declaration, validation, tags }) {
   };
 
   const handleClick = async () => {
-    tags.forEach((tag) => {
-      // server'a  array gönderdiğimiz için elimizdeki objecti array'e çeviriyoruz
-      // sadece selected'i true olanları alıyoruz
-      if (tag.selected) tagsArray.push(tag.text);
-    });
-    // tagsArray'i validation da kullandığımız için üst tarafta
-    // işlemleri tamamlıyoruz
     if (checkInputs()) {
       const result = await createDeclaration(
         title,
@@ -76,6 +72,7 @@ function ButtonContainer({ declaration, validation, tags }) {
       );
       if (result) {
         alert("declarationSaved");
+        clearFilters(setFilters);
         navigate("/anasayfa");
       } else {
         alert("declarationNotSaved");
@@ -90,15 +87,14 @@ function ButtonContainer({ declaration, validation, tags }) {
   );
 }
 
+// Bu komponentte tagsleri feed'deki tagsleri kullanarak yaptık
+// bu sebeple filterları değiştirmek zorunda kalıyoruz ve çok optimal değil gibi
+// şu anlık böyle devam edebilir daha sonra düzenleyebiliyoruz
 function CreateDeclaration() {
-  // tags'leri alıyoruz Tags componentinden
-  const [tags, setTags] = useState([]);
-  const { setLocation } = useLocationContext();
+  const { filters, setFilters } = useFilters();
 
-  // bu setLocation'lar hamburgermenu'deki nav lardan hangisinin
-  // altını çizeceğimizi anlamamız için
   useEffect(() => {
-    setLocation("/ilanolustur");
+    clearFilters(setFilters);
   }, []);
 
   const [declaration, setDeclaration] = useState({
@@ -118,11 +114,12 @@ function CreateDeclaration() {
           <AddPicture />
         </div>
         <Inputs setDeclaration={setDeclaration} invalid={invalid} />
-        <Tags getTags={setTags} />
+        <Tags onlyTags={true} filters={filters} setFilters={setFilters} />
         <ButtonContainer
+          filters={filters}
+          setFilters={setFilters}
           declaration={declaration}
           validation={validation}
-          tags={tags}
         />
       </div>
     </FullContainer>

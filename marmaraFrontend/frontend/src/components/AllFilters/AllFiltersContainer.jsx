@@ -4,9 +4,9 @@ import QuickPick from "./QuickPick";
 import Button from "../Utilities/Button";
 import { useSearchParams } from "react-router-dom";
 
-function CloseButton({ setIsActive }) {
+function CloseButton({ setShowAllFilters }) {
   const handleClick = () => {
-    setIsActive(false);
+    setShowAllFilters(false);
   };
 
   return (
@@ -22,11 +22,11 @@ before:rotate-45 after:-rotate-45 before:translate-y-2 "
   );
 }
 
-function Container({ isActive, children }) {
+function Container({ showAllFilters, children }) {
   return (
     <div
       className={`${
-        isActive ? "grid-rows-[1fr] border my-4 " : " grid-rows-[0fr]"
+        showAllFilters ? "grid-rows-[1fr] border my-4 " : " grid-rows-[0fr]"
       }  
        rounded-sm  mx-3 grid  sm:w-fit transition-all
         dark:border-darkPrimary bg-neutral dark:bg-transparent border-primary-200 relative`}
@@ -36,7 +36,7 @@ function Container({ isActive, children }) {
   );
 }
 
-function Apply({ setIsActive }) {
+function Apply({ setShowAllFilters }) {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const sort = searchParams.get("sort");
@@ -53,7 +53,7 @@ function Apply({ setIsActive }) {
       }
       return prevValue;
     });
-    setIsActive(false);
+    setShowAllFilters(false);
   };
 
   return (
@@ -66,16 +66,18 @@ function Apply({ setIsActive }) {
 export default function AllFiltersContainer({
   filters,
   setFilters,
-  isActive,
-  setIsActive,
+  showAllFilters,
+  setShowAllFilters,
 }) {
   return (
     <>
       {/* <div className="w-full h-full fixed z-[999999] bottom-0 opacity-25 bg-black"></div> */}
-      <Container isActive={isActive}>
+      <Container showAllFilters={showAllFilters}>
         <div className="overflow-hidden">
           <div className="absolute -top-[13px] -right-[14px]">
-            {isActive && <CloseButton setIsActive={setIsActive} />}
+            {showAllFilters && (
+              <CloseButton setShowAllFilters={setShowAllFilters} />
+            )}
           </div>
           <div
             className="px-8 py-4  flex flex-col sm:flex-row   

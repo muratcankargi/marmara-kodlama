@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { v4 as uuidv4 } from "uuid";
-import { useAuth } from "../Contexts/AuthContext";
+import TagsLoadingSkeleton from "../LoadingSkeletons/TagsLoadingSkeleton";
+import { useGetTags } from "../CustomHooks/useGetTags";
 
 function TagsHeader() {
   return (
@@ -10,7 +11,7 @@ function TagsHeader() {
   );
 }
 
-function Tag({ text, tag, tags, setTags, isLoading = false }) {
+function Tag({ text, filters, setFilters }) {
   // Bu tagları seçtiğimizde servere istek atıcaz
   // ve ona göre ilanları listelicez ama
   // hızlı bi şekilde basıp kaldırma durumlarında
@@ -18,65 +19,39 @@ function Tag({ text, tag, tags, setTags, isLoading = false }) {
   // bu videonun bi yerinde bunu nasıl engelleyeceğimiz
   // vardı oraya gelince bakarız
   // https://www.youtube.com/watch?v=-yIsQPp31L0
-  const [selected, setSelected] = useState(tag.selected);
+
+  const isTagSelected = () => filters.tags.some((tag) => tag === text);
 
   const handleClick = () => {
-    // burasının yaptığı şey doğru tag için selected değerini değiştirmek
-    // best practice için bu şekilde yeni bi object yaratarak yapılıyor ama aslında yapılan şey şu
-    // tag.selected = !tag.selected
-    const updatedTags = tags.map((mapTag) => {
-      if (mapTag.text === tag.text) {
-        return {
-          ...mapTag,
-          selected: !mapTag.selected, // Toggle the selected property
-        };
-      }
-      return mapTag;
+    let selectedTags = filters.tags;
+
+    if (isTagSelected()) {
+      selectedTags = selectedTags.filter((item) => item !== text);
+    } else {
+      selectedTags.push(text);
+    }
+
+    setFilters((prevValues) => {
+      return { ...prevValues, tags: selectedTags };
     });
-
-    setTags(updatedTags); // Update the state with the new array
-
-    // style ı değiştiriyor
-    setSelected(tag.selected);
   };
 
   return (
     <button
-      className={`${selected ? "bg-accent" : "bg-black"} ${
-        isLoading && "animate-pulse"
-      }  py-1 px-3 whitespace-nowrap rounded-sm font-semibold transition-all ease-in-out  text-neutral`}
-      onClick={!isLoading ? handleClick : () => {}}
+      className={`${
+        isTagSelected() ? "bg-accent" : "bg-black"
+      } py-1 px-3 whitespace-nowrap rounded-sm font-semibold transition-all ease-in-out  text-neutral`}
+      onClick={handleClick}
     >
       {text}
     </button>
   );
 }
 
-function TagsContent({ getTags, setTags, tags }) {
+function QuickPickTags({ filters, setFilters, tags }) {
   // fetchTags sonuçlanana kadar burası gösterilecek.
   if (!tags) {
-    const loadingTags = [
-      { text: "Maltepe", selected: false },
-      { text: "Elektronik", selected: false },
-      { text: "Mühendislik Fakültesi", selected: false },
-    ];
-    return (
-      <div className="flex gap-3">
-        {loadingTags.map((tag) => {
-          return (
-            <Tag
-              isLoading={true}
-              key={uuidv4()}
-              text={tag.text}
-              tag={tag}
-              tags={loadingTags}
-              setTags={setTags}
-              getTags={getTags}
-            />
-          );
-        })}
-      </div>
-    );
+    return <TagsLoadingSkeleton />;
   }
 
   return (
@@ -86,10 +61,8 @@ function TagsContent({ getTags, setTags, tags }) {
           <Tag
             key={uuidv4()}
             text={tag.text}
-            tag={tag}
-            tags={tags}
-            setTags={setTags}
-            getTags={getTags}
+            filters={filters}
+            setFilters={setFilters}
           />
         );
       })}
@@ -97,9 +70,9 @@ function TagsContent({ getTags, setTags, tags }) {
   );
 }
 
-function ShowAllFilters({ isActive, setIsActive }) {
+function ShowAllFilters({ setShowAllFilters }) {
   const handleClick = () => {
-    setIsActive((prevValue) => {
+    setShowAllFilters((prevValue) => {
       return !prevValue;
     });
   };
@@ -118,66 +91,18 @@ function ShowAllFilters({ isActive, setIsActive }) {
   );
 }
 
-function TagsContentContainer({
-  getTags,
-  setTags,
-  tags,
-  isActive,
-  setIsActive,
-}) {
+function Tags({ filters, setFilters, setShowAllFilters, onlyTags = false }) {
+  const tags = useGetTags();
+
   return (
-    <div className="overflow-x-auto relative flex">
-      <ShowAllFilters isActive={isActive} setIsActive={setIsActive} />
-      <TagsContent getTags={getTags} setTags={setTags} tags={tags} />
+    <div className={`${!onlyTags && "px-3"} pt-3`}>
+      {!onlyTags && <TagsHeader />}
+      <div className="overflow-x-auto relative flex">
+        {!onlyTags && <ShowAllFilters setShowAllFilters={setShowAllFilters} />}
+        <QuickPickTags filters={filters} setFilters={setFilters} tags={tags} />
+      </div>
     </div>
   );
 }
-
-// Tags kısmını hamburger menü ye eklesek
-// daha mantıklı olabilir gibi çok item olursa hoş durmayacak
-function Tags({ getTags, isActive, setIsActive }) {
-  const [tags, setTags] = useState(null);
-
-  // Main componenti sadeleştirmek için useEffect'leri custom hooklara ayırıyorum
-  useGetTags(tags, setTags, getTags);
-
-  return (
-    <div className="px-3  pt-3">
-      <TagsHeader />
-      <TagsContentContainer
-        tags={tags}
-        getTags={getTags}
-        setTags={setTags}
-        isActive={isActive}
-        setIsActive={setIsActive}
-      />
-    </div>
-  );
-}
-
-const useGetTags = (tags, setTags, getTags) => {
-  const { getTagsList } = useAuth();
-
-  useEffect(() => {
-    // getTags'i herhangi bir componentden yollararak hangi taglerin seçildiğini alabiliriz
-    getTags(tags);
-  }, [tags]);
-
-  useEffect(() => {
-    const fetchTags = async () => {
-      try {
-        const response = await getTagsList();
-
-        if (response) {
-          setTags(response);
-        }
-      } catch (error) {
-        console.log("Error fetching tags: ", error);
-      }
-    };
-
-    fetchTags();
-  }, []);
-};
 
 export default Tags;
