@@ -422,6 +422,7 @@ class DeclarationController extends Controller
         $startDate = $request->startDate;
         $endDate = $request->endDate;
         $requestTags = $request->tag;
+        $declarations = array();
         try {
 
 
@@ -435,7 +436,7 @@ class DeclarationController extends Controller
                 } else if ($startDate != "" && $endDate != "") {
                     $declarations = DB::select("SELECT * FROM declarations
                  WHERE created_at BETWEEN ? AND ?
-                 ORDER BY created_at $sort",[$startDate,$endDate]);
+                 ORDER BY created_at $sort", [$startDate, $endDate]);
                 } else {
                     $declarations = DB::select("SELECT * FROM declarations
                     ORDER BY created_at $sort");
@@ -443,16 +444,19 @@ class DeclarationController extends Controller
 
             } else if ($startDate != "" && $endDate != "") {
                 $declarations = DB::select("SELECT * FROM declarations
-                 WHERE created_at BETWEEN ? AND ?",[$startDate,$endDate]);
+                 WHERE created_at BETWEEN ? AND ?", [$startDate, $endDate]);
             } else if ($quickSort != "") {
 
                 $declarations = DB::select("SELECT * FROM declarations
                     WHERE DATE(created_at)
                     BETWEEN CURDATE() - INTERVAL 1 $quickSort AND CURDATE()");
             }
-            if(count($requestTags) != 0) {
+            if (count($requestTags) != 0) {
                 $filteredDeclarations = [];
                 $declarations = DB::select("SELECT * FROM declarations");
+                //declarations 2 durumda boş olabiliyor ya hiçbiri seçilmeyince yada sadece tag saçilince
+                //iki durum da kontrol edilecek
+
                 foreach ($declarations as $declaration) {
                     $tags = json_decode($declaration->tags);
                     $result = array_intersect($requestTags, $tags);
