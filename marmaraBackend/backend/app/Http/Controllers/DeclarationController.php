@@ -421,7 +421,7 @@ class DeclarationController extends Controller
         //desc:yeniden eskiye
         $startDate = $request->startDate;
         $endDate = $request->endDate;
-
+        $requestTags = $request->tag;
         try {
 
 
@@ -450,7 +450,17 @@ class DeclarationController extends Controller
                     WHERE DATE(created_at)
                     BETWEEN CURDATE() - INTERVAL 1 $quickSort AND CURDATE()");
             }
-
+            if(count($requestTags) != 0) {
+                $filteredDeclarations = [];
+                foreach ($declarations as $declaration) {
+                    $tags = json_decode($declaration->tags);
+                    $result = array_intersect($requestTags, $tags);
+                    if (count($result) == count($requestTags)) {
+                        $filteredDeclarations[] = $declaration;
+                    }
+                }
+                $declarations = $filteredDeclarations;
+            }
             foreach ($declarations as $declaration) {
                 $user = json_decode(User::where(['id' => $declaration->user_id])->first());
 
