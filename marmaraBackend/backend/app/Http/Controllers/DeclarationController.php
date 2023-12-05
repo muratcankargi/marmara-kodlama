@@ -452,6 +452,7 @@ class DeclarationController extends Controller
             }
             if(count($requestTags) != 0) {
                 $filteredDeclarations = [];
+                $declarations = DB::select("SELECT * FROM declarations");
                 foreach ($declarations as $declaration) {
                     $tags = json_decode($declaration->tags);
                     $result = array_intersect($requestTags, $tags);
