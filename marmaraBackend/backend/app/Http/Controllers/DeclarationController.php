@@ -6,9 +6,11 @@ use App\Models\Declaration;
 use App\Models\Tag;
 use App\Models\User;
 use Carbon\Carbon;
+use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use function PHPUnit\Framework\isEmpty;
 
 class DeclarationController extends Controller
 {
@@ -69,9 +71,10 @@ class DeclarationController extends Controller
         }
     }
 
-    public function getDeclarations()
+    public function getDeclarations($declarations = null)
     {
-        $declarations = DB::select("SELECT * FROM declarations");
+        if(!$declarations)
+            $declarations = DB::select("SELECT * FROM declarations");
 
         foreach ($declarations as $declaration) {
             $user = json_decode(User::where(['id' => $declaration->user_id])->first());
@@ -417,45 +420,25 @@ class DeclarationController extends Controller
     {
         $quickSort = $request->quickSort;
         $sort = $request->sort;
-        //asc:eskiden yeniye
-        //desc:yeniden eskiye
         $startDate = $request->startDate;
         $endDate = $request->endDate;
         $requestTags = $request->tag;
-        $declarations = array();
         try {
 
+            $query = "SELECT * FROM declarations ";
+            if ($quickSort != "")
+                $query = $query . " WHERE created_at BETWEEN CURDATE() - INTERVAL 1 $quickSort AND CURDATE() ";
+            else if ($startDate != "" && $endDate != "")
+                $query = $query . (" WHERE DATE(created_at) BETWEEN '$startDate' AND '$endDate' ");
 
-            if ($sort != "") {
-                if ($quickSort != "") {
-                    $declarations = DB::select("SELECT * FROM declarations
-                    WHERE DATE(created_at)
-                    BETWEEN CURDATE() - INTERVAL 1 $quickSort AND CURDATE()
-                    ORDER BY created_at $sort");
+            if ($sort != "")
+                $query = $query . " ORDER BY created_at $sort";
 
-                } else if ($startDate != "" && $endDate != "") {
-                    $declarations = DB::select("SELECT * FROM declarations
-                 WHERE created_at BETWEEN ? AND ?
-                 ORDER BY created_at $sort", [$startDate, $endDate]);
-                } else {
-                    $declarations = DB::select("SELECT * FROM declarations
-                    ORDER BY created_at $sort");
-                }
 
-            } else if ($startDate != "" && $endDate != "") {
-                $declarations = DB::select("SELECT * FROM declarations
-                 WHERE created_at BETWEEN ? AND ?", [$startDate, $endDate]);
-            } else if ($quickSort != "") {
+            $declarations = DB::select($query);
 
-                $declarations = DB::select("SELECT * FROM declarations
-                    WHERE DATE(created_at)
-                    BETWEEN CURDATE() - INTERVAL 1 $quickSort AND CURDATE()");
-            }
             if (count($requestTags) != 0) {
                 $filteredDeclarations = [];
-                $declarations = DB::select("SELECT * FROM declarations");
-                //declarations 2 durumda boş olabiliyor ya hiçbiri seçilmeyince yada sadece tag saçilince
-                //iki durum da kontrol edilecek
 
                 foreach ($declarations as $declaration) {
                     $tags = json_decode($declaration->tags);
@@ -466,15 +449,9 @@ class DeclarationController extends Controller
                 }
                 $declarations = $filteredDeclarations;
             }
-            foreach ($declarations as $declaration) {
-                $user = json_decode(User::where(['id' => $declaration->user_id])->first());
 
-                $declaration->created_at = Carbon::parse($declaration->created_at)->format('d/m/Y');
-                $declaration->updated_at = Carbon::parse($declaration->updated_at)->format('d/m/Y');
-                $declaration->tags = json_decode($declaration->tags);
-                $declaration->user = $user->name . ' ' . $user->surname;
+            $this->getDeclarations($declarations);
 
-            }
             return response([
                 "status" => true,
                 'message' => "declarations founds",
