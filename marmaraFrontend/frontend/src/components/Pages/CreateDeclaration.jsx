@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { alert } from "../Utilities/alert";
-import Input from "../Utilities/Input";
+import { RegularInput, Textarea } from "../Utilities/Input";
 import Button from "../Utilities/Button";
 import { useValidate } from "../CustomHooks/useValidate";
 import { useAuth } from "../Contexts/AuthContext";
@@ -13,8 +13,8 @@ import { useFilters } from "../Contexts/AllFilters";
 
 function Inputs({ setDeclaration, invalid }) {
   return (
-    <>
-      <Input
+    <div className="mt-12 flex flex-col gap-8">
+      <RegularInput
         invalid={invalid}
         type="text"
         placeholder="Başlık"
@@ -24,21 +24,20 @@ function Inputs({ setDeclaration, invalid }) {
         darkImageName="titleDark.png"
         alt="Title Icon"
       />
-      <Input
+      <Textarea
         invalid={invalid}
-        type="textarea"
         placeholder="Açıklama"
         setState={setDeclaration}
         inputName="description"
         alt="Description Icon"
       />
-    </>
+    </div>
   );
 }
 
 const clearFilters = (setFilters) => {
   setFilters((prevValues) => {
-    return { ...prevValues, tags: [] };
+    return { ...prevValues, tag: [] };
   });
 };
 
@@ -46,7 +45,7 @@ function ButtonContainer({ filters, setFilters, declaration, validation }) {
   const navigate = useNavigate();
   const { title, description, image_source, visibility } = declaration;
   const { createDeclaration } = useAuth();
-  const tagsArray = filters.tags;
+  const tagsArray = filters.tag;
 
   const checkInputs = () => {
     const {

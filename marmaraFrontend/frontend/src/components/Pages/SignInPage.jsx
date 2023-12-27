@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { alert } from "../Utilities/alert";
-import Input from "../Utilities/Input";
+import { RegularInput } from "../Utilities/Input";
 import IntroText from "../Utilities/IntroText";
 import CustomLink from "../RouteRelated/CustomLink";
 import Button from "../Utilities/Button";
@@ -24,8 +24,8 @@ function Inputs({ setUserInfo, invalid }) {
   const [inputType, setInputType] = useState("password");
 
   return (
-    <>
-      <Input
+    <div className="mt-12 flex flex-col gap-12">
+      <RegularInput
         invalid={invalid}
         setState={setUserInfo}
         inputName="email"
@@ -41,7 +41,7 @@ function Inputs({ setUserInfo, invalid }) {
         type={inputType}
         setInputType={setInputType}
       />
-    </>
+    </div>
   );
 }
 

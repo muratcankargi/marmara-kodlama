@@ -9,12 +9,13 @@ import AddPicture from "../Utilities/AddPicture";
 import { useValidate } from "../CustomHooks/useValidate";
 import { useAuth } from "../Contexts/AuthContext";
 import ThemeSwitcher from "../Utilities/ThemeSwitcher";
+import FullContainer from "../Utilities/FullContainer";
 
 function Inputs({ setUserInfo, invalid }) {
   const [inputType, setInputType] = useState("password");
 
   return (
-    <div className="mt-12 flex flex-col gap-12">
+    <>
       <RegularInput
         invalid={invalid}
         setState={setUserInfo}
@@ -24,12 +25,6 @@ function Inputs({ setUserInfo, invalid }) {
         alt="User Icon"
         type="Email"
         placeholder="Email"
-      />
-      <InputWithShowPassword
-        invalid={invalid}
-        setState={setUserInfo}
-        type={inputType}
-        setInputType={setInputType}
       />
       <RegularInput
         invalid={invalid}
@@ -41,7 +36,7 @@ function Inputs({ setUserInfo, invalid }) {
         type={inputType}
         placeholder="Şifre Yeniden"
       />
-    </div>
+    </>
   );
 }
 
@@ -85,17 +80,7 @@ function ButtonContainer({ userInfo, validation }) {
   return <Button onClickFunction={handleSave} text="Kaydet" />;
 }
 
-function FooterContainer({ userInfo, validation }) {
-  return (
-    <div className="grid grid-cols-3 mt-20 sm:mt-48">
-      <ThemeSwitcher />
-      <ButtonContainer userInfo={userInfo} validation={validation} />
-    </div>
-  );
-}
-
-//fotoğraf yükleme kısmı yapılacak
-function CreateProfilePage() {
+function MyProfile() {
   const [userInfo, setUserInfo] = useState({
     email: "",
     password: "",
@@ -104,15 +89,19 @@ function CreateProfilePage() {
 
   const { invalid, validation } = useValidate();
 
-  // Bu sayfa sadece almostUser yetkisine sahip kullanıcılara
-  // Gösterilecek
   return (
-    <CenteredContainer paddingTop="pt-24">
-      <AddPicture />
-      <Inputs setUserInfo={setUserInfo} invalid={invalid} />
-      <FooterContainer userInfo={userInfo} validation={validation} />
-    </CenteredContainer>
+    <FullContainer paddingTop="pt-24">
+      <div className="flex justify-between gap-8 px-24">
+        <div className="w-2/3 border">
+          <h1>Paylaşılan İlanlar</h1>
+        </div>
+        <div className="w-1/3">
+          <AddPicture />
+          <Inputs setUserInfo={setUserInfo} invalid={invalid} />
+        </div>
+      </div>
+    </FullContainer>
   );
 }
 
-export default CreateProfilePage;
+export default MyProfile;

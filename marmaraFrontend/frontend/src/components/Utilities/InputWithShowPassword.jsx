@@ -1,11 +1,11 @@
 import React from "react";
 import ShowPassword from "./ShowPassword";
-import Input from "./Input";
+import { RegularInput } from "./Input";
 
 function InputWithShowPassword({ setState, type, setInputType, invalid }) {
   return (
     <div className="relative">
-      <Input
+      <RegularInput
         invalid={invalid}
         setState={setState}
         inputName="password"

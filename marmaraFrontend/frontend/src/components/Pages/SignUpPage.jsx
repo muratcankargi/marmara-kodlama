@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { alert } from "../Utilities/alert";
-import Input from "../Utilities/Input";
+import Input, { RegularInput } from "../Utilities/Input";
 import IntroText from "../Utilities/IntroText";
 import Button from "../Utilities/Button";
 import CustomLink from "../RouteRelated/CustomLink";
@@ -12,8 +12,8 @@ import ThemeSwitcher from "../Utilities/ThemeSwitcher";
 
 function Inputs({ setUserInfo, invalid }) {
   return (
-    <>
-      <Input
+    <div className="mt-12 flex flex-col gap-12">
+      <RegularInput
         invalid={invalid}
         setState={setUserInfo}
         inputName="personalId"
@@ -23,7 +23,7 @@ function Inputs({ setUserInfo, invalid }) {
         type="Number"
         placeholder="T.C. Kimlik No"
       />
-      <Input
+      <RegularInput
         invalid={invalid}
         setState={setUserInfo}
         inputName="fatherName"
@@ -33,7 +33,7 @@ function Inputs({ setUserInfo, invalid }) {
         type="Text"
         placeholder="Baba Adı"
       />
-      <Input
+      <RegularInput
         invalid={invalid}
         setState={setUserInfo}
         inputName="birthDate"
@@ -43,7 +43,7 @@ function Inputs({ setUserInfo, invalid }) {
         type="Date"
         placeholder="Doğum Tarihiniz"
       />
-    </>
+    </div>
   );
 }
 

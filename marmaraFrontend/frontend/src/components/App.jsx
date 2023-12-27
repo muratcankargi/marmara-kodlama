@@ -9,6 +9,7 @@ import ProtectedRoute from "./RouteRelated/ProtectedRoute";
 import DeclarationDetails from "./Pages/DeclarationDetails";
 import Feed from "./Pages/Feed";
 import CreateDeclaration from "./Pages/CreateDeclaration";
+import MyProfile from "./Pages/MyProfile";
 import WithPermission from "./RouteRelated/WithPermission";
 import { useTheme } from "./Contexts/ThemeContext";
 
@@ -78,6 +79,20 @@ function App() {
                 redirect="/anasayfa"
               >
                 <DeclarationDetails />
+              </WithPermission>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/profilim"
+          element={
+            <ProtectedRoute redirect="/girisyap">
+              <WithPermission
+                allowedPermissions={["user", "admin"]}
+                redirect="/anasayfa"
+              >
+                <MyProfile />
               </WithPermission>
             </ProtectedRoute>
           }

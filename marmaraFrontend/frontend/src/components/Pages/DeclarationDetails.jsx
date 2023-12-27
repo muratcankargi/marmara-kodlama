@@ -6,6 +6,7 @@ import IntroText from "../Utilities/IntroText";
 import { Card } from "../Utilities/Cards";
 import { v4 as uuidv4 } from "uuid";
 import { useParams } from "react-router-dom";
+import Navbar from "../Utilities/Navbar";
 
 // hali hazırda olan Tags componenti burası için fazla karışık olacağından
 // direkt tekrar yazdım
@@ -52,10 +53,8 @@ function DeclarationDetails() {
 
   return (
     <FullContainer paddingTop="pt-12">
-      <div className="flex w-full justify-between items-center px-6 md:max-w-[50%] md:mx-auto">
-        <IntroText mainText="İlan Detayları" />
-        <HamburgerMenu />
-      </div>
+      <Navbar text="İlan Oluştur" />
+
       <div className="md:max-w-[50%] md:mx-auto px-3">
         {!isLoading ? (
           card && (
