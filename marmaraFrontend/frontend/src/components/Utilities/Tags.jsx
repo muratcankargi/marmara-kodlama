@@ -20,10 +20,10 @@ function Tag({ text, filters, setFilters }) {
   // vardı oraya gelince bakarız
   // https://www.youtube.com/watch?v=-yIsQPp31L0
 
-  const isTagSelected = () => filters.tags.some((tag) => tag === text);
+  const isTagSelected = () => filters.tag.some((tag) => tag === text);
 
   const handleClick = () => {
-    let selectedTags = filters.tags;
+    let selectedTags = filters.tag;
 
     if (isTagSelected()) {
       selectedTags = selectedTags.filter((item) => item !== text);
@@ -32,7 +32,7 @@ function Tag({ text, filters, setFilters }) {
     }
 
     setFilters((prevValues) => {
-      return { ...prevValues, tags: selectedTags };
+      return { ...prevValues, tag: selectedTags };
     });
   };
 

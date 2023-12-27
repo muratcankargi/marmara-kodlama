@@ -8,7 +8,7 @@ export const FiltersProvider = ({ children }) => {
     quickSort: "",
     startDate: "",
     endDate: "",
-    tags: [],
+    tag: [],
   });
 
   return (

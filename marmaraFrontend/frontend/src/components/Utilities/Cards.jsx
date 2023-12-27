@@ -365,7 +365,7 @@ function Cards({ filters }) {
     const keys = Object.keys(filters);
     let isSelected = false;
     keys.forEach((key) => {
-      if (filters[key] !== "") {
+      if (filters[key].length > 0) {
         isSelected = true;
       }
     });
