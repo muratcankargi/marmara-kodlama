@@ -40,6 +40,59 @@ export function Textarea({ invalid, inputName, placeholder, setState }) {
   );
 }
 
+export function EditableInput({
+  imageName,
+  darkImageName,
+  alt,
+  type,
+  placeholder,
+  setState,
+  inputName,
+  invalid,
+  value,
+}) {
+  const handleOnChange = (e) => {
+    setState((prevValue) => ({
+      ...prevValue,
+      [inputName]: e.target.value,
+    }));
+  };
+
+  const styles = {
+    background: "none",
+    width: "100%",
+  };
+
+  const isInvalid = invalid.inputName === inputName && invalid.value;
+
+  return (
+    <div>
+      <div
+        className={`${isInvalid && "animate-shake"} 
+         w-full flex border-2 border-b-slate-300 dark:border-b-darkPrimary 
+         border-x-0 border-t-0 p-2 pl-0 `}
+      >
+        <Image
+          className="w-6 h-6"
+          imageName={imageName}
+          darkImageName={darkImageName}
+          alt={alt}
+        />
+        <input
+          defaultValue={value ? value : ""}
+          onChange={handleOnChange}
+          className="pl-2 w-full outline-0 border-0 bg-transparent dark:text-neutral"
+          style={type === "Date" ? styles : {}}
+          type={type}
+          placeholder={placeholder}
+          required
+        />
+      </div>
+      <ErrorMessage invalid={invalid} inputName={inputName} />
+    </div>
+  );
+}
+
 // shake animasyonunu hangi inputa ekleyeceğimizi belirlemek için
 // invalid.inputName'i gönderiyoruz props olarak
 // invalid.value useValidate sayfasında true veya false olarak belirleniyor

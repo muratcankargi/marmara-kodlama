@@ -14,6 +14,10 @@ function HamburgerMenuNavigation() {
       title: "İlan Oluştur",
       link: "/ilanolustur",
     },
+    {
+      title: "Profilim",
+      link: "/profilim",
+    },
   ];
 
   const navigate = useNavigate();
