@@ -467,4 +467,32 @@ class DeclarationController extends Controller
         }
 
     }
+
+    public function getDeclarationByUserId($id) {
+        try {
+            $declarations = json_decode(Declaration::where('user_id', $id)->get());
+
+            if ($declarations) {
+                $this->getDeclarations($declarations);
+
+                return response([
+                    "status" => true,
+                    'message' => 'declarations founds',
+                    "data" => $declarations
+                ], 200);
+            } else {
+                return response([
+                    "status" => true,
+                    'message' => "declarations not found",
+                    "data" => []
+                ], 400);
+            }
+        } catch (\Exception $e) {
+            return response([
+                "status" => false,
+                'message' => "declarations not found" ,
+                "data" => [],
+            ], 400);
+        }
+    }
 }

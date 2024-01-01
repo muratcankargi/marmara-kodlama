@@ -36,6 +36,7 @@ Route::middleware('authentication')->group(function () {
     Route::get('/declarations/{id}', [DeclarationController::class, 'getDeclaration']);
     Route::put('/declarations/{id}', [DeclarationController::class, 'updateDeclaration']);
     Route::post('/declarations/{id}', [DeclarationController::class, 'changeDeclarationVisibility']);
+    Route::get('/declarations/user/{id}', [DeclarationController::class, 'getDeclarationByUserId']);
 
     Route::get('/tags', [TagController::class, 'getTags']);
     Route::get('/tags/{id}', [TagController::class, 'getTag']);
