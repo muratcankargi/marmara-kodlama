@@ -495,4 +495,64 @@ class DeclarationController extends Controller
             ], 400);
         }
     }
+
+    public function deleteDeclarationByUserId($declarationId, $userId) { 
+        try {
+            $declaration = (Declaration::where('id', $declarationId)->where('user_id', $userId)->first());
+
+            if ($declaration) {
+                $declaration->delete();
+                
+
+                return response([
+                    "status" => true,
+                    'message' => 'declaration deleted',
+                    "data" => $declaration
+                ], 200);
+            } else {
+                return response([
+                    "status" => true,
+                    'message' => "declaration not found",
+                    "data" => []
+                ], 400);
+            }
+        } catch (\Exception $e) {
+            return response([
+                "status" => false,
+                'message' => "declaration not found" ,
+                "data" => [],
+            ], 400);
+        }
+        
+    }
+    //change visibilty of declaration for userId and declarationId
+    public function changeDeclarationVisibilityByUserId($declarationId, $userId) {
+        try {
+            $declaration = (Declaration::where('id', $declarationId)->where('user_id', $userId)->first());
+
+            if ($declaration) {
+                $declaration->visibility = !$declaration->visibility;
+                $declaration->save();
+
+                return response([
+                    "status" => true,
+                    'message' => 'declaration visibility changed',
+                    "data" => $declaration
+                ], 200);
+            } else {
+                return response([
+                    "status" => true,
+                    'message' => "declaration not found",
+                    "data" => []
+                ], 400);
+            }
+        } catch (\Exception $e) {
+            return response([
+                "status" => false,
+                'message' => "declaration not found" ,
+                "data" => [],
+            ], 400);
+        }
+        
+    }
 }
