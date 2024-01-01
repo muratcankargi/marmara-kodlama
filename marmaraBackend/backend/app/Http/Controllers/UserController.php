@@ -253,4 +253,41 @@ class UserController extends Controller
         }
     }
 
+    public function updateUserEmail(Request $request)
+    {
+        $data = $request->all();
+        $token = $request->bearerToken();
+
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|string|email|max:255|unique:users',
+        ]);
+
+        if ($validator->fails()) {
+            $error = $validator->messages()->all();
+            return response([
+                'status' => false,
+                "message" => $error,
+                'data' => []
+            ]);
+        }
+
+        $hasToken = PersonalAccessToken::where(['token' => $token])->first();
+
+        User::where(['id' => $hasToken->user_id])->update([
+            'email' => $data['email'],
+        ]);
+
+        $user = User::where(['id' => $hasToken->user_id])->first();
+
+        return response([
+            "status" => true,
+            "message" => "User email update successful.",
+            'data' => [
+                'user' => $user,
+            ],
+
+        ]);
+    }
+
+
 }
