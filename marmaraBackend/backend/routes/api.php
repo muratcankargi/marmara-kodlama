@@ -37,6 +37,7 @@ Route::middleware('authentication')->group(function () {
     Route::put('/declarations/{id}', [DeclarationController::class, 'updateDeclaration']);
     Route::post('/declarations/{id}', [DeclarationController::class, 'changeDeclarationVisibility']);
     Route::get('/declarations/user/{id}', [DeclarationController::class, 'getDeclarationByUserId']);
+    Route::post('/declaration/{declarationId}/user/{userId}', [DeclarationController::class, 'changeDeclarationVisibilityByUserId']);
 
     Route::get('/tags', [TagController::class, 'getTags']);
     Route::get('/tags/{id}', [TagController::class, 'getTag']);
@@ -50,6 +51,8 @@ Route::middleware('authentication')->group(function () {
     Route::get('/filter/lastMonth',[DeclarationController::class, 'sharedLastMonth']);
     Route::post('/filter',[DeclarationController::class, 'filter']);
 
+    Route::post('/user/email',[UserController::class, 'updateUserEmail']);
+    
     Route::middleware('admin')->group(function () {
         Route::delete('/declarations/{id}', [DeclarationController::class, 'deleteDeclaration']);
 
