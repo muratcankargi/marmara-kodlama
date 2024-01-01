@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\PersonalAccessToken;
 use App\Models\Declaration;
 use App\Models\Tag;
 use App\Models\User;
@@ -525,10 +525,13 @@ class DeclarationController extends Controller
         }
         
     }
-    //change visibilty of declaration for userId and declarationId
-    public function changeDeclarationVisibilityByUserId($declarationId, $userId) {
+    //ilan visibility değiştirme. declarationId parametre olarak verilip,$request ile userId bearer token ile alınabilir.
+    public function changeDeclarationVisibilityByUserId(Request $request, $declarationId) {
+        $token = $request->bearerToken();
         try {
-            $declaration = (Declaration::where('id', $declarationId)->where('user_id', $userId)->first());
+            $hasToken = PersonalAccessToken::where(['token' => $token])->first();
+
+            $declaration = (Declaration::where('id', $declarationId)->where('user_id', $hasToken->user_id)->first());
 
             if ($declaration) {
                 $declaration->visibility = !$declaration->visibility;
