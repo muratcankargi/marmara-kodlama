@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import { useAuthz } from "../Contexts/AuthzContext";
 import { useAuth } from "../Contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { alert } from "./alert";
 import Image from "./Image";
 
 // span, dark modda altta çıkan siyah çizgi
@@ -36,7 +37,7 @@ function CardHeading({ author, date, isLoading, id }) {
 
   return (
     <div className="dark:bg-[#1B2430] relative flex justify-between items-center py-1 px-2 text-sm bg-primary-100 text-neutral">
-      <span className="w-[96%] h-[2px] -bottom-1 left-1/2 -translate-x-1/2 rounded-lg dark:bg-[#10141A] bg-none absolute"></span>
+      <span className="w-full h-[2px] -bottom-1 left-1/2 -translate-x-1/2 rounded-lg dark:bg-[#10141A] bg-none absolute"></span>
       <div
         className={`${
           isLoading &&
@@ -79,6 +80,8 @@ function CardFooter({ id, setIsDeleted, isDetails = false, isLoading }) {
   const { permissions } = useAuthz();
   const navigate = useNavigate();
 
+  const { user } = useAuth();
+
   const handleClick = () => {
     if (!isDetails) {
       navigate(`/ilandetaylari/${id}`);
@@ -89,7 +92,7 @@ function CardFooter({ id, setIsDeleted, isDetails = false, isLoading }) {
 
   return (
     <div className="flex h-8 pt-3 justify-between items-center ">
-      {permissions === "admin" ? (
+      {permissions === "admin" || user.id === id ? (
         <DeleteCard id={id} setIsDeleted={setIsDeleted} />
       ) : (
         <div></div>
@@ -116,19 +119,22 @@ function DeleteCard({ id, setIsDeleted }) {
 
   const handleClick = async () => {
     try {
+      const config = {
+        headers: { Authorization: `Bearer ${localStorage.getItem("auth")}` },
+      };
+
       //İlan silme gibi önemli işlemlerde ekstra güvenlik önlemi olarak bir kez daha
       //doğrulama yapıyoruz, yapmazsak kullanıcının ekranı açıkken localStorage'ı silse bile
       //silme tuşuna bastığı zaman doğrulama yapılmadığından ilan silinir.
-      setIsLoading(true);
       const authResponse = await authenticate();
-      if (authResponse.user) {
-        const response = await axios.delete(
-          `http://localhost:8000/api/deleteDeclaration/${id}`
+      if (authResponse) {
+        const response = await axios.post(
+          `http://localhost:8000/api/declarations/${id}`,
+          {},
+          config
         );
 
-        setIsDeleted(true);
-
-        return response.data.message;
+        window.location.reload();
       }
     } catch (error) {
       console.log("Error: ", error.message);
@@ -245,6 +251,7 @@ function CardBody({
   setIsDeleted,
   isDetails,
   isLoading,
+  author,
 }) {
   return (
     <div className="bg-white dark:bg-[#1B2430]  shadow-md p-2 py-3 flex flex-col">
@@ -260,6 +267,7 @@ function CardBody({
         isLoading={isLoading}
       />
       <CardFooter
+        author={author}
         id={id}
         setIsDeleted={setIsDeleted}
         isDetails={isDetails}
@@ -323,6 +331,7 @@ export function Card({
         id={id}
       />
       <CardBody
+        author={author}
         isLoading={isLoading}
         isDetails={isDetails}
         title={title}
@@ -402,14 +411,16 @@ function Cards({ filters }) {
         cards ? (
           cards.map((card) => {
             return (
-              <Card
-                key={uuidv4()}
-                id={card.id}
-                author={card.user}
-                date={card.created_at}
-                title={card.title}
-                description={card.description}
-              />
+              card.visibility === 1 && (
+                <Card
+                  key={uuidv4()}
+                  id={card.id}
+                  author={card.user}
+                  date={card.created_at}
+                  title={card.title}
+                  description={card.description}
+                />
+              )
             );
           })
         ) : (

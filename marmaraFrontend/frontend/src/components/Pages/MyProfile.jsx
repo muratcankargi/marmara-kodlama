@@ -42,28 +42,23 @@ function ButtonContainer({ userInfo, validation }) {
     return checkEmail(email);
   };
 
-  // const { saveUser } = useAuth();
+  const { updateEmail, authenticate } = useAuth();
 
   const handleSave = async () => {
     if (checkInputs()) {
-      // kullanıcı bilgileri updateo olacak
-      alert("saved");
-      // try {
-      //   const response = await saveUser({
-      //     email: userInfo.email,
-      //     password: userInfo.password,
-      //     token: localStorage.getItem("auth"),
-      //   });
-      //   if (response) {
-      //     alert("saved");
-      //     navigate("/anasayfa");
-      //   } else {
-      //     alert("notSaved");
-      //     navigate("/kaydol");
-      //   }
-      // } catch (error) {
-      //   console.log("Error: ", error.message);
-      // }
+      try {
+        const response = await updateEmail({
+          email: userInfo.email,
+        });
+        if (response) {
+          alert("saved");
+          await authenticate();
+        } else {
+          alert("notSaved");
+        }
+      } catch (error) {
+        console.log("Error: ", error.message);
+      }
     }
   };
 
@@ -103,14 +98,16 @@ function Declarations() {
         cards ? (
           cards.map((card) => {
             return (
-              <Card
-                key={uuidv4()}
-                id={card.id}
-                author={card.user}
-                date={card.created_at}
-                title={card.title}
-                description={card.description}
-              />
+              card.visibility === 1 && (
+                <Card
+                  key={uuidv4()}
+                  id={card.id}
+                  author={card.user}
+                  date={card.created_at}
+                  title={card.title}
+                  description={card.description}
+                />
+              )
             );
           })
         ) : (
@@ -140,9 +137,11 @@ function Declarations() {
 }
 
 function MyProfile() {
-  // email değeri db den gelecek
+  // TODO: email'i database'den çek
+  const { user } = useAuth();
+
   const [userInfo, setUserInfo] = useState({
-    email: "murat@gmail.com",
+    email: user.email,
   });
 
   const { invalid, validation } = useValidate();

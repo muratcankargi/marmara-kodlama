@@ -56,6 +56,9 @@ export function alert(state) {
     case "emptyTags":
       alertError("Lütfen en az bir adet etiket seçiniz.");
       break;
+    case "declarationDeleted":
+      alertSuccess("İlan silindi!");
+      break;
     default:
       // Burası production da kaldırılıcak şuanlık
       // yanlış state girişi yaparsak çalışıcak düzeltelim

@@ -203,6 +203,20 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const updateEmail = async (newEmail) => {
+    try {
+      const config = {
+        headers: { Authorization: `Bearer ${localStorage.getItem("auth")}` },
+      };
+
+      const response = await axios.post(`${URL}/user/email`, newEmail, config);
+
+      return response.data.data;
+    } catch (error) {
+      console.log("Error: ", error.message);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -219,6 +233,7 @@ export const AuthProvider = ({ children }) => {
         getDeclaration,
         getDeclarationById,
         getFilteredCards,
+        updateEmail,
       }}
     >
       {children}
