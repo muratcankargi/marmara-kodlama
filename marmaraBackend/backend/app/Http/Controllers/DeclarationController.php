@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\PersonalAccessToken;
 use App\Models\Declaration;
 use App\Models\Tag;
@@ -73,7 +74,7 @@ class DeclarationController extends Controller
 
     public function getDeclarations($declarations = null)
     {
-        if(!$declarations)
+        if (!$declarations)
             $declarations = DB::select("SELECT * FROM declarations");
 
         foreach ($declarations as $declaration) {
@@ -468,7 +469,8 @@ class DeclarationController extends Controller
 
     }
 
-    public function getDeclarationByUserId($id) {
+    public function getDeclarationByUserId($id)
+    {
         try {
             $declarations = json_decode(Declaration::where('user_id', $id)->get());
 
@@ -490,19 +492,20 @@ class DeclarationController extends Controller
         } catch (\Exception $e) {
             return response([
                 "status" => false,
-                'message' => "declarations not found" ,
+                'message' => "declarations not found",
                 "data" => [],
             ], 400);
         }
     }
 
-    public function deleteDeclarationByUserId($declarationId, $userId) { 
+    public function deleteDeclarationByUserId($declarationId, $userId)
+    {
         try {
             $declaration = (Declaration::where('id', $declarationId)->where('user_id', $userId)->first());
 
             if ($declaration) {
                 $declaration->delete();
-                
+
 
                 return response([
                     "status" => true,
@@ -519,14 +522,16 @@ class DeclarationController extends Controller
         } catch (\Exception $e) {
             return response([
                 "status" => false,
-                'message' => "declaration not found" ,
+                'message' => "declaration not found",
                 "data" => [],
             ], 400);
         }
-        
+
     }
+
     //ilan visibility değiştirme. declarationId parametre olarak verilip,$request ile userId bearer token ile alınabilir.
-    public function changeDeclarationVisibilityByUserId(Request $request, $declarationId) {
+    public function changeDeclarationVisibilityByUserId(Request $request, $declarationId)
+    {
         $token = $request->bearerToken();
         try {
             $hasToken = PersonalAccessToken::where(['token' => $token])->first();
@@ -552,10 +557,41 @@ class DeclarationController extends Controller
         } catch (\Exception $e) {
             return response([
                 "status" => false,
-                'message' => "declaration not found" ,
+                'message' => "declaration not found",
                 "data" => [],
             ], 400);
         }
-        
+
     }
+
+    public function getMyDeclarations(Request $request)
+    {
+        $token = $request->bearerToken();
+        try {
+            $hasToken = PersonalAccessToken::where(['token' => $token])->first();
+            $declarations = json_decode(Declaration::where('user_id', $hasToken->user_id)->get());
+
+            if ($declarations) {
+                $this->getDeclarations($declarations);
+                return response([
+                    "status" => true,
+                    'message' => 'declarations founds',
+                    "data" => $declarations
+                ], 200);
+            } else {
+                return response([
+                    "status" => true,
+                    'message' => "declarations not found",
+                    "data" => []
+                ], 400);
+            }
+        } catch (\Exception $e) {
+            return response([
+                "status" => false,
+                'message' => "declarations not found",
+                "data" => [],
+            ], 400);
+        }
+    }
+
 }

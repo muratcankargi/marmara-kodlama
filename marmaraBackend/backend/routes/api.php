@@ -38,7 +38,7 @@ Route::middleware('authentication')->group(function () {
     Route::post('/declarations/{id}', [DeclarationController::class, 'changeDeclarationVisibility']);
     Route::get('/declarations/user/{id}', [DeclarationController::class, 'getDeclarationByUserId']);
     Route::post('/declaration/{declarationId}', [DeclarationController::class, 'changeDeclarationVisibilityByUserId']);
-
+    Route::get('/declaration/userDeclarations', [DeclarationController::class, 'getMyDeclarations']);
     Route::get('/tags', [TagController::class, 'getTags']);
     Route::get('/tags/{id}', [TagController::class, 'getTag']);
 
@@ -52,7 +52,7 @@ Route::middleware('authentication')->group(function () {
     Route::post('/filter',[DeclarationController::class, 'filter']);
 
     Route::post('/user/email',[UserController::class, 'updateUserEmail']);
-    
+
     Route::middleware('admin')->group(function () {
         Route::delete('/declarations/{id}', [DeclarationController::class, 'deleteDeclaration']);
 
