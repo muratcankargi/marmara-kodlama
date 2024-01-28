@@ -67,14 +67,14 @@ function ButtonContainer({ userInfo, validation }) {
 
 function Declarations() {
   const [cards, setCards] = useState([]);
-  const { getDeclaration } = useAuth();
+  const { getUserDeclarations } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     let response;
     const getDeclarations = async () => {
       try {
-        response = await getDeclaration();
+        response = await getUserDeclarations();
 
         setCards(response);
         setIsLoading(false);
@@ -105,6 +105,7 @@ function Declarations() {
                   author={card.user}
                   date={card.created_at}
                   title={card.title}
+                  userId={card.user_id}
                   description={card.description}
                 />
               )

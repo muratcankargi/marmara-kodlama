@@ -203,6 +203,23 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const getUserDeclarations = async () => {
+    try {
+      const config = {
+        headers: { Authorization: `Bearer ${localStorage.getItem("auth")}` },
+      };
+
+      const response = await axios.get(
+        `${URL}/declaration/userDeclarations`,
+        config
+      );
+
+      return response.data.data;
+    } catch (error) {
+      console.log("Error: ", error.message);
+    }
+  };
+
   const updateEmail = async (newEmail) => {
     try {
       const config = {
@@ -234,6 +251,7 @@ export const AuthProvider = ({ children }) => {
         getDeclarationById,
         getFilteredCards,
         updateEmail,
+        getUserDeclarations,
       }}
     >
       {children}

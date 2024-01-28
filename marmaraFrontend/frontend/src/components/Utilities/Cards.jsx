@@ -76,7 +76,13 @@ function CardImage({ isDetails, isLoading }) {
   );
 }
 
-function CardFooter({ id, setIsDeleted, isDetails = false, isLoading }) {
+function CardFooter({
+  id,
+  setIsDeleted,
+  isDetails = false,
+  isLoading,
+  userId,
+}) {
   const { permissions } = useAuthz();
   const navigate = useNavigate();
 
@@ -92,7 +98,7 @@ function CardFooter({ id, setIsDeleted, isDetails = false, isLoading }) {
 
   return (
     <div className="flex h-8 pt-3 justify-between items-center ">
-      {permissions === "admin" || user.id === id ? (
+      {permissions === "admin" || user.id === userId ? (
         <DeleteCard id={id} setIsDeleted={setIsDeleted} />
       ) : (
         <div></div>
@@ -252,6 +258,7 @@ function CardBody({
   isDetails,
   isLoading,
   author,
+  userId,
 }) {
   return (
     <div className="bg-white dark:bg-[#1B2430]  shadow-md p-2 py-3 flex flex-col">
@@ -267,6 +274,7 @@ function CardBody({
         isLoading={isLoading}
       />
       <CardFooter
+        userId={userId}
         author={author}
         id={id}
         setIsDeleted={setIsDeleted}
@@ -287,6 +295,7 @@ export function Card({
   id = 1,
   isLoading,
   isDetails = false,
+  userId,
 }) {
   const [isDeleted, setIsDeleted] = useState(false);
 
@@ -338,6 +347,7 @@ export function Card({
         description={description}
         id={id}
         setIsDeleted={setIsDeleted}
+        userId={userId}
       />
     </div>
   );
