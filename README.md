@@ -1,4 +1,4 @@
-# 🎒 Marmara Kodlama – Kayıp Eşya Platformu
+# Marmara Kodlama – Kayıp Eşya Platformu
 
 Marmara Üniversitesi öğrencilerinin **kaybettikleri eşyaları bulmalarına** yardımcı olmak için geliştirilmiş bir web uygulaması.
 
